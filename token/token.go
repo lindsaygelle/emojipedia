@@ -2,8 +2,12 @@ package token
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
+	"strings"
+
+	"github.com/imroc/req"
 
 	"golang.org/x/net/html"
 )
@@ -24,6 +28,24 @@ func GetAll(HTMLElement string, root *html.Node) []*html.Node {
 	return []*html.Node{root}
 }
 
+func GetBody(doc *html.Node) (*html.Node, error) {
+	var b *html.Node
+	var f func(*html.Node)
+	f = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "body" {
+			b = n
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			f(c)
+		}
+	}
+	f(doc)
+	if b != nil {
+		return b, nil
+	}
+	return nil, errors.New("Missing <body> in the node tree")
+}
+
 func GetElementsByClassName(class string, root *html.Node) (elements []*html.Node, ok bool) {
 	return []*html.Node{}, false
 }
@@ -40,4 +62,8 @@ func GetElementById(id string, root *html.Node) (element *html.Node, ok bool) {
 		}
 	}
 	return
+}
+
+func Parse(response *req.Resp) (element *html.Node, ok error) {
+	return html.Parse(strings.NewReader(response.String()))
 }

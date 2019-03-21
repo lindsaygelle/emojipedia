@@ -1,11 +1,10 @@
 package emojipedia
 
 import (
-	"strings"
+	"fmt"
 
 	"github.com/gellel/emojipedia/token"
 	"github.com/imroc/req"
-	"golang.org/x/net/html"
 )
 
 func Get() {
@@ -15,8 +14,7 @@ func Get() {
 
 	response, _ := req.Get("https://emojipedia.org", header)
 
-	tokens, _ := html.Parse(strings.NewReader(response.String()))
+	document, _ := token.Parse(response)
 
-	token.Get("html", tokens.FirstChild.NextSibling.FirstChild)
-
+	fmt.Println(document)
 }
