@@ -3,7 +3,6 @@ package token
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"io"
 	"strings"
 
@@ -59,25 +58,20 @@ func GetElementById(id string, root *html.Node) (element *html.Node, ok bool) {
 	return
 }
 
-func GetElementByTagName(tag string, document *html.Node) (element *html.Node, ok error) {
-	var b *html.Node
+func GetElementsByTagName(tag string, document *html.Node) []*html.Node {
+	elements := []*html.Node{}
 	var f func(*html.Node)
-	f = func(n *html.Node) {
-		if n.Type == html.ElementNode && n.Data == tag {
-			b = n
-		}
-		for c := n.FirstChild; c != nil; c = c.NextSibling {
-			f(c)
+	f = func(node *html.Node) {
+		if node != nil {
+			if node.Type == html.ElementNode && node.Data == tag {
+				elements = append(elements, node)
+			}
+			f(node.FirstChild)
+			f(node.NextSibling)
 		}
 	}
 	f(document)
-	if b != nil {
-		return b, nil
-	}
-
-	s := fmt.Sprintf("Missing <%s> in document tree", tag)
-
-	return nil, errors.New(s)
+	return elements
 }
 
 func Parse(response *req.Resp) (element *html.Node, ok error) {
