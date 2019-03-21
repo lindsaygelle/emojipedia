@@ -18,12 +18,7 @@ func Get() {
 
 	body, _ := token.GetBody(document)
 
-	//fmt.Println(document)
-
-	//e, _ := token.GetElementByTagName("div", document)
-
-	//fmt.Println(token.Render(e))
-	fmt.Println(body.FirstChild.NextSibling.Data)
-
 	fmt.Println(token.GetElementsByTagName("div", body))
+
+	fmt.Println(len(token.GetElementsByClassName("container", body)))
 }
