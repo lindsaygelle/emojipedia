@@ -19,16 +19,11 @@ func Render(n *html.Node) string {
 	return buf.String()
 }
 
-func Get(HTMLElement string, root *html.Node) *html.Node {
-	fmt.Println(Render(root))
-	return root
+func GetAll(HTMLElement string, document *html.Node) []*html.Node {
+	return []*html.Node{document}
 }
 
-func GetAll(HTMLElement string, root *html.Node) []*html.Node {
-	return []*html.Node{root}
-}
-
-func GetBody(doc *html.Node) (*html.Node, error) {
+func GetBody(document *html.Node) (body *html.Node, ok error) {
 	var b *html.Node
 	var f func(*html.Node)
 	f = func(n *html.Node) {
@@ -39,7 +34,7 @@ func GetBody(doc *html.Node) (*html.Node, error) {
 			f(c)
 		}
 	}
-	f(doc)
+	f(document)
 	if b != nil {
 		return b, nil
 	}
@@ -62,6 +57,27 @@ func GetElementById(id string, root *html.Node) (element *html.Node, ok bool) {
 		}
 	}
 	return
+}
+
+func GetElementByTagName(tag string, document *html.Node) (element *html.Node, ok error) {
+	var b *html.Node
+	var f func(*html.Node)
+	f = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == tag {
+			b = n
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			f(c)
+		}
+	}
+	f(document)
+	if b != nil {
+		return b, nil
+	}
+
+	s := fmt.Sprintf("Missing <%s> in document tree", tag)
+
+	return nil, errors.New(s)
 }
 
 func Parse(response *req.Resp) (element *html.Node, ok error) {
