@@ -18,7 +18,7 @@ func Get() {
 
 	body, _ := token.GetBody(document)
 
-	fmt.Println(token.GetElementsByTagName("div", body))
+	t, _ := token.GetElementByTextContent("Categories", body)
 
-	fmt.Println(len(token.GetElementsByClassName("container", body)))
+	fmt.Println(t)
 }

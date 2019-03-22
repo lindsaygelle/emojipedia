@@ -3,6 +3,7 @@ package token
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
 	"strings"
 
@@ -19,19 +20,19 @@ func Render(n *html.Node) string {
 }
 
 func GetBody(document *html.Node) (body *html.Node, ok error) {
-	var b *html.Node
 	var f func(*html.Node)
-	f = func(n *html.Node) {
-		if n.Type == html.ElementNode && n.Data == "body" {
-			b = n
+	var n *html.Node
+	f = func(node *html.Node) {
+		if node.Type == html.ElementNode && node.Data == "body" {
+			n = node
 		}
-		for c := n.FirstChild; c != nil; c = c.NextSibling {
+		for c := node.FirstChild; c != nil; c = c.NextSibling {
 			f(c)
 		}
 	}
 	f(document)
-	if b != nil {
-		return b, nil
+	if n != nil {
+		return n, nil
 	}
 	return nil, errors.New("Missing <body> in the node tree")
 }
@@ -41,15 +42,20 @@ func GetElementsByClassName(class string, document *html.Node) []*html.Node {
 	var f func(*html.Node)
 	f = func(node *html.Node) {
 		if node != nil {
-			attributes := node.Attr
-			if node.Type == html.ElementNode && len(attributes) > 0 {
-				if attributes[0].Key == "class" {
-					classes := strings.Split(attributes[0].Val, " ")
-					for _, cls := range classes {
-						if cls == class {
-							elements = append(elements, node)
-							break
+			if node.Type == html.ElementNode {
+				c := true
+				for _, a := range node.Attr {
+					if a.Key == "class" {
+						classes := strings.Split(a.Val, " ")
+						for _, cls := range classes {
+							if cls == class {
+								elements = append(elements, node)
+								break
+							}
 						}
+					}
+					if c == false {
+						break
 					}
 				}
 			}
@@ -61,18 +67,42 @@ func GetElementsByClassName(class string, document *html.Node) []*html.Node {
 	return elements
 }
 
-func GetElementById(id string, root *html.Node) (element *html.Node, ok bool) {
-	for _, a := range root.Attr {
+func GetElementById(id string, document *html.Node) (element *html.Node, ok bool) {
+	for _, a := range document.Attr {
 		if a.Key == "id" && a.Val == id {
-			return root, true
+			return document, true
 		}
 	}
-	for c := root.FirstChild; c != nil; c = c.NextSibling {
+	for c := document.FirstChild; c != nil; c = c.NextSibling {
 		if element, ok = GetElementById(id, c); ok {
 			return
 		}
 	}
 	return
+}
+
+func GetElementByTextContent(s string, document *html.Node) (element *html.Node, ok error) {
+	var f func(*html.Node)
+	var n *html.Node
+	f = func(node *html.Node) {
+		if node != nil {
+			if node.Type == html.TextNode {
+				fmt.Println(node.Data)
+			}
+			if node.Type == html.TextNode && s == node.Data {
+				n = node.Parent
+			}
+			if n == nil {
+				f(node.FirstChild)
+				f(node.NextSibling)
+			}
+		}
+	}
+	f(document)
+	if n != nil {
+		return n, nil
+	}
+	return nil, errors.New("Content not found")
 }
 
 func GetElementsByTagName(tag string, document *html.Node) []*html.Node {
@@ -103,6 +133,7 @@ func GetTextNodes(document *html.Node) []*html.Node {
 			f(node.NextSibling)
 		}
 	}
+	f(document)
 	return text
 }
 
