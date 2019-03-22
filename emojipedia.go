@@ -18,6 +18,8 @@ func Get() {
 
 	body, _ := token.GetBody(document)
 
+	fmt.Println(body)
+
 	t, _ := token.GetElementByTextContent("Categories", body)
 
 	fmt.Println(t)

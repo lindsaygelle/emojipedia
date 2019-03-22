@@ -8,135 +8,193 @@ import (
 	"strings"
 
 	"github.com/imroc/req"
-
 	"golang.org/x/net/html"
 )
 
-func Render(n *html.Node) string {
-	var buf bytes.Buffer
-	w := io.Writer(&buf)
-	html.Render(w, n)
-	return buf.String()
+var (
+	f func(*html.Node)
+)
+
+// GetBody method of Document interface returns the HTML body.
+func GetBody(document *html.Node) (body *html.Node, ok error) {
+	return GetElementByTagName("body", document)
 }
 
-func GetBody(document *html.Node) (body *html.Node, ok error) {
-	var f func(*html.Node)
+// GetElementByClassName method of Document interface returns the first element that contains the given class name.
+func GetElementByClassName(class string, document *html.Node) (element *html.Node, ok error) {
 	var n *html.Node
 	f = func(node *html.Node) {
-		if node.Type == html.ElementNode && node.Data == "body" {
-			n = node
-		}
-		for c := node.FirstChild; c != nil; c = c.NextSibling {
-			f(c)
-		}
-	}
-	f(document)
-	if n != nil {
-		return n, nil
-	}
-	return nil, errors.New("Missing <body> in the node tree")
-}
-
-func GetElementsByClassName(class string, document *html.Node) []*html.Node {
-	elements := []*html.Node{}
-	var f func(*html.Node)
-	f = func(node *html.Node) {
-		if node != nil {
-			if node.Type == html.ElementNode {
-				c := true
-				for _, a := range node.Attr {
-					if a.Key == "class" {
-						classes := strings.Split(a.Val, " ")
-						for _, cls := range classes {
-							if cls == class {
-								elements = append(elements, node)
-								break
-							}
+		if node.Type == html.ElementNode {
+			for _, attr := range node.Attr {
+				if attr.Key == "class" {
+					for _, cls := range strings.Split(attr.Val, " ") {
+						if cls == class {
+							n = node
+							break
 						}
 					}
-					if c == false {
-						break
-					}
+					break
 				}
 			}
+		}
+		if n == nil && node.FirstChild != nil {
 			f(node.FirstChild)
+		}
+		if n == nil && node.NextSibling != nil {
 			f(node.NextSibling)
-		}
-	}
-	f(document)
-	return elements
-}
-
-func GetElementById(id string, document *html.Node) (element *html.Node, ok bool) {
-	for _, a := range document.Attr {
-		if a.Key == "id" && a.Val == id {
-			return document, true
-		}
-	}
-	for c := document.FirstChild; c != nil; c = c.NextSibling {
-		if element, ok = GetElementById(id, c); ok {
-			return
-		}
-	}
-	return
-}
-
-func GetElementByTextContent(s string, document *html.Node) (element *html.Node, ok error) {
-	var f func(*html.Node)
-	var n *html.Node
-	f = func(node *html.Node) {
-		if node != nil {
-			if node.Type == html.TextNode {
-				fmt.Println(node.Data)
-			}
-			if node.Type == html.TextNode && s == node.Data {
-				n = node.Parent
-			}
-			if n == nil {
-				f(node.FirstChild)
-				f(node.NextSibling)
-			}
 		}
 	}
 	f(document)
 	if n != nil {
 		return n, nil
 	}
-	return nil, errors.New("Content not found")
+	s := fmt.Sprintf("cannot find element with class '%s' at address (*%p)", class, &document)
+	return nil, errors.New(s)
 }
 
+// GetElementsByClassName method of Document interface returns a slice of all child elements which have all of the given class names.
+func GetElementsByClassName(class string, document *html.Node) []*html.Node {
+	n := []*html.Node{}
+	f = func(node *html.Node) {
+		if node.Type == html.ElementNode {
+			for _, attr := range node.Attr {
+				if attr.Key == "class" {
+					for _, cls := range strings.Split(attr.Val, " ") {
+						if cls == class {
+							n = append(n, node)
+							break
+						}
+					}
+					break
+				}
+			}
+		}
+		if n == nil && node.FirstChild != nil {
+			f(node.FirstChild)
+		}
+		if n == nil && node.NextSibling != nil {
+			f(node.NextSibling)
+		}
+	}
+	return n
+}
+
+// GetElementByID returns an Element struct representing the element whose id property matches the specified string.
+func GetElementByID(id string, document *html.Node) (element *html.Node, ok error) {
+	var n *html.Node
+	f = func(node *html.Node) {
+		if node.Type == html.ElementNode {
+			for _, attr := range node.Attr {
+				if attr.Key == "id" && attr.Val == id {
+					n = node
+				}
+				break
+			}
+		}
+		if n == nil && node.FirstChild != nil {
+			f(node.FirstChild)
+		}
+		if n == nil && node.NextSibling != nil {
+			f(node.NextSibling)
+		}
+	}
+	f(document)
+	if n != nil {
+		return n, nil
+	}
+	s := fmt.Sprintf("cannot find element with id '%s' at address (*%p)", id, &document)
+	return nil, errors.New(s)
+}
+
+// GetElementByTagName method of Document interface returns the first element with the given tag name.
+func GetElementByTagName(tag string, document *html.Node) (element *html.Node, ok error) {
+	var n *html.Node
+	f = func(node *html.Node) {
+		if node.Type == html.ElementNode && node.Data == tag {
+			n = node
+		}
+		if n == nil && node.FirstChild != nil {
+			f(node.FirstChild)
+		}
+		if n == nil && node.NextSibling != nil {
+			f(node.NextSibling)
+		}
+	}
+	f(document)
+	if n != nil {
+		return n, nil
+	}
+	s := fmt.Sprintf("cannot find element '%s' at address (*%p)", tag, &document)
+	return nil, errors.New(s)
+}
+
+// GetElementsByTagName method of Document interface returns a slice of elements with the given tag name.
 func GetElementsByTagName(tag string, document *html.Node) []*html.Node {
-	elements := []*html.Node{}
-	var f func(*html.Node)
+	n := []*html.Node{}
 	f = func(node *html.Node) {
-		if node != nil {
-			if node.Type == html.ElementNode && node.Data == tag {
-				elements = append(elements, node)
-			}
+		if node.Type == html.ElementNode && node.Data == tag {
+			n = append(n, node)
+		}
+		if n == nil && node.FirstChild != nil {
 			f(node.FirstChild)
+		}
+		if n == nil && node.NextSibling != nil {
 			f(node.NextSibling)
 		}
 	}
 	f(document)
-	return elements
+	return n
 }
 
+// GetElementByTextContent method of Document interface returns a text node element with the matching string.
+func GetElementByTextContent(text string, document *html.Node) (element *html.Node, ok error) {
+	var n *html.Node
+	f = func(node *html.Node) {
+		if node.Type == html.TextNode && node.Data == text {
+			n = node
+		}
+		if n == nil && node.FirstChild != nil {
+			f(node.FirstChild)
+		}
+		if n == nil && node.NextSibling != nil {
+			f(node.NextSibling)
+		}
+	}
+	f(document)
+	if n != nil {
+		return n, nil
+	}
+	s := fmt.Sprintf("cannot find element with text '%s' at address (*%p)", text, &document)
+	return nil, errors.New(s)
+}
+
+// GetTextNodes method of Document interface returns a slice of text nodes.
 func GetTextNodes(document *html.Node) []*html.Node {
-	text := []*html.Node{}
-	var f func(*html.Node)
+	n := []*html.Node{}
 	f = func(node *html.Node) {
-		if node != nil {
-			if node.Type == html.TextNode {
-				text = append(text, node)
-			}
+		if node.Type == html.TextNode {
+			n = append(n, node)
+		}
+		if node.FirstChild != nil {
 			f(node.FirstChild)
+		}
+		if node.NextSibling != nil {
 			f(node.NextSibling)
 		}
 	}
 	f(document)
-	return text
+	return n
 }
 
+// Parse parses HTML GET response document to HTML.
 func Parse(response *req.Resp) (element *html.Node, ok error) {
 	return html.Parse(strings.NewReader(response.String()))
+}
+
+// Render generates a plain-text string from the argument html struct.
+func Render(document *html.Node) string {
+	var buffer bytes.Buffer
+	writer := io.Writer(&buffer)
+	html.Render(writer, document)
+	return buffer.String()
 }
