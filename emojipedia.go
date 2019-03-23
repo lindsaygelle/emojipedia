@@ -3,7 +3,8 @@ package emojipedia
 import (
 	"fmt"
 
-	"github.com/gellel/emojipedia/token"
+	"github.com/gellel/emojipedia/document"
+	"github.com/gellel/emojipedia/element"
 	"github.com/imroc/req"
 )
 
@@ -14,13 +15,15 @@ func Get() {
 
 	response, _ := req.Get("https://emojipedia.org", header)
 
-	document, _ := token.Parse(response)
+	root, _ := document.Parse(response)
 
-	body, _ := token.GetBody(document)
+	body, _ := document.GetBody(root)
 
-	fmt.Println(body)
+	t, _ := document.GetElementByTextContent("Categories", body)
 
-	t, _ := token.GetElementByTextContent("Categories", body)
+	fmt.Println(document.Render(t.Parent))
 
-	fmt.Println(t)
+	node := element.Node{body}
+
+	fmt.Println(node.GetID())
 }

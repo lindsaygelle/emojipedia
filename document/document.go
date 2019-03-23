@@ -1,4 +1,4 @@
-package token
+package document
 
 import (
 	"bytes"
@@ -15,12 +15,12 @@ var (
 	f func(*html.Node)
 )
 
-// GetBody method of Document interface returns the HTML body.
+// GetBody returns the HTML body.
 func GetBody(document *html.Node) (body *html.Node, ok error) {
 	return GetElementByTagName("body", document)
 }
 
-// GetElementByClassName method of Document interface returns the first element that contains the given class name.
+// GetElementByClassName returns the first element that contains the given class name.
 func GetElementByClassName(class string, document *html.Node) (element *html.Node, ok error) {
 	var n *html.Node
 	f = func(node *html.Node) {
@@ -52,7 +52,7 @@ func GetElementByClassName(class string, document *html.Node) (element *html.Nod
 	return nil, errors.New(s)
 }
 
-// GetElementsByClassName method of Document interface returns a slice of all child elements which have all of the given class names.
+// GetElementsByClassName returns a slice of all child elements which have all of the given class names.
 func GetElementsByClassName(class string, document *html.Node) []*html.Node {
 	n := []*html.Node{}
 	f = func(node *html.Node) {
@@ -106,7 +106,7 @@ func GetElementByID(id string, document *html.Node) (element *html.Node, ok erro
 	return nil, errors.New(s)
 }
 
-// GetElementByTagName method of Document interface returns the first element with the given tag name.
+// GetElementByTagName returns the first element with the given tag name.
 func GetElementByTagName(tag string, document *html.Node) (element *html.Node, ok error) {
 	var n *html.Node
 	f = func(node *html.Node) {
@@ -128,7 +128,7 @@ func GetElementByTagName(tag string, document *html.Node) (element *html.Node, o
 	return nil, errors.New(s)
 }
 
-// GetElementsByTagName method of Document interface returns a slice of elements with the given tag name.
+// GetElementsByTagName returns a slice of elements with the given tag name.
 func GetElementsByTagName(tag string, document *html.Node) []*html.Node {
 	n := []*html.Node{}
 	f = func(node *html.Node) {
@@ -146,7 +146,7 @@ func GetElementsByTagName(tag string, document *html.Node) []*html.Node {
 	return n
 }
 
-// GetElementByTextContent method of Document interface returns a text node element with the matching string.
+// GetElementByTextContent returns a text node element with the matching string.
 func GetElementByTextContent(text string, document *html.Node) (element *html.Node, ok error) {
 	var n *html.Node
 	f = func(node *html.Node) {
@@ -168,7 +168,7 @@ func GetElementByTextContent(text string, document *html.Node) (element *html.No
 	return nil, errors.New(s)
 }
 
-// GetTextNodes method of Document interface returns a slice of text nodes.
+// GetTextNodes returns a slice of text nodes.
 func GetTextNodes(document *html.Node) []*html.Node {
 	n := []*html.Node{}
 	f = func(node *html.Node) {
