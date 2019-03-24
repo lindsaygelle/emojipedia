@@ -21,12 +21,11 @@ func GetBody(document *html.Node) (body *html.Node, ok error) {
 }
 
 // GetElementByClassName returns the first element that contains the given class name.
-func GetElementByClassName(class string, document *html.Node) (element *html.Node, ok error) {
-	var n *html.Node
+func GetElementByClassName(class string, document *html.Node) (n *html.Node, ok error) {
 	f = func(node *html.Node) {
 		if node.Type == html.ElementNode {
 			for _, attr := range node.Attr {
-				if attr.Key == "class" {
+				if strings.ToLower(attr.Key) == "class" {
 					for _, cls := range strings.Split(attr.Val, " ") {
 						if cls == class {
 							n = node
@@ -53,12 +52,11 @@ func GetElementByClassName(class string, document *html.Node) (element *html.Nod
 }
 
 // GetElementsByClassName returns a slice of all child elements which have all of the given class names.
-func GetElementsByClassName(class string, document *html.Node) []*html.Node {
-	n := []*html.Node{}
+func GetElementsByClassName(class string, document *html.Node) (n []*html.Node) {
 	f = func(node *html.Node) {
 		if node.Type == html.ElementNode {
 			for _, attr := range node.Attr {
-				if attr.Key == "class" {
+				if strings.ToLower(attr.Key) == "class" {
 					for _, cls := range strings.Split(attr.Val, " ") {
 						if cls == class {
 							n = append(n, node)
@@ -69,10 +67,10 @@ func GetElementsByClassName(class string, document *html.Node) []*html.Node {
 				}
 			}
 		}
-		if n == nil && node.FirstChild != nil {
+		if node.FirstChild != nil {
 			f(node.FirstChild)
 		}
-		if n == nil && node.NextSibling != nil {
+		if node.NextSibling != nil {
 			f(node.NextSibling)
 		}
 	}
@@ -80,12 +78,11 @@ func GetElementsByClassName(class string, document *html.Node) []*html.Node {
 }
 
 // GetElementByID returns an Element struct representing the element whose id property matches the specified string.
-func GetElementByID(id string, document *html.Node) (element *html.Node, ok error) {
-	var n *html.Node
+func GetElementByID(id string, document *html.Node) (n *html.Node, ok error) {
 	f = func(node *html.Node) {
 		if node.Type == html.ElementNode {
 			for _, attr := range node.Attr {
-				if attr.Key == "id" && attr.Val == id {
+				if strings.ToLower(attr.Key) == "id" && attr.Val == id {
 					n = node
 				}
 				break
@@ -107,10 +104,9 @@ func GetElementByID(id string, document *html.Node) (element *html.Node, ok erro
 }
 
 // GetElementByTagName returns the first element with the given tag name.
-func GetElementByTagName(tag string, document *html.Node) (element *html.Node, ok error) {
-	var n *html.Node
+func GetElementByTagName(tag string, document *html.Node) (n *html.Node, ok error) {
 	f = func(node *html.Node) {
-		if node.Type == html.ElementNode && node.Data == tag {
+		if node.Type == html.ElementNode && strings.ToLower(node.Data) == strings.ToLower(tag) {
 			n = node
 		}
 		if n == nil && node.FirstChild != nil {
@@ -129,16 +125,15 @@ func GetElementByTagName(tag string, document *html.Node) (element *html.Node, o
 }
 
 // GetElementsByTagName returns a slice of elements with the given tag name.
-func GetElementsByTagName(tag string, document *html.Node) []*html.Node {
-	n := []*html.Node{}
+func GetElementsByTagName(tag string, document *html.Node) (n []*html.Node) {
 	f = func(node *html.Node) {
-		if node.Type == html.ElementNode && node.Data == tag {
+		if node.Type == html.ElementNode && strings.ToLower(node.Data) == strings.ToLower(tag) {
 			n = append(n, node)
 		}
-		if n == nil && node.FirstChild != nil {
+		if node.FirstChild != nil {
 			f(node.FirstChild)
 		}
-		if n == nil && node.NextSibling != nil {
+		if node.NextSibling != nil {
 			f(node.NextSibling)
 		}
 	}
@@ -147,8 +142,7 @@ func GetElementsByTagName(tag string, document *html.Node) []*html.Node {
 }
 
 // GetElementByTextContent returns a text node element with the matching string.
-func GetElementByTextContent(text string, document *html.Node) (element *html.Node, ok error) {
-	var n *html.Node
+func GetElementByTextContent(text string, document *html.Node) (n *html.Node, ok error) {
 	f = func(node *html.Node) {
 		if node.Type == html.TextNode && node.Data == text {
 			n = node
@@ -169,8 +163,7 @@ func GetElementByTextContent(text string, document *html.Node) (element *html.No
 }
 
 // GetTextNodes returns a slice of text nodes.
-func GetTextNodes(document *html.Node) []*html.Node {
-	n := []*html.Node{}
+func GetTextNodes(document *html.Node) (n []*html.Node) {
 	f = func(node *html.Node) {
 		if node.Type == html.TextNode {
 			n = append(n, node)
@@ -187,7 +180,7 @@ func GetTextNodes(document *html.Node) []*html.Node {
 }
 
 // Parse parses HTML GET response document to HTML.
-func Parse(response *req.Resp) (element *html.Node, ok error) {
+func Parse(response *req.Resp) (n *html.Node, ok error) {
 	return html.Parse(strings.NewReader(response.String()))
 }
 

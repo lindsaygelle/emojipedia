@@ -7,5 +7,5 @@ import (
 )
 
 func Test(t *testing.T) {
-	emojipedia.Get()
+	emojipedia.Get("https://emojipedia.org")
 }
