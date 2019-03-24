@@ -7,5 +7,15 @@ import (
 )
 
 func Test(t *testing.T) {
-	emojipedia.Get("https://emojipedia.org")
+	page, ok := emojipedia.GetPage(emojipedia.URL)
+
+	if ok == nil {
+		if categories, ok := emojipedia.GetCategories(page); ok == nil {
+
+			for _, category := range categories {
+				emojipedia.GetCategoryPage(category)
+				break
+			}
+		}
+	}
 }
