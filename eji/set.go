@@ -14,3 +14,11 @@ func (set *Set) Has(key string) bool {
 	_, ok := (*set)[key]
 	return ok
 }
+
+func (set *Set) Remove(key string) bool {
+	if _, ok := (*set)[key]; ok {
+		delete(*set, key)
+		return true
+	}
+	return false
+}

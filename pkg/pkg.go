@@ -75,7 +75,7 @@ func collect(document *goquery.Document) (content map[string]interface{}, err er
 		if s, ok := subcategories[subcategory]; ok {
 			subcategories[subcategory] = append(s, emoji)
 		}
-		fmt.Println(emoji.Number, emoji.Name, emoji.Sample)
+		fmt.Println(emoji.Number, emoji.Name, emoji.Unicode)
 	})
 	return content, err
 }
