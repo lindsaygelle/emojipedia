@@ -1,7 +1,7 @@
 package pkg
 
 import (
-	"fmt"
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -14,22 +14,20 @@ const url string = "https://www.unicode.org/emoji/charts/emoji-list.html"
 
 var replacer *strings.Replacer = strings.NewReplacer(":", "", ",", "", "⊛", "", "“", "", "”", "")
 
-var categories map[string][]*eji.Emoji = map[string][]*eji.Emoji{}
+var categories *eji.Set = &eji.Set{}
 
-var subcategories map[string][]*eji.Emoji = map[string][]*eji.Emoji{}
+var subcategories *eji.Set = &eji.Set{}
 
-func collect(document *goquery.Document) (content map[string]interface{}, err error) {
+func collect(document *goquery.Document) (*eji.Set, *eji.Set, error) {
 	var category, subcategory string
 	document.Find("tr").Each(func(i int, selection *goquery.Selection) {
 		var unicodes string
 		var columns []string
 		selection.Find("th.bighead").Each(func(j int, s *goquery.Selection) {
 			category = s.Text()
-			categories[category] = []*eji.Emoji{}
 		})
 		selection.Find("th.mediumhead").Each(func(j int, s *goquery.Selection) {
 			subcategory = s.Text()
-			subcategories[subcategory] = []*eji.Emoji{}
 		})
 		selection.Find("td").Each(func(j int, s *goquery.Selection) {
 			columns = append(columns, s.Text())
@@ -69,33 +67,32 @@ func collect(document *goquery.Document) (content map[string]interface{}, err er
 			Sample:      sample,
 			SubCategory: subcategory,
 			Unicode:     unicodes}
-		if s, ok := categories[category]; ok {
-			categories[category] = append(s, emoji)
-		}
-		if s, ok := subcategories[subcategory]; ok {
-			subcategories[subcategory] = append(s, emoji)
-		}
-		fmt.Println(emoji.Number, emoji.Name, emoji.Unicode)
+		categories.Add(category, emoji)
+		subcategories.Add(subcategory, emoji)
 	})
-	return content, err
+	if len(*categories) != 0 && len(*subcategories) != 0 {
+		return categories, subcategories, nil
+	}
+	return nil, nil, errors.New("unable to parse content")
+
 }
 
-func fetch() (content map[string]interface{}, err error) {
+func fetch() (*eji.Set, *eji.Set, error) {
 	res, err := http.Get(url)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		return nil, err
+		return nil, nil, err
 	}
 	document, err := goquery.NewDocumentFromResponse(res)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	return collect(document)
 }
 
-func Get() (map[string]interface{}, error) {
+func Get() (*eji.Set, *eji.Set, error) {
 	return fetch()
 }
