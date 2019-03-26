@@ -7,33 +7,29 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gellel/emojipedia/eji"
 )
-
-type Emoji struct {
-	Category    string
-	Code        string
-	Keywords    []string
-	Name        string
-	Number      int
-	Sample      string
-	SubCategory string
-	Unicode     string
-}
 
 const url string = "https://www.unicode.org/emoji/charts/emoji-list.html"
 
 var replacer *strings.Replacer = strings.NewReplacer(":", "", ",", "", "⊛", "", "“", "", "”", "")
 
-func collect(document *goquery.Document) (content map[string]string, err error) {
+var categories map[string][]*eji.Emoji = map[string][]*eji.Emoji{}
+
+var subcategories map[string][]*eji.Emoji = map[string][]*eji.Emoji{}
+
+func collect(document *goquery.Document) (content map[string]interface{}, err error) {
 	var category, subcategory string
 	document.Find("tr").Each(func(i int, selection *goquery.Selection) {
 		var unicodes string
 		var columns []string
 		selection.Find("th.bighead").Each(func(j int, s *goquery.Selection) {
 			category = s.Text()
+			categories[category] = []*eji.Emoji{}
 		})
 		selection.Find("th.mediumhead").Each(func(j int, s *goquery.Selection) {
 			subcategory = s.Text()
+			subcategories[subcategory] = []*eji.Emoji{}
 		})
 		selection.Find("td").Each(func(j int, s *goquery.Selection) {
 			columns = append(columns, s.Text())
@@ -57,14 +53,14 @@ func collect(document *goquery.Document) (content map[string]string, err error) 
 		}
 		unicodes = unicodes + strings.Replace(unicodes, "U", "\\U", 1)
 		name, columns := columns[0], columns[1:]
-		name = strings.Replace(strings.TrimSpace(name), " ", "_", -1)
+		name = strings.Replace(strings.TrimSpace(replacer.Replace(name)), " ", "_", -1)
 		keywords, columns := columns[0], columns[1:]
 		keywords = strings.Replace(keywords, "|", "", -1)
 		keys := strings.Fields(keywords)
 		if len(columns) != 0 {
 			return
 		}
-		emoji := &Emoji{
+		emoji := &eji.Emoji{
 			Category:    category,
 			Code:        codes,
 			Keywords:    keys,
@@ -73,15 +69,18 @@ func collect(document *goquery.Document) (content map[string]string, err error) 
 			Sample:      sample,
 			SubCategory: subcategory,
 			Unicode:     unicodes}
-
-		fmt.Println("name:", emoji.Name, "unicode:", emoji.Unicode)
-		fmt.Println("keywords:", emoji.Keywords)
-		fmt.Println()
+		if s, ok := categories[category]; ok {
+			categories[category] = append(s, emoji)
+		}
+		if s, ok := subcategories[subcategory]; ok {
+			subcategories[subcategory] = append(s, emoji)
+		}
+		fmt.Println(emoji.Number, emoji.Name, emoji.Sample)
 	})
 	return content, err
 }
 
-func fetch() (content map[string]string, err error) {
+func fetch() (content map[string]interface{}, err error) {
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -97,6 +96,6 @@ func fetch() (content map[string]string, err error) {
 	return collect(document)
 }
 
-func Get() (map[string]string, error) {
+func Get() (map[string]interface{}, error) {
 	return fetch()
 }
