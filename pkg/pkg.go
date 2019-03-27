@@ -12,21 +12,20 @@ import (
 	"github.com/gellel/emojipedia/eji"
 )
 
-const url string = "https://www.unicode.org/emoji/charts/emoji-list.html"
+const (
+	url                string = "https://www.unicode.org/emoji/charts/emoji-list.html"
+	categories_name    string = "emoji-categories"
+	subcategories_name string = "emoji-subcategories"
+	list_name          string = "emoji-list"
+)
 
-const categories_name string = "emoji-categories.json"
-
-const subcategories_name string = "emoji-subcategories.json"
-
-const list_name string = "emoji-list.json"
-
-var replacer *strings.Replacer = strings.NewReplacer(".", "", ":", "", ",", "", "⊛", "", "“", "", "”", "")
-
-var categories *eji.Set = &eji.Set{}
-
-var subcategories *eji.Set = &eji.Set{}
-
-var emojis *eji.Table = &eji.Table{}
+var (
+	replacer      *strings.Replacer = strings.NewReplacer(".", "", ":", "", ",", "", "⊛", "", "“", "", "”", "")
+	categories    *eji.Set          = &eji.Set{}
+	subcategories *eji.Set          = &eji.Set{}
+	emojis        *eji.Map          = &eji.Map{}
+	files []string = []string{categories_name, subcategories_name, list_name}
+)
 
 func collect(document *goquery.Document) (*eji.Pkg, error) {
 	var category, subcategory string
@@ -83,10 +82,7 @@ func collect(document *goquery.Document) (*eji.Pkg, error) {
 		emojis.Add(emoji.Name, emoji)
 	})
 	if len(*categories) != 0 && len(*subcategories) != 0 {
-		return &eji.Pkg{
-			Main:  categories,
-			Sub:   subcategories,
-			Table: emojis}, nil
+		return &eji.Pkg{Main: categories, Sub: subcategories, Emoji: emojis}, nil
 	}
 	return nil, errors.New("unable to parse content")
 }
@@ -108,20 +104,21 @@ func fetch() (*eji.Pkg, error) {
 }
 
 func Get() error {
-	if store.Exists(categories_name) && store.Exists(subcategories_name) && store.Exists(list_name) {
+	err := store.Has(files...)
+	if err == nil {
 		return nil
 	}
 	pkg, err := fetch()
 	if err != nil {
 		return err
 	}
-	if err := store.Store("emoji-categories.json", pkg.Main); err != nil {
+	if _, err := store.Save(categories_name, pkg.Main); err != nil {
 		return err
 	}
-	if err := store.Store("emoji-subcategories.json", pkg.Sub); err != nil {
+	if _, err := store.Save(subcategories_name, pkg.Sub); err != nil {
 		return err
 	}
-	if err := store.Store("emoji-list.json", pkg.Table); err != nil {
+	if _, err := store.Save(list_name, pkg.Emoji); err != nil {
 		return err
 	}
 	return nil
