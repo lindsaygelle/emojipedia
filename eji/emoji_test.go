@@ -2,13 +2,12 @@ package eji_test
 
 import (
 	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/gellel/emojipedia/eji"
 )
 
-func Test(t *testing.T) {
+func TestEmoji(t *testing.T) {
 	emoji := eji.Emoji{
 		Category:    "Animals & Nature",
 		Code:        "U+1f417",
@@ -19,5 +18,5 @@ func Test(t *testing.T) {
 		SubCategory: "animal-mammal",
 		Unicode:     "\\U0001f417"}
 
-	fmt.Println(strings.Replace(emoji.Unicode, "\\", "", 1))
+	fmt.Println(emoji.Sample)
 }

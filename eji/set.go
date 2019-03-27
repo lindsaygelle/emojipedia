@@ -1,13 +1,21 @@
 package eji
 
-type Set map[string][]*Emoji
+type Set map[string][]string
 
-func (set *Set) Add(key string, emoji *Emoji) {
+func (set *Set) Add(key string, name string) *Set {
 	if s, ok := (*set)[key]; ok {
-		(*set)[key] = append(s, emoji)
+		(*set)[key] = append(s, name)
 	} else {
-		(*set)[key] = []*Emoji{emoji}
+		(*set)[key] = []string{name}
 	}
+	return set
+}
+
+func (set *Set) Get(key string) []string {
+	if emojis, ok := (*set)[key]; ok {
+		return emojis
+	}
+	return []string{}
 }
 
 func (set *Set) Has(key string) bool {
@@ -16,9 +24,9 @@ func (set *Set) Has(key string) bool {
 }
 
 func (set *Set) Remove(key string) bool {
-	if _, ok := (*set)[key]; ok {
+	_, ok := (*set)[key]
+	if ok {
 		delete(*set, key)
-		return true
 	}
-	return false
+	return ok
 }
