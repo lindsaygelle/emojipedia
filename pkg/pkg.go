@@ -6,11 +6,19 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gellel/emojipedia/store"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gellel/emojipedia/eji"
 )
 
 const url string = "https://www.unicode.org/emoji/charts/emoji-list.html"
+
+const categories_name string = "emoji-categories.json"
+
+const subcategories_name string = "emoji-subcategories.json"
+
+const list_name string = "emoji-list.json"
 
 var replacer *strings.Replacer = strings.NewReplacer(".", "", ":", "", ",", "", "⊛", "", "“", "", "”", "")
 
@@ -99,6 +107,22 @@ func fetch() (*eji.Pkg, error) {
 	return collect(document)
 }
 
-func Get() (*eji.Pkg, error) {
-	return fetch()
+func Get() error {
+	if store.Exists(categories_name) && store.Exists(subcategories_name) && store.Exists(list_name) {
+		return nil
+	}
+	pkg, err := fetch()
+	if err != nil {
+		return err
+	}
+	if err := store.Store("emoji-categories.json", pkg.Main); err != nil {
+		return err
+	}
+	if err := store.Store("emoji-subcategories.json", pkg.Sub); err != nil {
+		return err
+	}
+	if err := store.Store("emoji-list.json", pkg.Table); err != nil {
+		return err
+	}
+	return nil
 }

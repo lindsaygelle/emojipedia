@@ -10,5 +10,7 @@ import (
 )
 
 func Test(t *testing.T) {
-	fmt.Println(store.Set("emoji-categories_test.json", &eji.Set{"test": []string{"test"}}))
+	fmt.Println(store.Store("emoji-categories_test.json", &eji.Set{"test": []string{"test"}}))
+
+	fmt.Println(store.Exists("emoji-categories_test.json"))
 }

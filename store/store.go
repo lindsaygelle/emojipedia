@@ -5,8 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-
-	"github.com/gellel/emojipedia/eji"
 )
 
 func directory() (path string, err error) {
@@ -18,8 +16,19 @@ func directory() (path string, err error) {
 	return path, nil
 }
 
-func Set(name string, set *eji.Set) error {
-	c, err := json.Marshal(set)
+func Exists(name string) bool {
+	dir, err := directory()
+	if err != nil {
+		return false
+	}
+	if _, err := os.Stat(filepath.Join(dir, name)); os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
+
+func Store(name string, i interface{}) error {
+	c, err := json.Marshal(i)
 	if err != nil {
 		return err
 	}
