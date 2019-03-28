@@ -13,18 +13,21 @@ import (
 )
 
 const (
-	url                string = "https://www.unicode.org/emoji/charts/emoji-list.html"
-	categories_name    string = "emoji-categories"
-	subcategories_name string = "emoji-subcategories"
-	list_name          string = "emoji-list"
+	url               string = "https://www.unicode.org/emoji/charts/emoji-list.html"
+	categoriesName    string = "emoji-categories"
+	subcategoriesName string = "emoji-subcategories"
+	listName          string = "emoji-list"
+	wordsName         string = "emoji-keywords"
 )
 
 var (
-	replacer      *strings.Replacer = strings.NewReplacer(".", "", ":", "", ",", "", "⊛", "", "“", "", "”", "")
+	replacements  []string          = []string{".", "", ":", "", ",", "", "⊛", "", "“", "", "”", ""}
+	replacer      *strings.Replacer = strings.NewReplacer(replacements...)
 	categories    *eji.Set          = &eji.Set{}
 	subcategories *eji.Set          = &eji.Set{}
 	emojis        *eji.Map          = &eji.Map{}
-	files []string = []string{categories_name, subcategories_name, list_name}
+	words         *eji.Set          = &eji.Set{}
+	files         []string          = []string{categoriesName, subcategoriesName, listName, wordsName}
 )
 
 func collect(document *goquery.Document) (*eji.Pkg, error) {
@@ -77,12 +80,20 @@ func collect(document *goquery.Document) (*eji.Pkg, error) {
 			Sample:      sample,
 			SubCategory: subcategory,
 			Unicode:     unicodes}
+		for _, v := range emoji.Keywords {
+			words.Add(v, emoji.Name)
+		}
 		categories.Add(category, emoji.Name)
 		subcategories.Add(subcategory, emoji.Name)
 		emojis.Add(emoji.Name, emoji)
 	})
 	if len(*categories) != 0 && len(*subcategories) != 0 {
-		return &eji.Pkg{Main: categories, Sub: subcategories, Emoji: emojis}, nil
+		pkg := &eji.Pkg{
+			Categories:    categories,
+			Subcategories: subcategories,
+			Keywords:      words,
+			Names:         emojis}
+		return pkg, nil
 	}
 	return nil, errors.New("unable to parse content")
 }
@@ -112,13 +123,16 @@ func Get() error {
 	if err != nil {
 		return err
 	}
-	if _, err := store.Save(categories_name, pkg.Main); err != nil {
+	if _, err := store.Save(categoriesName, pkg.Categories); err != nil {
 		return err
 	}
-	if _, err := store.Save(subcategories_name, pkg.Sub); err != nil {
+	if _, err := store.Save(subcategoriesName, pkg.Subcategories); err != nil {
 		return err
 	}
-	if _, err := store.Save(list_name, pkg.Emoji); err != nil {
+	if _, err := store.Save(wordsName, pkg.Keywords); err != nil {
+		return err
+	}
+	if _, err := store.Save(listName, pkg.Names); err != nil {
 		return err
 	}
 	return nil
