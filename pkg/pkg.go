@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 	"strconv"
@@ -133,6 +134,26 @@ func Get() error {
 		return err
 	}
 	if _, err := store.Save(listName, pkg.Names); err != nil {
+		return err
+	}
+	return nil
+}
+
+func Open() error {
+	bytes, err := store.Open(categoriesName)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, &categories)
+	if err != nil {
+		return err
+	}
+	bytes, err = store.Open(subcategoriesName)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, subcategories)
+	if err != nil {
 		return err
 	}
 	return nil

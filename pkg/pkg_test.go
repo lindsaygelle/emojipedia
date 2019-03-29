@@ -11,4 +11,5 @@ func Test(t *testing.T) {
 	if err := pkg.Get(); err != nil {
 		panic(err)
 	}
+	pkg.Open()
 }

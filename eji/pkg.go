@@ -1,7 +1,8 @@
 package eji
 
 type Pkg struct {
-	Main  *Set
-	Sub   *Set
-	Emoji *Map
+	Categories    *Set
+	Subcategories *Set
+	Keywords      *Set
+	Names         *Map
 }
