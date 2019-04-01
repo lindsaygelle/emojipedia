@@ -10,15 +10,6 @@ import (
 	"github.com/gellel/emojipedia/cache"
 )
 
-func TestExists(t *testing.T) {
-	outcome := cache.Exists("cache.go")
-	expects := true
-	if outcome != expects {
-		message := fmt.Sprintf("cache.go %t != %t", outcome, expects)
-		t.Error(message)
-	}
-}
-
 func TestWriteHTML(t *testing.T) {
 	body := "Hello world"
 	response := &http.Response{
@@ -67,7 +58,6 @@ func TestGetJSON(t *testing.T) {
 		t.Error(message)
 	}
 }
-
 func TestRemoveHTML(t *testing.T) {
 	err := cache.Remove("test.html")
 	if err != nil {
@@ -76,7 +66,7 @@ func TestRemoveHTML(t *testing.T) {
 	}
 }
 func TestRemoveJSON(t *testing.T) {
-	err := cache.Remove("test.html")
+	err := cache.Remove("test.json")
 	if err != nil {
 		message := fmt.Sprintf("cache.go error != nil: reason %s", err)
 		t.Error(message)
