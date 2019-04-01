@@ -1,6 +1,6 @@
 package eji
 
-type Pkg struct {
+type Package struct {
 	Categories    *Set
 	Subcategories *Set
 	Keywords      *Set

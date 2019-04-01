@@ -1,6 +1,7 @@
 package pkg_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/gellel/emojipedia/pkg"
@@ -8,8 +9,9 @@ import (
 
 func Test(t *testing.T) {
 
-	if err := pkg.Get(); err != nil {
+	p, err := pkg.Get()
+	if err != nil {
 		panic(err)
 	}
-	pkg.Open()
+	fmt.Println(p)
 }

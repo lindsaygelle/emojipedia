@@ -21,17 +21,29 @@ const (
 	wordsName         string = "emoji-keywords"
 )
 
-var (
-	replacements  []string          = []string{".", "", ":", "", ",", "", "⊛", "", "“", "", "”", ""}
-	replacer      *strings.Replacer = strings.NewReplacer(replacements...)
-	categories    *eji.Set          = &eji.Set{}
-	subcategories *eji.Set          = &eji.Set{}
-	emojis        *eji.Map          = &eji.Map{}
-	words         *eji.Set          = &eji.Set{}
-	files         []string          = []string{categoriesName, subcategoriesName, listName, wordsName}
-)
+var files []string = []string{
+	categoriesName,
+	subcategoriesName,
+	listName,
+	wordsName}
 
-func collect(document *goquery.Document) (*eji.Pkg, error) {
+var replacements []string = []string{
+	".", "",
+	":", "",
+	",", "",
+	"⊛", "",
+	"“", "",
+	"”", ""}
+
+var replacer *strings.Replacer = strings.NewReplacer(replacements...)
+
+var pkg *eji.Package = &eji.Package{
+	Categories:    &eji.Set{},
+	Subcategories: &eji.Set{},
+	Keywords:      &eji.Set{},
+	Names:         &eji.Map{}}
+
+func collect(document *goquery.Document) error {
 	var category, subcategory string
 	document.Find("tr").Each(func(i int, selection *goquery.Selection) {
 		var unicodes string
@@ -82,79 +94,76 @@ func collect(document *goquery.Document) (*eji.Pkg, error) {
 			SubCategory: subcategory,
 			Unicode:     unicodes}
 		for _, v := range emoji.Keywords {
-			words.Add(v, emoji.Name)
+			pkg.Keywords.Add(v, emoji.Name)
 		}
-		categories.Add(category, emoji.Name)
-		subcategories.Add(subcategory, emoji.Name)
-		emojis.Add(emoji.Name, emoji)
+		pkg.Categories.Add(category, emoji.Name)
+		pkg.Subcategories.Add(subcategory, emoji.Name)
+		pkg.Names.Add(emoji.Name, emoji)
 	})
-	if len(*categories) != 0 && len(*subcategories) != 0 {
-		pkg := &eji.Pkg{
-			Categories:    categories,
-			Subcategories: subcategories,
-			Keywords:      words,
-			Names:         emojis}
-		return pkg, nil
+	if len(*pkg.Categories) == 0 || len(*pkg.Subcategories) == 0 || len(*pkg.Names) == 0 {
+		return errors.New("unable to parse content")
 	}
-	return nil, errors.New("unable to parse content")
+	return nil
 }
 
-func fetch() (*eji.Pkg, error) {
+func fetch() error {
 	res, err := http.Get(url)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		return nil, err
+		return err
 	}
 	document, err := goquery.NewDocumentFromResponse(res)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	return collect(document)
 }
 
-func Get() error {
-	err := store.Has(files...)
-	if err == nil {
-		return nil
-	}
-	pkg, err := fetch()
-	if err != nil {
-		return err
-	}
-	if _, err := store.Save(categoriesName, pkg.Categories); err != nil {
-		return err
-	}
-	if _, err := store.Save(subcategoriesName, pkg.Subcategories); err != nil {
-		return err
-	}
-	if _, err := store.Save(wordsName, pkg.Keywords); err != nil {
-		return err
-	}
-	if _, err := store.Save(listName, pkg.Names); err != nil {
-		return err
+func open(m *map[string]interface{}) error {
+	for key, value := range *m {
+		bytes, err := store.Open(key)
+		if err != nil {
+			return err
+		}
+		if err = json.Unmarshal(bytes, value); err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
-func Open() error {
-	bytes, err := store.Open(categoriesName)
-	if err != nil {
-		return err
-	}
-	err = json.Unmarshal(bytes, &categories)
-	if err != nil {
-		return err
-	}
-	bytes, err = store.Open(subcategoriesName)
-	if err != nil {
-		return err
-	}
-	err = json.Unmarshal(bytes, subcategories)
-	if err != nil {
-		return err
+func save(m *map[string]interface{}) error {
+	for key, value := range *m {
+		if _, err := store.Save(key, value); err != nil {
+			return err
+		}
 	}
 	return nil
+}
+
+// Get parses content from unicode.org and converts the HTML data into a set of json data.
+func Get() (*eji.Package, error) {
+
+	m := make(map[string]interface{})
+
+	m[categoriesName] = pkg.Categories
+	m[subcategoriesName] = pkg.Subcategories
+	m[wordsName] = pkg.Keywords
+	m[listName] = pkg.Names
+
+	if err := store.Has(files...); err == nil {
+		if err := open(&m); err == nil {
+			return pkg, nil
+		}
+	}
+	if err := fetch(); err != nil {
+		return nil, err
+	}
+	if err := save(&m); err != nil {
+		return nil, err
+	}
+	return pkg, nil
 }
