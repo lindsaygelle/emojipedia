@@ -11,12 +11,12 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func exists(name string) bool {
+func Exists(name string) bool {
 	_, err := os.Stat(getPath(name))
 	return !os.IsNotExist(err)
 }
 
-func getHTML(name string) (*goquery.Document, error) {
+func GetHTML(name string) (*goquery.Document, error) {
 	file, err := os.Open(getPath(name))
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func getHTML(name string) (*goquery.Document, error) {
 	return doc, nil
 }
 
-func getJSON(name string, i interface{}) (interface{}, error) {
+func GetJSON(name string, i interface{}) (interface{}, error) {
 	file, err := os.Open(getPath(name))
 	if err != nil {
 		panic(err)
@@ -48,10 +48,10 @@ func getPath(name string) string {
 	if err != nil {
 		panic(err)
 	}
-	return filepath.Join(directory, name)
+	return filepath.Join(filepath.Dir(directory), name)
 }
 
-func remove(name string) error {
+func Remove(name string) error {
 	err := os.Remove(getPath(name))
 	if err != nil {
 		return err
@@ -63,7 +63,7 @@ func write(dump []byte, name string) error {
 	return ioutil.WriteFile(getPath(name), dump, 0644)
 }
 
-func writeHTML(name string, response *http.Response) error {
+func WriteHTML(name string, response *http.Response) error {
 	dump, err := httputil.DumpResponse(response, true)
 	if err != nil {
 		return err
@@ -71,7 +71,7 @@ func writeHTML(name string, response *http.Response) error {
 	return write(dump, name)
 }
 
-func writeJSON(name string, i interface{}) error {
+func WriteJSON(name string, i interface{}) error {
 	dump, err := json.Marshal(i)
 	if err != nil {
 		return err

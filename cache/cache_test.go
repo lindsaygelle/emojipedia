@@ -1,4 +1,4 @@
-package cache
+package cache_test
 
 import (
 	"bytes"
@@ -6,15 +6,15 @@ import (
 	"io/ioutil"
 	"net/http"
 	"testing"
+
+	"github.com/gellel/emojipedia/cache"
 )
 
-const document string = "cache.go"
-
 func TestExists(t *testing.T) {
-	outcome := exists(document)
+	outcome := cache.Exists("cache.go")
 	expects := true
 	if outcome != expects {
-		message := fmt.Sprintf("%s %t != %t", document, outcome, expects)
+		message := fmt.Sprintf("cache.go %t != %t", outcome, expects)
 		t.Error(message)
 	}
 }
@@ -31,9 +31,9 @@ func TestWriteHTML(t *testing.T) {
 		ContentLength: int64(len(body)),
 		Header:        make(http.Header, 0),
 	}
-	outcome := writeHTML("test.html", response)
-	if outcome != nil {
-		message := fmt.Sprintf("%s error != nil", document)
+	err := cache.WriteHTML("test.html", response)
+	if err != nil {
+		message := fmt.Sprintf("cache.go error != nil")
 		t.Error(message)
 	}
 }
@@ -42,17 +42,17 @@ func TestWriteJSON(t *testing.T) {
 	content := map[string]interface{}{
 		"a": "test",
 		"b": []string{"a", "b"}}
-	outcome := writeJSON("test.json", content)
-	if outcome != nil {
-		message := fmt.Sprintf("%s error != nil", document)
+	err := cache.WriteJSON("test.json", content)
+	if err != nil {
+		message := fmt.Sprintf("cache.go error != nil: reason %s", err)
 		t.Error(message)
 	}
 }
 
 func TestGetHTML(t *testing.T) {
-	_, outcome := getHTML("test.html")
-	if outcome != nil {
-		message := fmt.Sprintf("%s error != nil: reason %s", document, outcome)
+	_, err := cache.GetHTML("test.html")
+	if err != nil {
+		message := fmt.Sprintf("cache.go error != nil: reason %s", err)
 		t.Error(message)
 	}
 }
@@ -61,24 +61,24 @@ func TestGetJSON(t *testing.T) {
 		a string
 		b []string
 	}{}
-	_, outcome := getJSON("test.json", &anonymous)
-	if outcome != nil {
-		message := fmt.Sprintf("%s error != nil: reason %s", document, outcome)
+	_, err := cache.GetJSON("test.json", &anonymous)
+	if err != nil {
+		message := fmt.Sprintf("cache.go error != nil: reason %s", err)
 		t.Error(message)
 	}
 }
 
 func TestRemoveHTML(t *testing.T) {
-	outcome := remove("test.html")
-	if outcome != nil {
-		message := fmt.Sprintf("%s error != nil: reason %s", document, outcome)
+	err := cache.Remove("test.html")
+	if err != nil {
+		message := fmt.Sprintf("cache.go error != nil: reason %s", err)
 		t.Error(message)
 	}
 }
 func TestRemoveJSON(t *testing.T) {
-	outcome := remove("test.json")
-	if outcome != nil {
-		message := fmt.Sprintf("%s error != nil: reason %s", document, outcome)
+	err := cache.Remove("test.html")
+	if err != nil {
+		message := fmt.Sprintf("cache.go error != nil: reason %s", err)
 		t.Error(message)
 	}
 }
