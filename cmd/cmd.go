@@ -8,85 +8,99 @@ import (
 	"strings"
 )
 
-const veridict string = "args"
+const columnLength int = 79
 
-type program struct {
-	Description string
-	Name        string
-	Routines    []routines
+type Manifest struct {
+	Description string `json:"description"`
+	Name        string `json:"name"`
+	Version     int    `json:"version"`
 }
 
-type routines struct {
-	Args        []string
+type Program struct {
 	Description string
-	Program     interface{}
-	Name        string
+	Usage       string
 }
 
-func getUsageOptionStrings(prefix string, fn []interface{}) {
+func NewProgram(name string, description string, fn []interface{}) *Program {
+	return &Program{
+		Description: makeDescription(description),
+		Usage:       makeUsage(name, fn)}
+}
+
+func NewFromManifest(manifest *Manifest) *Program {
+	return &Program{}
+}
+
+func makeDescription(paragraph string) string {
+	var description string
+	current := 0
+	for _, p := range strings.Split(paragraph, " ") {
+		current = (current + len(p) + 1)
+		description = fmt.Sprintf("%s%s ", description, p)
+		if current >= columnLength {
+			current = 0
+			description = (description + "\n")
+		}
+	}
+	return description
+}
+
+func makeUsage(program string, fn []interface{}) string {
 	paragraphs := [][]string{[]string{}}
+	prefix := strings.Join([]string{(program + ":"), "usage"}, " ")
 	offset := len(prefix)
 	current := 0
-	max := 79
 	for _, f := range fn {
-		name := getFunctionName(f)
-		name = getFunctionOptions(name, reflect.TypeOf(f))
-		current = offset + current + len(name) + 1
-		if current >= max {
+		name := getNameOf(f)
+		option := makeOption(name, reflect.TypeOf(f))
+		current = (offset + current + len(option))
+		if current >= columnLength {
 			current = 0
 			paragraphs = append(paragraphs, []string{})
 		}
-		paragraphs[len(paragraphs)-1] = append(paragraphs[len(paragraphs)-1], name)
+		paragraphs[len(paragraphs)-1] = append(paragraphs[len(paragraphs)-1], option)
 	}
 	first, paragraphs := paragraphs[0], paragraphs[1:]
-	template := fmt.Sprintf("%s [%s ", prefix, strings.Join(first, ","))
+	template := fmt.Sprintf("%s [%s", prefix, strings.Join(first, ","))
 	for _, p := range paragraphs {
-		padding := ""
+		var padding string
 		substring := strings.Join(p, ",")
 		j := 0
 		for j < offset {
-			padding = padding + " "
-			j = j + 1
+			padding = (padding + " ")
+			j = (j + 1)
 		}
-		substring = fmt.Sprintf("\n%s%s", padding, substring)
-		template = template + substring
+		substring = fmt.Sprintf("\n %s%s", padding, substring)
+		template = (template + substring)
 	}
-	template = template + "]"
-	fmt.Println(template)
+	template = (template + "]")
+	return template
 }
 
-func getFunction(name string) string {
-	return fmt.Sprintf("[%s [...%s]]", name, veridict)
+func makeOption(name string, t reflect.Type) string {
+	var substring string
+	switch t.IsVariadic() {
+	case true:
+		substring = fmt.Sprintf("[%s [...args]]", name)
+	default:
+		arguments := []string{}
+		for i := 0; i < t.NumIn(); i = (i + 1) {
+			option := (t.In(i).Kind().String())
+			arguments = append(arguments, option)
+		}
+		options := strings.Join(arguments, ",")
+		if len(options) != 0 {
+			options = fmt.Sprintf("=[%s]", options)
+		}
+		substring = fmt.Sprintf("[--%s%s]", name, options)
+	}
+	return substring
 }
 
-func getFunctionOptions(name string, t reflect.Type) string {
-	arguments := []string{}
-	for i := 0; i < t.NumIn(); i = (i + 1) {
-		option := (t.In(i).Kind().String())
-		arguments = append(arguments, option)
-	}
-	options := strings.Join(arguments, ",")
-	if len(options) != 0 {
-		options = fmt.Sprintf("=[%s]", options)
-	}
-	return fmt.Sprintf("[--%s%s]", name, options)
-}
-
-func getFunctionName(fn interface{}) string {
-	pointer := (reflect.ValueOf(fn).Pointer())
+func getNameOf(i interface{}) string {
+	pointer := (reflect.ValueOf(i).Pointer())
 	namespace := (runtime.FuncForPC(pointer).Name())
 	name := filepath.Base(namespace)
-	return name[(strings.Index(filepath.Base(namespace), ".") + 1):]
-}
-
-func get(property string) {}
-
-func search(category string) {}
-
-func version() {}
-
-func help() {}
-
-func Get() {
-	getUsageOptionStrings("usage: emojipedia ", []interface{}{version, help, get, search})
+	name = name[(strings.Index(filepath.Base(namespace), ".") + 1):]
+	return strings.ToLower(name)
 }
