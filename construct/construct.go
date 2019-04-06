@@ -56,8 +56,17 @@ func NewArgument(i int, pointer uintptr, parameter string, t reflect.Type) *Argu
 		Varadict:  t.IsVariadic()}
 }
 
+func NewDescription(sentence string, functions []*Function) string {
+
+	for _, word := range strings.Split(sentence, " ") {
+		fmt.Println(word)
+	}
+
+	return ""
+}
+
 func NewFunction(fn interface{}) *Function {
-	args := []*Argument{}
+	arguments := []*Argument{}
 	t := reflect.TypeOf(fn)
 	value := reflect.ValueOf(fn)
 	pointer := value.Pointer()
@@ -81,10 +90,10 @@ func NewFunction(fn interface{}) *Function {
 	}
 	parameters := strings.Split(matches[0][1], ",")
 	for i := 0; i < reflect.TypeOf(fn).NumIn(); i++ {
-		args = append(args, NewArgument(i, pointer, parameters[i], t))
+		arguments = append(arguments, NewArgument(i, pointer, parameters[i], t))
 	}
 	return &Function{
-		Arguments: args,
+		Arguments: arguments,
 		Line:      line,
 		Path:      file,
 		Pointer:   pointer,
