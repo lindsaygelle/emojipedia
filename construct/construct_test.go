@@ -12,19 +12,17 @@ func B(b int, c float32, d []string) {}
 
 func Test(t *testing.T) {
 
-	a := construct.NewFunc(A)
+	a := construct.NewFunction(A)
 
-	b := construct.NewFunc(B)
-
-	fmt.Println(b.Usage())
+	b := construct.NewFunction(B)
 
 	if a.Name != "A" {
 		t.Error(fmt.Sprintf("construct.go a.Name != A"))
 	}
-	if len(a.Args) != 1 {
-		t.Error(fmt.Sprintf("construct.go len(a.Args) != 1"))
+	if len(a.Arguments) != 1 {
+		t.Error(fmt.Sprintf("construct.go len(a.Arguments) != 1"))
 	}
-	for _, arg := range a.Args {
+	for _, arg := range a.Arguments {
 		if arg.Varadict != true {
 			t.Errorf(fmt.Sprintf("construct.go %s.Varadict != true", arg.Name))
 		}
@@ -32,11 +30,10 @@ func Test(t *testing.T) {
 	if b.Name != "B" {
 		t.Error(fmt.Sprintf("construct.go a.Name != B"))
 	}
-	if len(b.Args) != 3 {
-		t.Error(fmt.Sprintf("construct.go len(b.Args) != 2"))
+	if len(b.Arguments) != 3 {
+		t.Error(fmt.Sprintf("construct.go len(b.Arguments) != 2"))
 	}
-	for i, arg := range b.Args {
-		fmt.Println(arg.Usage())
+	for i, arg := range b.Arguments {
 		if i != arg.Position {
 			t.Errorf(fmt.Sprintf("construct.go %s.Position != %v", arg.Name, arg.Position))
 		}
@@ -54,5 +51,4 @@ func Test(t *testing.T) {
 
 	p := construct.NewProgram("hello", "world", []interface{}{A, B})
 	fmt.Println(p.Usage())
-	//construct.NewHelpString(construct.NewProg("name", "desc", []interface{}{A, B}))
 }

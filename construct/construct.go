@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-type Arg struct {
+type Argument struct {
 	Kind      reflect.Kind
 	Parameter string
 	Pointer   uintptr
@@ -22,22 +22,22 @@ type Arg struct {
 	Varadict  bool
 }
 
-type Func struct {
-	Args     []*Arg
-	Line     int
-	Path     string
-	Pointer  uintptr
-	Name     string
-	Varadict bool
+type Function struct {
+	Arguments []*Argument
+	Line      int
+	Path      string
+	Pointer   uintptr
+	Name      string
+	Varadict  bool
 }
 
 type Program struct {
 	Description string
-	Funcs       []*Func
+	Functions   []*Function
 	Name        string
 }
 
-func NewArg(i int, pointer uintptr, parameter string, t reflect.Type) *Arg {
+func NewArgument(i int, pointer uintptr, parameter string, t reflect.Type) *Argument {
 	properties := t.In(i)
 	value := strings.NewReplacer("[", "", "]", "").Replace(properties.String())
 	slice := false
@@ -45,7 +45,7 @@ func NewArg(i int, pointer uintptr, parameter string, t reflect.Type) *Arg {
 		slice = true
 	}
 	substrings := strings.Split(strings.TrimSpace(parameter), " ")
-	arg := Arg{
+	return &Argument{
 		Kind:      properties.Kind(),
 		Parameter: parameter,
 		Pointer:   pointer,
@@ -54,11 +54,10 @@ func NewArg(i int, pointer uintptr, parameter string, t reflect.Type) *Arg {
 		Slice:     slice,
 		Value:     value,
 		Varadict:  t.IsVariadic()}
-	return &arg
 }
 
-func NewFunc(fn interface{}) *Func {
-	args := []*Arg{}
+func NewFunction(fn interface{}) *Function {
+	args := []*Argument{}
 	t := reflect.TypeOf(fn)
 	value := reflect.ValueOf(fn)
 	pointer := value.Pointer()
@@ -82,57 +81,50 @@ func NewFunc(fn interface{}) *Func {
 	}
 	parameters := strings.Split(matches[0][1], ",")
 	for i := 0; i < reflect.TypeOf(fn).NumIn(); i++ {
-		args = append(args, NewArg(i, pointer, parameters[i], t))
+		args = append(args, NewArgument(i, pointer, parameters[i], t))
 	}
-	f := Func{
-		Args:     args,
-		Line:     line,
-		Path:     file,
-		Pointer:  pointer,
-		Name:     name,
-		Varadict: t.IsVariadic()}
-	return &f
+	return &Function{
+		Arguments: args,
+		Line:      line,
+		Path:      file,
+		Pointer:   pointer,
+		Name:      name,
+		Varadict:  t.IsVariadic()}
 }
 
 func NewProgram(name string, description string, functions []interface{}) *Program {
-	f := []*Func{}
+	f := []*Function{}
 	for _, fn := range functions {
-		f = append(f, NewFunc(fn))
+		f = append(f, NewFunction(fn))
 	}
 	return &Program{
 		Description: description,
-		Funcs:       f,
+		Functions:   f,
 		Name:        name}
 }
 
-func (a *Arg) Usage() string {
-	var substring string
-	switch a.Slice {
-	case true:
-		switch a.Varadict {
-		case true:
-			substring = fmt.Sprintf("%s [...%s]", a.Name, a.Value)
-		default:
-			substring = fmt.Sprintf("%s=[...%s]", a.Name, a.Value)
+func (argument *Argument) Usage() string {
+	if argument.Slice {
+		if argument.Varadict {
+			return fmt.Sprintf("%s [...%s]", argument.Name, argument.Value)
 		}
-	default:
-		substring = fmt.Sprintf("%s=%s", a.Name, a.Value)
+		return fmt.Sprintf("%s=[...%s]", argument.Name, argument.Value)
 	}
-	return substring
+	return fmt.Sprintf("%s=%s", argument.Name, argument.Value)
 }
 
-func (f *Func) Usage() string {
+func (function *Function) Usage() string {
 	substrings := []string{}
-	for _, arg := range f.Args {
+	for _, arg := range function.Arguments {
 		substrings = append(substrings, arg.Usage())
 	}
 	usage := strings.Join(substrings, ", ")
-	return fmt.Sprintf("%s [%s]", f.Name, usage)
+	return fmt.Sprintf("%s [%s]", function.Name, usage)
 }
 
 func (program *Program) Usage() string {
 	substrings := []string{}
-	for _, f := range program.Funcs {
+	for _, f := range program.Functions {
 		substrings = append(substrings, f.Usage())
 	}
 	return fmt.Sprintf("[%s]", strings.Join(substrings, " | "))
