@@ -105,18 +105,35 @@ func NewProgram(name string, description string, functions []interface{}) *Progr
 		Name:        name}
 }
 
-func (arg *Arg) Usage() string {
-	var str string
-	switch arg.Slice {
+func (a *Arg) Usage() string {
+	var substring string
+	switch a.Slice {
 	case true:
-		switch arg.Varadict {
+		switch a.Varadict {
 		case true:
-			str = fmt.Sprintf("%s [...%s]", arg.Name, arg.Value)
+			substring = fmt.Sprintf("%s [...%s]", a.Name, a.Value)
 		default:
-			str = fmt.Sprintf("%s=[...%s]", arg.Name, arg.Value)
+			substring = fmt.Sprintf("%s=[...%s]", a.Name, a.Value)
 		}
 	default:
-		str = fmt.Sprintf("%s=%s", arg.Name, arg.Value)
+		substring = fmt.Sprintf("%s=%s", a.Name, a.Value)
 	}
-	return str
+	return substring
+}
+
+func (f *Func) Usage() string {
+	substrings := []string{}
+	for _, arg := range f.Args {
+		substrings = append(substrings, arg.Usage())
+	}
+	usage := strings.Join(substrings, ", ")
+	return fmt.Sprintf("%s [%s]", f.Name, usage)
+}
+
+func (program *Program) Usage() string {
+	substrings := []string{}
+	for _, f := range program.Funcs {
+		substrings = append(substrings, f.Usage())
+	}
+	return fmt.Sprintf("[%s]", strings.Join(substrings, " | "))
 }

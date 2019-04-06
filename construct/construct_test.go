@@ -16,6 +16,8 @@ func Test(t *testing.T) {
 
 	b := construct.NewFunc(B)
 
+	fmt.Println(b.Usage())
+
 	if a.Name != "A" {
 		t.Error(fmt.Sprintf("construct.go a.Name != A"))
 	}
@@ -50,5 +52,7 @@ func Test(t *testing.T) {
 		}
 	}
 
+	p := construct.NewProgram("hello", "world", []interface{}{A, B})
+	fmt.Println(p.Usage())
 	//construct.NewHelpString(construct.NewProg("name", "desc", []interface{}{A, B}))
 }
