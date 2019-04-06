@@ -7,8 +7,8 @@ import (
 	"github.com/gellel/emojipedia/construct"
 )
 
-func A(a ...string)      {}
-func B(b int, c float32) {}
+func A(a ...string)                  {}
+func B(b int, c float32, d []string) {}
 
 func Test(t *testing.T) {
 
@@ -27,18 +27,17 @@ func Test(t *testing.T) {
 			t.Errorf(fmt.Sprintf("construct.go %s.Varadict != true", arg.Name))
 		}
 	}
-
 	if b.Name != "B" {
 		t.Error(fmt.Sprintf("construct.go a.Name != B"))
 	}
-	if len(b.Args) != 2 {
+	if len(b.Args) != 3 {
 		t.Error(fmt.Sprintf("construct.go len(b.Args) != 2"))
 	}
 	for i, arg := range b.Args {
+		fmt.Println(arg.Usage())
 		if i != arg.Position {
 			t.Errorf(fmt.Sprintf("construct.go %s.Position != %v", arg.Name, arg.Position))
 		}
-		fmt.Println(arg.String())
 		switch i {
 		case 0:
 			if arg.Value != "int" {
@@ -50,4 +49,6 @@ func Test(t *testing.T) {
 			}
 		}
 	}
+
+	//construct.NewHelpString(construct.NewProg("name", "desc", []interface{}{A, B}))
 }

@@ -17,33 +17,42 @@ type Arg struct {
 	Pointer   uintptr
 	Position  int
 	Name      string
+	Slice     bool
 	Value     string
 	Varadict  bool
 }
 
 type Func struct {
-	Args    []*Arg
-	Line    int
-	Path    string
-	Pointer uintptr
-	Name    string
+	Args     []*Arg
+	Line     int
+	Path     string
+	Pointer  uintptr
+	Name     string
+	Varadict bool
 }
 
-type Prog struct {
+type Program struct {
 	Description string
 	Funcs       []*Func
 	Name        string
 }
 
 func NewArg(i int, pointer uintptr, parameter string, t reflect.Type) *Arg {
+	properties := t.In(i)
+	value := strings.NewReplacer("[", "", "]", "").Replace(properties.String())
+	slice := false
+	if t.In(i).Kind().String() == "slice" {
+		slice = true
+	}
 	substrings := strings.Split(strings.TrimSpace(parameter), " ")
 	arg := Arg{
-		Kind:      t.In(i).Kind(),
+		Kind:      properties.Kind(),
 		Parameter: parameter,
 		Pointer:   pointer,
 		Position:  i,
 		Name:      substrings[0],
-		Value:     t.In(i).Kind().String(),
+		Slice:     slice,
+		Value:     value,
 		Varadict:  t.IsVariadic()}
 	return &arg
 }
@@ -76,37 +85,38 @@ func NewFunc(fn interface{}) *Func {
 		args = append(args, NewArg(i, pointer, parameters[i], t))
 	}
 	f := Func{
-		Args:    args,
-		Line:    line,
-		Path:    file,
-		Pointer: pointer,
-		Name:    name}
+		Args:     args,
+		Line:     line,
+		Path:     file,
+		Pointer:  pointer,
+		Name:     name,
+		Varadict: t.IsVariadic()}
 	return &f
 }
 
-func NewProg(name string, description string, functions []interface{}) *Prog {
+func NewProgram(name string, description string, functions []interface{}) *Program {
 	f := []*Func{}
 	for _, fn := range functions {
 		f = append(f, NewFunc(fn))
 	}
-	return &Prog{
+	return &Program{
 		Description: description,
 		Funcs:       f,
 		Name:        name}
 }
 
-func NewVaradictString(arg *Arg) string {
-	return fmt.Sprintf("[%s [...args]", arg.Name)
-}
-
-func NewFuncString(arg *Arg) string {
-	return fmt.Sprintf("[%s=%s]", arg.Name, arg.Value)
-}
-
-func (arg *Arg) String() string {
-	return fmt.Sprintf("('%s') indexOf: %v. typeOf: %s", arg.Name, arg.Position, arg.Value)
-}
-
-func (f *Func) String() string {
-	return fmt.Sprintf("('%s') arguments: %v", f.Name, len(f.Args))
+func (arg *Arg) Usage() string {
+	var str string
+	switch arg.Slice {
+	case true:
+		switch arg.Varadict {
+		case true:
+			str = fmt.Sprintf("%s [...%s]", arg.Name, arg.Value)
+		default:
+			str = fmt.Sprintf("%s=[...%s]", arg.Name, arg.Value)
+		}
+	default:
+		str = fmt.Sprintf("%s=%s", arg.Name, arg.Value)
+	}
+	return str
 }
