@@ -102,3 +102,11 @@ func NewVaradictString(arg *Arg) string {
 func NewFuncString(arg *Arg) string {
 	return fmt.Sprintf("[%s=%s]", arg.Name, arg.Value)
 }
+
+func (arg *Arg) String() string {
+	return fmt.Sprintf("('%s') indexOf: %v. typeOf: %s", arg.Name, arg.Position, arg.Value)
+}
+
+func (f *Func) String() string {
+	return fmt.Sprintf("('%s') arguments: %v", f.Name, len(f.Args))
+}

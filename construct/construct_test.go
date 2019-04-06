@@ -14,6 +14,8 @@ func Test(t *testing.T) {
 
 	a := construct.NewFunc(A)
 
+	b := construct.NewFunc(B)
+
 	if a.Name != "A" {
 		t.Error(fmt.Sprintf("construct.go a.Name != A"))
 	}
@@ -26,10 +28,6 @@ func Test(t *testing.T) {
 		}
 	}
 
-	fmt.Println(construct.NewVaradictString(a.Args[0]))
-
-	b := construct.NewFunc(B)
-
 	if b.Name != "B" {
 		t.Error(fmt.Sprintf("construct.go a.Name != B"))
 	}
@@ -40,7 +38,7 @@ func Test(t *testing.T) {
 		if i != arg.Position {
 			t.Errorf(fmt.Sprintf("construct.go %s.Position != %v", arg.Name, arg.Position))
 		}
-		fmt.Println(construct.NewFuncString(arg))
+		fmt.Println(arg.String())
 		switch i {
 		case 0:
 			if arg.Value != "int" {
