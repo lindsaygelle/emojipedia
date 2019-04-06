@@ -26,6 +26,8 @@ func Test(t *testing.T) {
 		}
 	}
 
+	fmt.Println(construct.NewVaradictString(a.Args[0]))
+
 	b := construct.NewFunc(B)
 
 	if b.Name != "B" {
@@ -38,6 +40,7 @@ func Test(t *testing.T) {
 		if i != arg.Position {
 			t.Errorf(fmt.Sprintf("construct.go %s.Position != %v", arg.Name, arg.Position))
 		}
+		fmt.Println(construct.NewFuncString(arg))
 		switch i {
 		case 0:
 			if arg.Value != "int" {
