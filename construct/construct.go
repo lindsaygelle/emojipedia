@@ -94,8 +94,8 @@ func NewFunction(fn interface{}) *Function {
 
 func NewProgram(name string, description string, functions []interface{}) *Program {
 	f := []*Function{}
-	for _, fn := range functions {
-		f = append(f, NewFunction(fn))
+	for _, function := range functions {
+		f = append(f, NewFunction(function))
 	}
 	return &Program{
 		Description: description,
@@ -115,17 +115,25 @@ func (argument *Argument) Usage() string {
 
 func (function *Function) Usage() string {
 	substrings := []string{}
-	for _, arg := range function.Arguments {
-		substrings = append(substrings, arg.Usage())
+	for _, argument := range function.Arguments {
+		substrings = append(substrings, argument.Usage())
 	}
 	usage := strings.Join(substrings, ", ")
 	return fmt.Sprintf("%s [%s]", function.Name, usage)
 }
 
+func (function *Function) Slice() []string {
+	arguments := []string{}
+	for _, argument := range function.Arguments {
+		arguments = append(arguments, argument.Usage())
+	}
+	return arguments
+}
+
 func (program *Program) Usage() string {
 	substrings := []string{}
-	for _, f := range program.Functions {
-		substrings = append(substrings, f.Usage())
+	for _, function := range program.Functions {
+		substrings = append(substrings, function.Usage())
 	}
 	return fmt.Sprintf("[%s]", strings.Join(substrings, " | "))
 }
