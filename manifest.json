@@ -1,0 +1,5 @@
+{
+    "description":"emojipedia is a small program gets information about unicode emoji characters. emoji information is collected from unicode.org. the descriptions are fetched from emojipedia.com, but only after it has been collected from the get function.",
+    "name":"emojipedia",
+    "version":1
+}

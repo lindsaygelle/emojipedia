@@ -1,0 +1,4 @@
+{
+    "description":"get finds or collects information about the argument emoji. if this is the first time using the emojipedia-get method, most descriptions are missing and need to be collected. this can be done by running the update function.",
+    "name":"emojipedia-get"
+}
