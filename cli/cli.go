@@ -2,10 +2,8 @@ package cli
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"path"
 	"path/filepath"
 	"reflect"
 	"regexp"
@@ -39,15 +37,6 @@ type Function struct {
 	Pointer   uintptr
 	Name      string
 	Varadict  bool
-}
-
-// A Manifest is a collection of JSON data that explains a CLI function.
-// Description is the verbose description of the overarching program.
-// Program structs are expected to receive the description held from the Manifest.
-// Manifest name is the function name.
-type Manifest struct {
-	Description string `json:"description"`
-	Name        string `json:"name"`
 }
 
 // Args are the os.Args held inside a queue.
@@ -120,21 +109,6 @@ func NewFunction(fn interface{}) *Function {
 		Varadict:  t.IsVariadic()}
 }
 
-func NewManifest(file string) *Manifest {
-	directory := path.Dir(file)
-	fullpath := filepath.Join(directory, "manifest.json")
-	content, err := ioutil.ReadFile(fullpath)
-	if err != nil {
-		panic(err)
-	}
-	manifest := &Manifest{}
-	err = json.Unmarshal(content, manifest)
-	if err != nil {
-		panic(err)
-	}
-	return manifest
-}
-
 func NewProgram(name string, description string, functions []interface{}) *Program {
 	f := []*Function{}
 	for _, function := range functions {
@@ -170,18 +144,18 @@ func GetFunctionString(function *Function) string {
 }
 
 func WrapDescription(paragraph string) string {
-	var about string
+	description := ""
 	delimiter := " "
 	cursor := 0
 	for _, word := range strings.Split(paragraph, delimiter) {
 		cursor = (cursor + len(word) + 1)
-		about = fmt.Sprintf("%s%s%s", about, word, delimiter)
+		description = fmt.Sprintf("%s%s%s", description, word, delimiter)
 		if cursor >= lineLength {
 			cursor = 0
-			about = fmt.Sprintf("%s\n", about)
+			description = fmt.Sprintf("%s\n", description)
 		}
 	}
-	return about
+	return strings.TrimSuffix(description, "\n")
 }
 
 func WrapFunction(name string, functions []*Function) string {
