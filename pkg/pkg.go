@@ -7,8 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gellel/emojipedia/store"
-
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gellel/emojipedia/emojipedia"
 )

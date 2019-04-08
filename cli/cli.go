@@ -27,7 +27,7 @@ type Argument struct {
 	Varadict  bool
 }
 
-// Function is a snapshot of a Go function.
+// A Function is a snapshot of a Go function.
 // Each function holds a collection of Argument structs.
 // If a function is a varadict function, it will only contain one argument.
 // Function structs should be created using the NewFunction method.
@@ -41,12 +41,19 @@ type Function struct {
 	Varadict  bool
 }
 
-// Manifest is a collection of JSON data that explains a CLI function.
+// A Manifest is a collection of JSON data that explains a CLI function.
+// Description is the verbose description of the overarching program.
+// Program structs are expected to receive the description held from the Manifest.
+// Manifest name is the function name.
 type Manifest struct {
 	Description string `json:"description"`
 	Name        string `json:"name"`
 }
 
+// A Program is a construct of one CLI main function.
+// Each Program holds a series of Function structs which represent the available options for the program.
+// Similar to a Git prompt each Program attempts to describe a common usage pattern.
+// Each Function in the Functions slice is intended to be a unique function.
 type Program struct {
 	Description string
 	Functions   []*Function
@@ -157,7 +164,7 @@ func getArgumentString(argument *Argument) string {
 func getFunctionString(function *Function) string {
 	substrings := []string{}
 	for _, argument := range function.Arguments {
-		substrings = append(substrings, getArgumentString(argument))
+		substrings = append(substrings, strings.ToLower(getArgumentString(argument)))
 	}
 	usage := strings.Join(substrings, ", ")
 	if len(usage) != 0 {
