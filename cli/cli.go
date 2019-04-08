@@ -50,6 +50,9 @@ type Manifest struct {
 	Name        string `json:"name"`
 }
 
+// Args are the os.Args held inside a queue.
+type Args []string
+
 // A Program is a construct of one CLI main function.
 // Each Program holds a series of Function structs which represent the available options for the program.
 // Similar to a Git prompt each Program attempts to describe a common usage pattern.
@@ -117,10 +120,7 @@ func NewFunction(fn interface{}) *Function {
 		Varadict:  t.IsVariadic()}
 }
 
-func NewManifest(pc uintptr, file string, line int, ok bool) *Manifest {
-	if ok != true {
-		panic(fmt.Errorf("%s: line %v", file, line))
-	}
+func NewManifest(file string) *Manifest {
 	directory := path.Dir(file)
 	fullpath := filepath.Join(directory, "manifest.json")
 	content, err := ioutil.ReadFile(fullpath)
@@ -144,14 +144,10 @@ func NewProgram(name string, description string, functions []interface{}) *Progr
 		Description: description,
 		Functions:   f,
 		Name:        name,
-		Use:         wrapUse(name, description, f)}
+		Use:         WrapUse(name, description, f)}
 }
 
-func NewProgramFromManifest(manifest *Manifest, functions []interface{}) *Program {
-	return NewProgram(manifest.Name, manifest.Description, functions)
-}
-
-func getArgumentString(argument *Argument) string {
+func GetArgumentString(argument *Argument) string {
 	if argument.Varadict {
 		return fmt.Sprintf("%s [...%s]", argument.Name, argument.Value)
 	}
@@ -161,10 +157,10 @@ func getArgumentString(argument *Argument) string {
 	return fmt.Sprintf("%s=<%s>", argument.Name, argument.Value)
 }
 
-func getFunctionString(function *Function) string {
+func GetFunctionString(function *Function) string {
 	substrings := []string{}
 	for _, argument := range function.Arguments {
-		substrings = append(substrings, strings.ToLower(getArgumentString(argument)))
+		substrings = append(substrings, strings.ToLower(GetArgumentString(argument)))
 	}
 	usage := strings.Join(substrings, ", ")
 	if len(usage) != 0 {
@@ -173,7 +169,7 @@ func getFunctionString(function *Function) string {
 	return fmt.Sprintf("--%s", function.Name)
 }
 
-func wrapDescription(paragraph string) string {
+func WrapDescription(paragraph string) string {
 	var about string
 	delimiter := " "
 	cursor := 0
@@ -188,15 +184,15 @@ func wrapDescription(paragraph string) string {
 	return about
 }
 
-func wrapFunction(name string, functions []*Function) string {
-	delimiter := " | "
+func WrapFunction(name string, functions []*Function) string {
+	delimiter := " "
 	paragraphs := [][]string{[]string{}}
 	prefix := fmt.Sprintf("usage: %s", name)
 	offset := len(prefix)
 	cursor := 0
 	for _, function := range functions {
 		i := len(paragraphs) - 1
-		option := fmt.Sprintf("[%s]", getFunctionString(function))
+		option := fmt.Sprintf("[%s]", GetFunctionString(function))
 		cursor = (len(strings.Join(paragraphs[i], delimiter)) + offset + len(option))
 		if cursor >= lineLength {
 			i = i + 1
@@ -222,6 +218,6 @@ func wrapFunction(name string, functions []*Function) string {
 	return template
 }
 
-func wrapUse(name string, description string, functions []*Function) string {
-	return fmt.Sprintf("%s\n\n%s", wrapDescription(description), wrapFunction(name, functions))
+func WrapUse(name string, description string, functions []*Function) string {
+	return fmt.Sprintf("%s\n\n%s", WrapDescription(description), WrapFunction(name, functions))
 }

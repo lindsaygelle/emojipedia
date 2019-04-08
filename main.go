@@ -1,31 +1,74 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path"
+	"path/filepath"
 	"runtime"
 	"strings"
 
 	"github.com/gellel/emojipedia/cli"
-	files "github.com/gellel/emojipedia/emojipedia-files"
-	get "github.com/gellel/emojipedia/emojipedia-get"
+	"github.com/gellel/emojipedia/emoji"
 )
 
-func main() {
-	options := []interface{}{files.Files, get.Get}
-	manifest := cli.NewManifest(runtime.Caller(0))
-	program := cli.NewProgramFromManifest(manifest, options)
-	switch len(os.Args) {
-	case 0:
-		panic(fmt.Errorf("%s", strings.Join(os.Args, ",")))
-	case 1:
-		fmt.Println(program.Use)
-	default:
-		for _, function := range program.Functions {
-			if strings.ToLower(os.Args[1]) == strings.ToLower(function.Name) {
-				os.Exit(function.F.(func(...string) int)(os.Args[1:]...))
-			}
+type Manifest struct {
+	Description string `json:"description"`
+	Programs    map[string]Program
+	Name        string `json:"name"`
+}
+
+type Program struct {
+	Description string `json:"description"`
+	Name        string `json:"name"`
+}
+
+var (
+	filename      = "manifest.json"
+	_, file, _, _ = runtime.Caller(0)
+	dir           = filepath.Dir(file)
+	manifest      = &Manifest{}
+)
+
+func call(options []string, functions []*cli.Function) {
+	for _, function := range functions {
+		if strings.ToLower(options[0]) == strings.ToLower(function.Name) {
+			function.F.(func(...string))(options[1:]...)
 		}
-		os.Exit(2)
+	}
+}
+
+func get(options ...string) {
+	content := manifest.Programs["get"]
+	description := content.Description
+	program := cli.NewProgram(manifest.Name+" "+"get", description, emoji.Options)
+	if len(options) == 0 {
+		fmt.Println(program.Use)
+	} else {
+		call(options[1:], program.Functions)
+	}
+}
+
+func main() {
+	directory := path.Dir(file)
+	fullpath := filepath.Join(directory, filename)
+	content, err := ioutil.ReadFile(fullpath)
+	if err != nil {
+		panic(err)
+	}
+	err = json.Unmarshal(content, manifest)
+	if err != nil {
+		panic(err)
+	}
+	name := manifest.Name
+	description := manifest.Description
+	functions := []interface{}{get}
+	program := cli.NewProgram(name, description, functions)
+	if len(os.Args) == 1 {
+		fmt.Println(program.Use)
+	} else {
+		call(os.Args[1:], program.Functions)
 	}
 }

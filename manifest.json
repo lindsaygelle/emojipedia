@@ -1,5 +1,11 @@
 {
-    "description":"emojipedia. a small encyclopedia that contains lots of information on unicode emoji's. program can be updated using the update function. if this is the first time running the progam, it needs to first update to get the package data.",
-    "name":"emojipedia",
-    "version":1
+	"description": "a small encyclopedia that contains lots of information on unicode emoji's. program can be updated using the update function. if this is the first time running the progam, it needs to first update to get the package data.",
+	"programs": {
+		"files": {
+            "description": "access or retrieve required files used by the emojipedia program. packages can be deleted from this interface. once deleted, the program will need to download these again to operate."        },
+		"get": {
+			"description": "get finds or collects information about the argument emoji. if this is the first time using the emojipedia-get method, most descriptions are missing and need to be collected. this can be done by running the update function. descriptions are fetched per emoji basis. don't want to DOS the site <3"
+		}
+	},
+	"name": "emojipedia"
 }
