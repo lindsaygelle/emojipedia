@@ -1,21 +1,49 @@
 package get
 
-const NAME string = "GET"
+import (
+	"fmt"
+	"os"
+	"runtime"
+	"strings"
 
-var programs = []interface{}{about, category, description, subcategory, update}
+	"github.com/gellel/emojipedia/cli"
+)
+
+var programs = []interface{}{
+	ByID,
+	ByName,
+	Category,
+	Description,
+	ID,
+	Name,
+	Subcategory}
 
 func Main(args []string) {
-
+	manifest := cli.NewManifest(runtime.Caller(0))
+	program := cli.NewProgramFromManifest(manifest, programs)
+	switch len(args) {
+	case 0:
+		panic(fmt.Errorf("%s", strings.Join(os.Args, ",")))
+	case 1:
+		fmt.Println(program.Use)
+	default:
+		switch strings.ToUpper(args[1]) {
+		}
+	}
 }
 
-func Get(args ...string) {}
+func Category(name string) {}
 
-func about(emoji string) {}
+func Description(name string) {}
 
-func category(emoji string) {}
+func Get(options ...string) {}
 
-func description(emoji string) {}
+func ByID(id int) {}
 
-func subcategory(emoji string) {}
+func ByName(name string) {}
 
-func update(emoji string) {}
+func ID(name string) {}
+
+func Name(id int) {}
+
+func Subcategory(name string) {}

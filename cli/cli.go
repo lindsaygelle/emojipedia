@@ -15,6 +15,7 @@ import (
 
 const lineLength int = 79
 
+// Argument is a snapshot of a func parameter.
 type Argument struct {
 	Kind      reflect.Kind
 	Parameter string
@@ -26,6 +27,10 @@ type Argument struct {
 	Varadict  bool
 }
 
+// Function is a snapshot of a Go function.
+// Each function holds a collection of Argument structs.
+// If a function is a varadict function, it will only contain one argument.
+// Function structs should be created using the NewFunction method.
 type Function struct {
 	Arguments []*Argument
 	F         interface{}
@@ -36,6 +41,7 @@ type Function struct {
 	Varadict  bool
 }
 
+// Manifest is a collection of JSON data that explains a CLI function.
 type Manifest struct {
 	Description string `json:"description"`
 	Name        string `json:"name"`
@@ -75,6 +81,10 @@ func NewFunction(fn interface{}) *Function {
 	functionPointer := runtime.FuncForPC(pointer)
 	name := filepath.Base(functionPointer.Name())
 	name = name[(strings.Index(name, ".") + 1):]
+	substrings := regexp.MustCompile(`[A-Z]+[^A-Z]*|[^A-Z]+`).FindAllString(name, -1)
+	if len(substrings) != 0 {
+		name = strings.Join(substrings, "-")
+	}
 	file, line := functionPointer.FileLine(pointer)
 	b, err := ioutil.ReadFile(file)
 	if err != nil {
@@ -84,15 +94,11 @@ func NewFunction(fn interface{}) *Function {
 	substring := string(contents[line-1])
 	re := regexp.MustCompile(`\(([^()]+)\)`)
 	matches := re.FindAllStringSubmatch(substring, 1)
-	if len(matches) != 1 {
-		panic(len(matches))
-	}
-	if len(matches[0]) != 2 {
-		panic(len(matches[0]))
-	}
-	parameters := strings.Split(matches[0][1], ",")
-	for i := 0; i < reflect.TypeOf(fn).NumIn(); i++ {
-		arguments = append(arguments, NewArgument(i, pointer, parameters[i], t))
+	if len(matches) != 0 {
+		parameters := strings.Split(matches[0][1], ",")
+		for i := 0; i < reflect.TypeOf(fn).NumIn(); i++ {
+			arguments = append(arguments, NewArgument(i, pointer, parameters[i], t))
+		}
 	}
 	return &Function{
 		Arguments: arguments,
@@ -100,7 +106,7 @@ func NewFunction(fn interface{}) *Function {
 		Line:      line,
 		Path:      file,
 		Pointer:   pointer,
-		Name:      name,
+		Name:      strings.ToLower(name),
 		Varadict:  t.IsVariadic()}
 }
 
@@ -138,7 +144,7 @@ func NewProgramFromManifest(manifest *Manifest, functions []interface{}) *Progra
 	return NewProgram(manifest.Name, manifest.Description, functions)
 }
 
-func argumentUseString(argument *Argument) string {
+func getArgumentString(argument *Argument) string {
 	if argument.Varadict {
 		return fmt.Sprintf("%s [...%s]", argument.Name, argument.Value)
 	}
@@ -148,13 +154,16 @@ func argumentUseString(argument *Argument) string {
 	return fmt.Sprintf("%s=<%s>", argument.Name, argument.Value)
 }
 
-func functionUseString(function *Function) string {
+func getFunctionString(function *Function) string {
 	substrings := []string{}
 	for _, argument := range function.Arguments {
-		substrings = append(substrings, argumentUseString(argument))
+		substrings = append(substrings, getArgumentString(argument))
 	}
 	usage := strings.Join(substrings, ", ")
-	return fmt.Sprintf("%s [%s]", function.Name, usage)
+	if len(usage) != 0 {
+		return fmt.Sprintf("%s [%s]", function.Name, usage)
+	}
+	return fmt.Sprintf("--%s", function.Name)
 }
 
 func wrapDescription(paragraph string) string {
@@ -173,24 +182,27 @@ func wrapDescription(paragraph string) string {
 }
 
 func wrapFunction(name string, functions []*Function) string {
+	delimiter := " | "
 	paragraphs := [][]string{[]string{}}
-	prefix := strings.Join([]string{(name + ":"), "usage"}, " ")
+	prefix := fmt.Sprintf("usage: %s", name)
 	offset := len(prefix)
 	cursor := 0
 	for _, function := range functions {
-		option := fmt.Sprintf("[%s]", functionUseString(function))
-		cursor = (offset + cursor + len(option))
+		i := len(paragraphs) - 1
+		option := fmt.Sprintf("[%s]", getFunctionString(function))
+		cursor = (len(strings.Join(paragraphs[i], delimiter)) + offset + len(option))
 		if cursor >= lineLength {
+			i = i + 1
 			cursor = 0
 			paragraphs = append(paragraphs, []string{})
 		}
-		paragraphs[len(paragraphs)-1] = append(paragraphs[len(paragraphs)-1], option)
+		paragraphs[i] = append(paragraphs[i], option)
 	}
 	first, paragraphs := paragraphs[0], paragraphs[1:]
-	template := fmt.Sprintf("%s [%s", prefix, strings.Join(first, ","))
+	template := fmt.Sprintf("%s [%s", prefix, strings.Join(first, delimiter))
 	for _, sentence := range paragraphs {
 		var padding string
-		substring := strings.Join(sentence, ",")
+		substring := strings.Join(sentence, delimiter)
 		j := 0
 		for j < offset {
 			padding = (padding + " ")

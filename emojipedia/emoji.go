@@ -2,12 +2,11 @@ package emojipedia
 
 type Emoji struct {
 	Category    string   `json:"Category"`
-	Codes       string   `json:"Codes"`
-	Description string   `json:"Description"`
+	Code        string   `json:"Code"`
 	Keywords    []string `json:"Keywords"`
 	Name        string   `json:"Name"`
 	Number      int      `json:"Number"`
 	Sample      string   `json:"Sample"`
-	Subcategory string   `json:"Subcategory"`
+	SubCategory string   `json:"SubCategory"`
 	Unicode     string   `json:"Unicode"`
 }

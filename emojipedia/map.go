@@ -1,4 +1,4 @@
-package eji
+package emojipedia
 
 type Map map[string]*Emoji
 

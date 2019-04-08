@@ -10,7 +10,7 @@ import (
 	"github.com/gellel/emojipedia/store"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gellel/emojipedia/eji"
+	"github.com/gellel/emojipedia/emojipedia"
 )
 
 const (
@@ -37,11 +37,11 @@ var replacements []string = []string{
 
 var replacer *strings.Replacer = strings.NewReplacer(replacements...)
 
-var pkg *eji.Package = &eji.Package{
-	Categories:    &eji.Set{},
-	Subcategories: &eji.Set{},
-	Keywords:      &eji.Set{},
-	Names:         &eji.Map{}}
+var pkg *emojipedia.Package = &emojipedia.Package{
+	Categories:    &emojipedia.Set{},
+	Subcategories: &emojipedia.Set{},
+	Keywords:      &emojipedia.Set{},
+	Names:         &emojipedia.Map{}}
 
 func collect(document *goquery.Document) error {
 	var category, subcategory string
@@ -84,7 +84,7 @@ func collect(document *goquery.Document) error {
 		if len(columns) != 0 {
 			return
 		}
-		emoji := &eji.Emoji{
+		emoji := &emojipedia.Emoji{
 			Category:    category,
 			Code:        codes,
 			Keywords:    keys,
@@ -145,7 +145,7 @@ func save(m *map[string]interface{}) error {
 }
 
 // Get parses content from unicode.org and converts the HTML data into a set of json data.
-func Get() (*eji.Package, error) {
+func Get() (*emojipedia.Package, error) {
 
 	m := make(map[string]interface{})
 
