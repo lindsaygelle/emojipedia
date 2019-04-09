@@ -5,16 +5,18 @@ import (
 	"strings"
 )
 
-var Options = []interface{}{byId, byName}
+var Options = []interface{}{byId, byName, id}
 
-func byId(name string) int {
+func byId(name string) {
 	fmt.Println(name)
-	return 0
 }
 
-func byName(ID int) int {
+func byName(ID int) {
 	fmt.Println(ID)
-	return 0
+}
+
+func id(name string) {
+	fmt.Println(name)
 }
 
 func Main(options []string) {

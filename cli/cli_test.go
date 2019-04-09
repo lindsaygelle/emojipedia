@@ -9,7 +9,6 @@ import (
 
 func A(a ...string)                  {}
 func B(b int, c float32, d []string) {}
-func get(emoji string)               {}
 
 func Test(t *testing.T) {
 
@@ -49,8 +48,4 @@ func Test(t *testing.T) {
 			}
 		}
 	}
-
-	p := cli.NewProgram("hello", "emojipedia is a small program gets information about unicode emoji characters. emoji information is collected from unicode.org. the descriptions are fetched from emojipedia.com, but only after it has been collected from the get function.", []interface{}{get})
-
-	fmt.Println(p.Use)
 }

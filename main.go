@@ -11,8 +11,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gellel/emojipedia/cli"
-	character "github.com/gellel/emojipedia/emoji-character"
+	character "github.com/gellel/emojipedia/character"
+	cli "github.com/gellel/emojipedia/cli"
+	files "github.com/gellel/emojipedia/files"
 )
 
 type Manifest struct {
@@ -86,12 +87,12 @@ func build(options ...string) {
 	subcalls = append(subcalls, key)
 	name := strings.Join(subcalls, " ")
 	description := subprogram.Description
-	functions := []interface{}{}
+	functions := files.Options
 	program := cli.NewProgram(name, description, functions)
 	if len(options) == 0 {
 		fmt.Println(program.Use)
 	} else {
-		call(options[0:], program.Functions)
+		files.Main(options[0:])
 	}
 }
 

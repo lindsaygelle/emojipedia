@@ -3,7 +3,7 @@
 	"description": "a small encyclopedia that contains lots of information on unicode emoji's. program can be updated using the update function. if this is the first time running the progam, it needs to first build to get the package data. see build for more details.",
 	"programs": {
         "build": {
-            "description": "builds the package dependencies. attempts to get information from unicode.org and store the parsed json. can cache the file if corruption occurs during parse process for faster builds. expects to build a catgories, subcategories, keywords, names and numbers file. can be deleted if space concerns."
+            "description": "builds the package dependencies. attempts to get information from unicode.org and store the parsed json. can cache the file if corruption occurs during parse process for faster builds. expects to build a catgories, subcategories, keywords, names and numbers file. can be deleted if there are space concerns, but will limit functionality."
         },
 		"files": {
             "description": "access or retrieve required files used by the emojipedia program. packages can be deleted from this interface. once deleted, the program will need to download these again to operate."
