@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	cli "github.com/gellel/emojipedia/cli"
+	"github.com/gellel/emojipedia/emojipedia"
 	"github.com/gellel/emojipedia/web"
 )
 
@@ -31,10 +32,10 @@ func checkFile(name string) {
 }
 
 func dependencies() {
-	document := web.HttpToUnicodeOrg()
-	emojidex, encyclopedia := web.HttpToEmojiPackage(document)
-	fmt.Println(emojidex)
-	fmt.Println(encyclopedia.Numeric)
+	document := web.Http()
+	e := emojipedia.NewEmojipediaFromDocument(document)
+	fmt.Println(e.Emojidex)
+	fmt.Println(e.Encyclopedia.Numeric)
 }
 
 func hasFile(name string) {
