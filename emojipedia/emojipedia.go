@@ -3,15 +3,15 @@ package emojipedia
 import (
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/PuerkitoBio/goquery"
+
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 )
 
 var _ codex = (*Codex)(nil)
-
-var _ catalogue = (*Catalogue)(nil)
-
-var _ names = (*Names)(nil)
 
 var replacements = []string{
 	".", "",
@@ -23,38 +23,13 @@ var replacements = []string{
 
 var replacer = strings.NewReplacer(replacements...)
 
-type catalogue interface {
-	Add(key string, name string) string
-	Get(key string) *Names
-	Has(key string) bool
-}
-
 type codex interface {
 	Add(key int, name string) string
 	Get(key int) string
 	Has(key int) bool
 }
 
-type names interface {
-	Add(name string) string
-	Get(i int) string
-	Has(name string) bool
-}
-
-type Catalogue map[string]*Names
-
 type Codex map[int]string
-
-type Emoji struct {
-	Category    string   `json:"Category"`
-	Code        string   `json:"Code"`
-	Keywords    []string `json:"Keywords"`
-	Name        string   `json:"Name"`
-	Number      int      `json:"Number"`
-	Sample      string   `json:"Sample"`
-	SubCategory string   `json:"SubCategory"`
-	Unicode     string   `json:"Unicode"`
-}
 
 type Emojidex map[string]*Emoji
 
@@ -69,8 +44,6 @@ type Emojipedia struct {
 	Emojidex     *Emojidex
 	Encyclopedia *Encyclopedia
 }
-
-type Names []string
 
 func NewEmoji(columns []string) *Emoji {
 	var unicodes string
@@ -89,6 +62,7 @@ func NewEmoji(columns []string) *Emoji {
 	name, columns := columns[0], columns[1:]
 	name = strings.Replace(strings.TrimSpace(replacer.Replace(name)), " ", "-", -1)
 	name = strings.Replace(strings.ToLower(name), "_", "-", -1)
+	name = Normalize(name)
 	keywords, columns := columns[0], columns[1:]
 	keywords = strings.Replace(keywords, "|", "", -1)
 	keys := strings.Fields(keywords)
@@ -101,7 +75,7 @@ func NewEmoji(columns []string) *Emoji {
 		Name:        name,
 		Number:      number,
 		Sample:      sample,
-		SubCategory: subcategory,
+		Subcategory: subcategory,
 		Unicode:     unicodes}
 }
 
@@ -155,26 +129,13 @@ func NewEncyclopedia() *Encyclopedia {
 		Numeric:       &Codex{}}
 }
 
-func (catalogue *Catalogue) Add(key string, name string) string {
-	if catalogue.Has(key) != true {
-		catalogue.Set(key)
+func Normalize(value string) string {
+	f := func(r rune) bool {
+		return unicode.Is(unicode.Mn, r)
 	}
-	return catalogue.Get(key).Add(name)
-}
-
-func (catalogue *Catalogue) Has(key string) bool {
-	_, ok := (*catalogue)[key]
-	return ok
-}
-
-func (catalogue *Catalogue) Get(key string) *Names {
-	names, _ := (*catalogue)[key]
-	return names
-}
-
-func (catalogue *Catalogue) Set(key string) string {
-	(*catalogue)[key] = &Names{}
-	return key
+	t := transform.Chain(norm.NFD, transform.RemoveFunc(f), norm.NFC)
+	result, _, _ := transform.String(t, value)
+	return result
 }
 
 func (codex *Codex) Add(key int, name string) string {
@@ -190,35 +151,4 @@ func (codex *Codex) Has(key int) bool {
 func (codex *Codex) Get(key int) string {
 	name, _ := (*codex)[key]
 	return name
-}
-
-func (names *Names) Add(name string) string {
-	*names = append(*names, name)
-	return name
-}
-
-func (names *Names) Has(name string) bool {
-	n := *names
-	i := 0
-	j := len(n) - 1
-	if j < 0 {
-		return false
-	}
-	for i <= j {
-		if n[i] == name || n[j] == name {
-			return true
-		}
-		j = j - 1
-		i = i + 1
-	}
-	return false
-}
-
-func (names *Names) Get(i int) string {
-	var s string
-	n := *names
-	if len(n) > 0 {
-		s = n[i]
-	}
-	return s
 }
