@@ -46,13 +46,12 @@ func (emoji *Emoji) Values() (values []string) {
 	return values
 }
 
-func (emoji *Emoji) Table() {
+func (emoji *Emoji) Println() {
 	fields := emoji.Fields()
 	values := emoji.Values()
 	writer := new(tabwriter.Writer)
 	writer.Init(os.Stdout, 0, 0, 0, ' ', tabwriter.Debug|tabwriter.AlignRight)
 	fmt.Fprintln(writer, strings.Join(fields, "\t")+"\t")
 	fmt.Fprintln(writer, strings.Join(values, "\t")+"\t")
-	fmt.Fprintln(writer)
 	writer.Flush()
 }

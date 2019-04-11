@@ -15,6 +15,7 @@ type namespace interface {
 	RemoveAt(i int) bool
 	RemoveFirst() bool
 	RemoveLast() bool
+	Search(value string) (string, int)
 	Shift() (string, bool)
 	Unshift(value string) (string, int)
 }
@@ -106,6 +107,22 @@ func (namespace *Namespace) RemoveLast() (ok bool) {
 		ok = true
 	}
 	return ok
+}
+
+func (namespace *Namespace) Search(value string) (string, int) {
+	i := 0
+	j := namespace.Length() - 1
+	for i <= j {
+		if val, ok := namespace.Peek(i); ok && val == value {
+			return val, i
+		}
+		if val, ok := namespace.Peek(j); ok && val == value {
+			return val, j
+		}
+		i = i + 1
+		j = j - 1
+	}
+	return "", -1
 }
 
 func (namespace *Namespace) Shift() (value string, ok bool) {
