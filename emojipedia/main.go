@@ -102,6 +102,7 @@ func NewEmojipediaFromDocument(document *goquery.Document) *Emojipedia {
 		encyclopedia.Categories.Add(category, emoji.Name)
 		encyclopedia.Subcategories.Add(subcategory, emoji.Name)
 		encyclopedia.Numeric.Add(emoji.Number, emoji.Name)
+		emojidex.Add(emoji.Name, emoji)
 	})
 	return &Emojipedia{
 		Emojidex:     emojidex,
@@ -116,6 +117,17 @@ func NewEncyclopedia() *Encyclopedia {
 		Numeric:       &Set{}}
 }
 
+func NewFilepath(filename string) string {
+	_, file, _, ok := runtime.Caller(0)
+	if ok != true {
+		panic(file)
+	}
+	dir := filepath.Dir(file)
+	parent := filepath.Dir(dir)
+	filename = strings.Replace(filename, ".json", "", -1)
+	return filepath.Join(parent, (filename + ".json"))
+}
+
 func Normalize(value string) string {
 	f := func(r rune) bool {
 		return unicode.Is(unicode.Mn, r)
@@ -123,6 +135,49 @@ func Normalize(value string) string {
 	t := transform.Chain(norm.NFD, transform.RemoveFunc(f), norm.NFC)
 	result, _, _ := transform.String(t, value)
 	return result
+}
+
+func MarshallAssociative(filename string, associative *Associative) string {
+	filename = NewFilepath(filename)
+	contents, err := json.Marshal(associative)
+	if err != nil {
+		panic(err)
+	}
+	err = ioutil.WriteFile(filename, contents, 0644)
+	if err != nil {
+		panic(err)
+	}
+	return filename
+}
+
+func MarshallEmojidex(filename string, emojidex *Emojidex) string {
+	filename = NewFilepath(filename)
+	contents, err := json.Marshal(emojidex)
+	if err != nil {
+		panic(err)
+	}
+	err = ioutil.WriteFile(filename, contents, 0644)
+	if err != nil {
+		panic(err)
+	}
+	return filename
+}
+
+func MarshallEmojipedia(emojipedia *Emojipedia) {
+	//filename = NewFilepath(filename)
+}
+
+func MarshallSet(filename string, set *Set) string {
+	filename = NewFilepath(filename)
+	contents, err := json.Marshal(set)
+	if err != nil {
+		panic(err)
+	}
+	err = ioutil.WriteFile(filename, contents, 0644)
+	if err != nil {
+		panic(err)
+	}
+	return filename
 }
 
 func PrintEmoji(emoji *Emoji) {
@@ -154,42 +209,17 @@ func PrintEmojidex(emojidex *Emojidex) {
 	}
 }
 
-func MarshallAssociative(filename string, associative *Associative) string {
-	_, file, _, ok := runtime.Caller(0)
-	if ok != true {
-		panic(file)
-	}
-	dir := filepath.Dir(file)
-	parent := filepath.Dir(dir)
-	filename = strings.Replace(filename, ".json", "", -1)
-	filename = filepath.Join(parent, (filename + ".json"))
-	contents, err := json.Marshal(associative)
+func UnmarshallEmojidex() *Emojidex {
+	filename := NewFilepath("emoji")
+	jsonFile, err := os.Open(filename)
+	emojidex := &Emojidex{}
+	byteValue, err := ioutil.ReadAll(jsonFile)
 	if err != nil {
 		panic(err)
 	}
-	err = ioutil.WriteFile(filename, contents, 0644)
+	err = json.Unmarshal(byteValue, emojidex)
 	if err != nil {
 		panic(err)
 	}
-	return filename
-}
-
-func MarshallEmojidex(filename string, emojidex *Emojidex) string {
-	_, file, _, ok := runtime.Caller(0)
-	if ok != true {
-		panic(file)
-	}
-	dir := filepath.Dir(file)
-	parent := filepath.Dir(dir)
-	filename = strings.Replace(filename, ".json", "", -1)
-	filename = filepath.Join(parent, (filename + ".json"))
-	contents, err := json.Marshal(emojidex)
-	if err != nil {
-		panic(err)
-	}
-	err = ioutil.WriteFile(filename, contents, 0644)
-	if err != nil {
-		panic(err)
-	}
-	return filename
+	return emojidex
 }

@@ -6,8 +6,9 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func Http() *goquery.Document {
-	url := "https://www.unicode.org/emoji/charts/emoji-list.html"
+const UnicodeOrgURL string = "https://www.unicode.org/emoji/charts/emoji-list.html"
+
+func Http(url string) *goquery.Document {
 	res, err := http.Get(url)
 	if err != nil {
 		panic(err)

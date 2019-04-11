@@ -32,10 +32,11 @@ func checkFile(name string) {
 }
 
 func dependencies() {
-	document := web.Http()
+	fmt.Println(fmt.Sprintf("getting data from %s. this could take awhile.", web.UnicodeOrgURL))
+	document := web.Http(web.UnicodeOrgURL)
 	e := emojipedia.NewEmojipediaFromDocument(document)
-	fmt.Println(e.Emojidex)
-	fmt.Println(e.Encyclopedia.Numeric)
+	dir := emojipedia.MarshallEmojidex("emoji", e.Emojidex)
+	fmt.Println(fmt.Sprintf("dependencies successfully stored at %s", dir))
 }
 
 func hasFile(name string) {

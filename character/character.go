@@ -3,12 +3,20 @@ package character
 import (
 	"fmt"
 	"strings"
+
+	"github.com/gellel/emojipedia/emojipedia"
 )
 
 var Options = []interface{}{byId, byName, id}
 
 func byId(name string) {
-	fmt.Println(name)
+	emojidex := emojipedia.UnmarshallEmojidex()
+	emoji, ok := emojidex.Get(name)
+	if ok != true {
+		fmt.Println(fmt.Sprintf("emoji %s does not exist", name))
+	} else {
+		emojipedia.PrintEmoji(emoji)
+	}
 }
 
 func byName(ID int) {
@@ -22,6 +30,6 @@ func id(name string) {
 func Main(options []string) {
 	switch strings.ToLower(options[0]) {
 	case "by-id":
-		byId("hello")
+		byId(options[1])
 	}
 }
