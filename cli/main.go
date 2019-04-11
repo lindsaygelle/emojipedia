@@ -13,46 +13,6 @@ import (
 
 const lineLength int = 79
 
-// Argument is a snapshot of a func parameter.
-type Argument struct {
-	Kind      reflect.Kind
-	Parameter string
-	Pointer   uintptr
-	Position  int
-	Name      string
-	Slice     bool
-	Value     string
-	Varadict  bool
-}
-
-// A Function is a snapshot of a Go function.
-// Each function holds a collection of Argument structs.
-// If a function is a varadict function, it will only contain one argument.
-// Function structs should be created using the NewFunction method.
-type Function struct {
-	Arguments []*Argument
-	F         interface{}
-	Line      int
-	Path      string
-	Pointer   uintptr
-	Name      string
-	Varadict  bool
-}
-
-// Args are the os.Args held inside a queue.
-type Args []string
-
-// A Program is a construct of one CLI main function.
-// Each Program holds a series of Function structs which represent the available options for the program.
-// Similar to a Git prompt each Program attempts to describe a common usage pattern.
-// Each Function in the Functions slice is intended to be a unique function.
-type Program struct {
-	Description string
-	Functions   []*Function
-	Name        string
-	Use         string
-}
-
 func NewArgument(i int, pointer uintptr, parameter string, t reflect.Type) *Argument {
 	properties := t.In(i)
 	value := strings.NewReplacer("[", "", "]", "").Replace(properties.String())

@@ -1,9 +1,13 @@
 package emojipedia
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"reflect"
+	"runtime"
 	"strconv"
 	"strings"
 	"text/tabwriter"
@@ -148,4 +152,44 @@ func PrintEmojidex(emojidex *Emojidex) {
 	for _, emoji := range *emojidex {
 		PrintEmoji(emoji)
 	}
+}
+
+func MarshallAssociative(filename string, associative *Associative) string {
+	_, file, _, ok := runtime.Caller(0)
+	if ok != true {
+		panic(file)
+	}
+	dir := filepath.Dir(file)
+	parent := filepath.Dir(dir)
+	filename = strings.Replace(filename, ".json", "", -1)
+	filename = filepath.Join(parent, (filename + ".json"))
+	contents, err := json.Marshal(associative)
+	if err != nil {
+		panic(err)
+	}
+	err = ioutil.WriteFile(filename, contents, 0644)
+	if err != nil {
+		panic(err)
+	}
+	return filename
+}
+
+func MarshallEmojidex(filename string, emojidex *Emojidex) string {
+	_, file, _, ok := runtime.Caller(0)
+	if ok != true {
+		panic(file)
+	}
+	dir := filepath.Dir(file)
+	parent := filepath.Dir(dir)
+	filename = strings.Replace(filename, ".json", "", -1)
+	filename = filepath.Join(parent, (filename + ".json"))
+	contents, err := json.Marshal(emojidex)
+	if err != nil {
+		panic(err)
+	}
+	err = ioutil.WriteFile(filename, contents, 0644)
+	if err != nil {
+		panic(err)
+	}
+	return filename
 }
