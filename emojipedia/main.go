@@ -1,8 +1,12 @@
 package emojipedia
 
 import (
+	"fmt"
+	"os"
+	"reflect"
 	"strconv"
 	"strings"
+	"text/tabwriter"
 	"unicode"
 
 	"github.com/PuerkitoBio/goquery"
@@ -115,4 +119,33 @@ func Normalize(value string) string {
 	t := transform.Chain(norm.NFD, transform.RemoveFunc(f), norm.NFC)
 	result, _, _ := transform.String(t, value)
 	return result
+}
+
+func PrintEmoji(emoji *Emoji) {
+	reflection := reflect.ValueOf(emoji).Elem()
+	values := []string{}
+	keys := []string{}
+	for i := 0; i < reflection.NumField(); i++ {
+		in := reflection.Field(i).Interface()
+		switch in.(type) {
+		case []string:
+			values = append(values, strings.Join((in.([]string)), ","))
+		case int:
+			values = append(values, strconv.Itoa((in.(int))))
+		default:
+			values = append(values, (in.(string)))
+		}
+		keys = append(keys, reflection.Type().Field(i).Name)
+	}
+	writer := new(tabwriter.Writer)
+	writer.Init(os.Stdout, 0, 0, 0, ' ', tabwriter.Debug|tabwriter.AlignRight)
+	fmt.Fprintln(writer, strings.Join(keys, "\t")+"\t")
+	fmt.Fprintln(writer, strings.Join(values, "\t")+"\t")
+	writer.Flush()
+}
+
+func PrintEmojidex(emojidex *Emojidex) {
+	for _, emoji := range *emojidex {
+		PrintEmoji(emoji)
+	}
 }

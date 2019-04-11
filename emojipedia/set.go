@@ -7,17 +7,26 @@ func (set *Set) Add(key int, name string) string {
 	return name
 }
 
-func (set *Set) Has(key int) bool {
-	_, ok := (*set)[key]
+func (set *Set) Has(key int) (ok bool) {
+	_, ok = (*set)[key]
 	return ok
 }
 
-func (set *Set) Get(key int) string {
-	name, _ := (*set)[key]
+func (set *Set) Get(key int) (name string, ok bool) {
+	name, ok = (*set)[key]
+	return name, ok
+}
+
+func (set *Set) GetUnsafely(key int) (name string) {
+	name, _ = (*set)[key]
 	return name
 }
 
-func (set *Set) Remove(key int) bool {
+func (set *Set) Length() (length int) {
+	return len(*set)
+}
+
+func (set *Set) Remove(key int) (ok bool) {
 	delete(*set, key)
 	if set.Has(key) != true {
 		return true

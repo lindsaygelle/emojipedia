@@ -24,4 +24,7 @@ func TestNamespace(t *testing.T) {
 	if value != "b" {
 		t.Fatalf("%s != b", value)
 	}
+	if val, i := namespace.Search("a"); val != "a" || i != 0 {
+		t.Fatalf("%v != 0 || %s != a", i, val)
+	}
 }

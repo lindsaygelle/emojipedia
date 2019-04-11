@@ -17,5 +17,5 @@ func TestEmoji(t *testing.T) {
 		Subcategory: "TEST",
 		Unicode:     "X"}
 
-	emoji.Println()
+	emojipedia.PrintEmoji(&emoji)
 }
