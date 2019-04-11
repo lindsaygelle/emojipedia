@@ -3,17 +3,11 @@ package emojipedia
 import (
 	"fmt"
 	"os"
+	"reflect"
+	"strconv"
 	"strings"
 	"text/tabwriter"
 )
-
-var _ emoji = (*Emoji)(nil)
-
-type emoji interface {
-	Keys() []string
-	Println()
-	Values() []string
-}
 
 type Emoji struct {
 	Category    string   `json:"Category"`
@@ -26,37 +20,39 @@ type Emoji struct {
 	Unicode     string   `json:"Unicode"`
 }
 
-func (emoji *Emoji) Keys() (keys []string) {
-	keys = []string{
-		"category",
-		"code",
-		"keywords",
-		"name",
-		"number",
-		"sample",
-		"subcategory",
-		"unicode"}
-	return keys
+func (emoji *Emoji) Fields() (fields []string) {
+	r := reflect.ValueOf(emoji).Elem()
+	fields = []string{}
+	for i := 0; i < r.NumField(); i++ {
+		fields = append(fields, r.Type().Field(i).Name)
+	}
+	return fields
 }
 
 func (emoji *Emoji) Values() (values []string) {
-	values = []string{
-		emoji.Category,
-		emoji.Code,
-		strings.Join(emoji.Keywords, ","),
-		emoji.Name,
-		string(emoji.Number),
-		emoji.Sample,
-		emoji.Subcategory,
-		emoji.Unicode}
+	r := reflect.ValueOf(emoji).Elem()
+	values = []string{}
+	for i := 0; i < r.NumField(); i++ {
+		in := r.Field(i).Interface()
+		switch in.(type) {
+		case []string:
+			values = append(values, strings.Join((in.([]string)), ","))
+		case int:
+			values = append(values, strconv.Itoa((in.(int))))
+		default:
+			values = append(values, (in.(string)))
+		}
+	}
 	return values
 }
 
-func (emoji *Emoji) Println() {
+func (emoji *Emoji) Table() {
+	fields := emoji.Fields()
+	values := emoji.Values()
 	writer := new(tabwriter.Writer)
 	writer.Init(os.Stdout, 0, 0, 0, ' ', tabwriter.Debug|tabwriter.AlignRight)
-	fmt.Fprintln(writer, strings.Join(emoji.Keys(), "\t")+"\t")
-	fmt.Fprintln(writer, strings.Join(emoji.Values(), "\t")+"\t")
+	fmt.Fprintln(writer, strings.Join(fields, "\t")+"\t")
+	fmt.Fprintln(writer, strings.Join(values, "\t")+"\t")
 	fmt.Fprintln(writer)
 	writer.Flush()
 }

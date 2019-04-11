@@ -16,5 +16,5 @@ func TestEmoji(t *testing.T) {
 		Sample:      "NIL",
 		Subcategory: "TEST",
 		Unicode:     "X"}
-	emoji.Println()
+	(emoji.Table())
 }
