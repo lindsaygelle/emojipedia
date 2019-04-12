@@ -11,9 +11,10 @@ import (
 	"strconv"
 	"strings"
 
-	character "github.com/gellel/emojipedia/character"
-	cli "github.com/gellel/emojipedia/cli"
-	files "github.com/gellel/emojipedia/files"
+	b "github.com/gellel/emojipedia/build"
+	"github.com/gellel/emojipedia/cli"
+	e "github.com/gellel/emojipedia/emoji"
+	f "github.com/gellel/emojipedia/files"
 )
 
 type Manifest struct {
@@ -46,7 +47,8 @@ func call(options []string, functions []*cli.Function) {
 		if argument == strings.ToLower(function.Name) {
 			function.F.(func(...string))(options[1:]...)
 			break
-		} else if argument == fmt.Sprintf("--%s", function.Name) {
+		} else if argument == fmt.Sprintf("--%s", function.Name) ||
+			argument == fmt.Sprintf("-%s", string(function.Name[0])) {
 			function.F.(func())()
 			break
 		}
@@ -54,8 +56,8 @@ func call(options []string, functions []*cli.Function) {
 }
 
 func author() {
-	s := "%s written patiently by %s. thank you unicode.org & emojipedia.org."
-	fmt.Println(fmt.Sprintf(s, manifest.Name, manifest.Author))
+	s := "%s written by %s. data scraped from unicode.org & emojipedia.org. feel free to contribute or improve."
+	fmt.Println(cli.WrapDescription(fmt.Sprintf(s, manifest.Name, manifest.Author)))
 }
 
 func version() {
@@ -71,11 +73,11 @@ func emoji(options ...string) {
 	subcalls = append(subcalls, key)
 	name := strings.Join(subcalls, " ")
 	description := subprogram.Description
-	program := cli.NewProgram(name, description, character.Options)
+	program := cli.NewProgram(name, description, e.Options)
 	if len(options) == 0 {
 		fmt.Println(program.Use)
 	} else {
-		character.Main(options[0:])
+		e.Main(options[0:])
 	}
 }
 
@@ -87,12 +89,27 @@ func build(options ...string) {
 	subcalls = append(subcalls, key)
 	name := strings.Join(subcalls, " ")
 	description := subprogram.Description
-	functions := files.Options
+	functions := b.Options
 	program := cli.NewProgram(name, description, functions)
 	if len(options) == 0 {
 		fmt.Println(program.Use)
 	} else {
-		files.Main(options[0:])
+		f.Main(options[0:])
+	}
+}
+
+func files(options ...string) {
+	key := "files"
+	subprogram = manifest.Programs[key]
+	subcalls = append(subcalls, key)
+	name := strings.Join(subcalls, " ")
+	description := subprogram.Description
+	functions := f.Options
+	program := cli.NewProgram(name, description, functions)
+	if len(options) == 0 {
+		fmt.Println(program.Use)
+	} else {
+		f.Main(options[0:])
 	}
 }
 
@@ -125,7 +142,7 @@ func main() {
 	name := manifest.Name
 	description := manifest.Description
 	subcalls = append(subcalls, name)
-	functions := []interface{}{author, version, build, get}
+	functions := []interface{}{author, version, build, files, get}
 	program := cli.NewProgram(name, description, functions)
 	if len(os.Args) == 1 {
 		fmt.Println(program.Use)

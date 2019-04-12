@@ -8,13 +8,10 @@ import (
 	"strings"
 
 	cli "github.com/gellel/emojipedia/cli"
-	"github.com/gellel/emojipedia/emojipedia"
-	"github.com/gellel/emojipedia/web"
 )
 
 var Options = []interface{}{
-	dependencies,
-	hasFile}
+	has}
 
 func checkFile(name string) {
 	_, file, _, _ := runtime.Caller(0)
@@ -31,15 +28,7 @@ func checkFile(name string) {
 	fmt.Println(cli.WrapDescription(message))
 }
 
-func dependencies() {
-	fmt.Println(fmt.Sprintf("getting data from %s. this could take awhile.", web.UnicodeOrgURL))
-	document := web.Http(web.UnicodeOrgURL)
-	e := emojipedia.NewEmojipediaFromDocument(document)
-	dir := emojipedia.MarshallEmojidex("emoji", e.Emojidex)
-	fmt.Println(fmt.Sprintf("dependencies successfully stored at %s", dir))
-}
-
-func hasFile(name string) {
+func has(name string) {
 	name = strings.Replace(strings.ToLower(name), ".json", "", -1)
 	names := []string{"categories", "keywords", "names", "numbers", "subcategories"}
 	for _, n := range names {
@@ -53,14 +42,12 @@ func hasFile(name string) {
 func Main(options []string) {
 	substrings := strings.Split(options[0], "=")
 	switch strings.ToLower(substrings[0]) {
-	case "has-file":
+	case "has":
 		switch len(substrings) {
 		case 1:
-			hasFile(options[1])
+			has(options[1])
 		default:
-			hasFile(substrings[1])
+			has(substrings[1])
 		}
-	case "--dependencies":
-		dependencies()
 	}
 }

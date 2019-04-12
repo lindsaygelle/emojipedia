@@ -4,14 +4,15 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"os"
+	"os/exec"
 	"path/filepath"
 	"reflect"
 	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 )
-
-const lineLength int = 79
 
 func NewArgument(i int, pointer uintptr, parameter string, t reflect.Type) *Argument {
 	properties := t.In(i)
@@ -81,6 +82,25 @@ func NewProgram(name string, description string, functions []interface{}) *Progr
 		Use:         WrapUse(name, description, f)}
 }
 
+func NewWindow() *Window {
+	cmd := exec.Command("stty", "size")
+	cmd.Stdin = os.Stdin
+	out, err := cmd.Output()
+	input, err := string(out), err
+	parts := strings.Split(input, " ")
+	y, err := strconv.Atoi(parts[0])
+	if err != nil {
+		panic(err)
+	}
+	x, err := strconv.Atoi(strings.Replace(parts[1], "\n", "", 1))
+	if err != nil {
+		panic(err)
+	}
+	return &Window{
+		Height: int(y),
+		Width:  int(x)}
+}
+
 func GetArgumentString(argument *Argument) string {
 	if argument.Varadict {
 		return fmt.Sprintf("%s [...%s]", argument.Name, argument.Value)
@@ -100,13 +120,22 @@ func GetFunctionString(function *Function) string {
 	if len(usage) != 0 {
 		return fmt.Sprintf("%s [%s]", function.Name, usage)
 	}
-	return fmt.Sprintf("--%s", function.Name)
+	return fmt.Sprintf("--%s | -%s", function.Name, string(function.Name[0]))
+}
+
+func GetLineLength() int {
+	lineLength := int((NewWindow().Width * 75) / 100)
+	if lineLength > 79 {
+		return 79
+	}
+	return lineLength
 }
 
 func WrapDescription(paragraph string) string {
 	description := ""
 	delimiter := " "
 	cursor := 0
+	lineLength := GetLineLength()
 	for _, word := range strings.Split(paragraph, delimiter) {
 		cursor = (cursor + len(word) + 1)
 		description = fmt.Sprintf("%s%s%s", description, word, delimiter)
@@ -124,6 +153,7 @@ func WrapFunction(name string, functions []*Function) string {
 	prefix := fmt.Sprintf("usage: %s", name)
 	offset := len(prefix)
 	cursor := 0
+	lineLength := GetLineLength()
 	for _, function := range functions {
 		i := len(paragraphs) - 1
 		option := fmt.Sprintf("[%s]", GetFunctionString(function))
