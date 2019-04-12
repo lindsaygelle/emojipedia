@@ -1,4 +1,4 @@
-package categories
+package subcategories
 
 import (
 	"encoding/json"
@@ -14,13 +14,13 @@ import (
 	"github.com/gellel/emojipedia/manifest"
 )
 
-const Filename string = "categories.json"
+const Filename string = "subcategories.json"
 
 const root string = "emojipedia"
 
-var Export = Categories
+var Export = Subcategories
 
-var Key = "CATEGORIES"
+var Key = "SUBCATEGORIES"
 
 var Options = []interface{}{Cached, Make, Remove}
 
@@ -33,7 +33,7 @@ var replacements = []string{" ", "-", "&", "and"}
 
 var replacer = strings.NewReplacer(replacements...)
 
-func Categories(options ...string) {}
+func Subcategories(options ...string) {}
 
 func Cached() {
 	_, file, _, _ := runtime.Caller(0)
@@ -77,14 +77,14 @@ func Make() {
 	if err != nil {
 		panic(err)
 	}
-	categories := []string{}
+	subcategories := []string{}
 	doc.Find("tr").Each(func(_ int, selection *goquery.Selection) {
-		selection.Find("th.bighead").Each(func(_ int, selection *goquery.Selection) {
-			categories = append(categories, strings.TrimSpace(selection.Text()))
+		selection.Find("th.mediumhead").Each(func(_ int, selection *goquery.Selection) {
+			subcategories = append(subcategories, strings.TrimSpace(selection.Text()))
 		})
 	})
-	m := make(map[int]string, len(categories))
-	for i, c := range categories {
+	m := map[int]string{}
+	for i, c := range subcategories {
 		m[i] = strings.ToLower(replacer.Replace(c))
 	}
 	contents, err := json.Marshal(m)
