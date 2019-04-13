@@ -47,9 +47,9 @@ func Cached() {
 	}
 	info, err := os.Stat(filepath.Join(dir, Filename))
 	if err != nil {
-		fmt.Printf("%s is not stored on disk. checked directory %s.", Filename, dir)
+		fmt.Println(fmt.Sprintf("%s is not stored on disk. checked directory %s.", Filename, dir))
 	} else {
-		fmt.Printf("%s is stored at %s. file size %v mb.", Filename, dir, (int)((info.Size()/1024)/1024))
+		fmt.Println(fmt.Sprintf("%s is stored at %s. file size %v kb.", Filename, dir, (int)((info.Size() / 1024))))
 	}
 }
 

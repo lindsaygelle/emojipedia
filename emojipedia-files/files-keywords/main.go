@@ -1,4 +1,4 @@
-package subcategories
+package categories
 
 import (
 	"encoding/json"
@@ -9,18 +9,20 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/gellel/emojipedia/emojipedia"
+
 	"github.com/PuerkitoBio/goquery"
 	u "github.com/gellel/emojipedia/emojipedia-web/web-unicode"
 	"github.com/gellel/emojipedia/manifest"
 )
 
-const Filename string = "subcategories.json"
+const Filename string = "keywords.json"
 
 const root string = "emojipedia"
 
-var Export = Subcategories
+var Export = Keywords
 
-var Key = "SUBCATEGORIES"
+var Key = "KEYWORDS"
 
 var Options = []interface{}{Cached, Make, Remove}
 
@@ -33,7 +35,7 @@ var replacements = []string{" ", "-", "&", "and"}
 
 var replacer = strings.NewReplacer(replacements...)
 
-func Subcategories(options ...string) {}
+func Keywords(options ...string) {}
 
 func Cached() {
 	_, file, _, _ := runtime.Caller(0)
@@ -77,16 +79,23 @@ func Make() {
 	if err != nil {
 		panic(err)
 	}
-	subcategories := []string{}
+	m := map[string][]string{}
 	doc.Find("tr").Each(func(_ int, selection *goquery.Selection) {
-		selection.Find("th.mediumhead").Each(func(_ int, selection *goquery.Selection) {
-			subcategories = append(subcategories, strings.TrimSpace(selection.Text()))
+		fields := []string{}
+		selection.Find("td").Each(func(i int, selection *goquery.Selection) {
+			fields = append(fields, strings.TrimSpace(selection.Text()))
+
 		})
+		if len(fields) != 5 {
+			return
+		}
+		fields = fields[3:]
+		//name := emojipedia.Normalize(fields[0])
+		for _, key := range strings.Split(fields[1], "|") {
+			key = emojipedia.Normalize(key)
+			fmt.Println(key)
+		}
 	})
-	m := map[int]string{}
-	for i, c := range subcategories {
-		m[i] = strings.ToLower(replacer.Replace(c))
-	}
 	contents, err := json.Marshal(m)
 	if err != nil {
 		panic(err)
@@ -97,7 +106,7 @@ func Make() {
 	}
 }
 
-func Open() (map[int]string, error) {
+func Open() (map[string][]string, error) {
 	_, file, _, _ := runtime.Caller(0)
 	dir := filepath.Dir(file)
 	for {
@@ -116,7 +125,7 @@ func Open() (map[int]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	m := make(map[int]string)
+	m := make(map[string][]string)
 	err = json.Unmarshal(b, &m)
 	if err != nil {
 		return nil, err

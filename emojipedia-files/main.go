@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	categories "github.com/gellel/emojipedia/emojipedia-files/files-categories"
+	keywords "github.com/gellel/emojipedia/emojipedia-files/files-keywords"
 	subcategories "github.com/gellel/emojipedia/emojipedia-files/files-subcategories"
 	"github.com/gellel/emojipedia/manifest"
 )
@@ -14,10 +15,12 @@ var Key = "FILES"
 
 var Options = []interface{}{
 	categories.Export,
+	keywords.Export,
 	subcategories.Export}
 
 var set = map[string](func(m *manifest.Manifest, previous, options []string)){
 	categories.Key:    categories.Main,
+	keywords.Key:      keywords.Main,
 	subcategories.Key: subcategories.Main}
 
 func Main(m *manifest.Manifest, previous, options []string) {

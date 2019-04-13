@@ -20,7 +20,11 @@ import (
 )
 
 var replacements = []string{
+	")", "",
+	"(", "",
+	"\"", "",
 	".", "",
+	"'", "",
 	":", "",
 	",", "",
 	"⊛", "",
@@ -47,8 +51,6 @@ func NewEmoji(columns []string) *Emoji {
 	}
 	unicodes = unicodes + strings.Replace(unicodes, "U", "\\U", 1)
 	name, columns := columns[0], columns[1:]
-	name = strings.Replace(strings.TrimSpace(replacer.Replace(name)), " ", "-", -1)
-	name = strings.Replace(strings.ToLower(name), "_", "-", -1)
 	name = Normalize(name)
 	keywords, columns := columns[0], columns[1:]
 	keywords = strings.Replace(keywords, "|", "", -1)
@@ -134,6 +136,9 @@ func Normalize(value string) string {
 	}
 	t := transform.Chain(norm.NFD, transform.RemoveFunc(f), norm.NFC)
 	result, _, _ := transform.String(t, value)
+	result = strings.TrimSpace(result)
+	result = strings.Replace(replacer.Replace(result), " ", "-", -1)
+	result = strings.Replace(strings.ToLower(result), "_", "-", -1)
 	return result
 }
 
