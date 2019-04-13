@@ -3,6 +3,7 @@ package emojipedia
 type Emoji struct {
 	Category    string   `json:"Category"`
 	Code        string   `json:"Code"`
+	Description string   `json:"Description"`
 	Keywords    []string `json:"Keywords"`
 	Name        string   `json:"Name"`
 	Number      int      `json:"Number"`

@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gellel/emojipedia/emojipedia"
 	u "github.com/gellel/emojipedia/emojipedia-web/web-unicode"
 	"github.com/gellel/emojipedia/manifest"
 )
@@ -28,10 +29,6 @@ var empty = map[string](func()){
 	"CACHED": Cached,
 	"MAKE":   Make,
 	"REMOVE": Remove}
-
-var replacements = []string{" ", "-", "&", "and"}
-
-var replacer = strings.NewReplacer(replacements...)
 
 func Categories(options ...string) {}
 
@@ -77,17 +74,7 @@ func Make() {
 	if err != nil {
 		panic(err)
 	}
-	categories := []string{}
-	doc.Find("tr").Each(func(_ int, selection *goquery.Selection) {
-		selection.Find("th.bighead").Each(func(_ int, selection *goquery.Selection) {
-			categories = append(categories, strings.TrimSpace(selection.Text()))
-		})
-	})
-	m := make(map[int]string, len(categories))
-	for i, c := range categories {
-		m[i] = strings.ToLower(replacer.Replace(c))
-	}
-	contents, err := json.Marshal(m)
+	contents, err := json.Marshal(emojipedia.NewCategories(doc))
 	if err != nil {
 		panic(err)
 	}

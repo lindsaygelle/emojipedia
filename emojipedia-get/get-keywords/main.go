@@ -25,9 +25,11 @@ func All() {
 	if err != nil {
 		fmt.Println(fmt.Sprintln("cannot open keywords. has not been built or is missing."))
 	} else {
+		keys := []string{}
 		for key := range m {
-			fmt.Println(key)
+			keys = append(keys, key)
 		}
+		fmt.Println(fmt.Sprintf("keywords: %s", strings.Join(keys, ", ")))
 	}
 }
 

@@ -1,4 +1,4 @@
-package subcategories
+package emojis
 
 import (
 	"encoding/json"
@@ -9,19 +9,20 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/PuerkitoBio/goquery"
 	"github.com/gellel/emojipedia/emojipedia"
+
+	"github.com/PuerkitoBio/goquery"
 	u "github.com/gellel/emojipedia/emojipedia-web/web-unicode"
 	"github.com/gellel/emojipedia/manifest"
 )
 
-const Filename string = "subcategories.json"
+const Filename string = "emojis.json"
 
 const root string = "emojipedia"
 
-var Export = Subcategories
+var Export = Keywords
 
-var Key = "SUBCATEGORIES"
+var Key = "EMOJIS"
 
 var Options = []interface{}{Cached, Make, Remove}
 
@@ -30,7 +31,7 @@ var empty = map[string](func()){
 	"MAKE":   Make,
 	"REMOVE": Remove}
 
-func Subcategories(options ...string) {}
+func Keywords(options ...string) {}
 
 func Cached() {
 	_, file, _, _ := runtime.Caller(0)
@@ -74,7 +75,7 @@ func Make() {
 	if err != nil {
 		panic(err)
 	}
-	contents, err := json.Marshal(emojipedia.NewSubcategories(doc))
+	contents, err := json.Marshal(emojipedia.NewEmojis(doc))
 	if err != nil {
 		panic(err)
 	}
@@ -84,7 +85,7 @@ func Make() {
 	}
 }
 
-func Open() (map[int]string, error) {
+func Open() (map[string]*emojipedia.Emoji, error) {
 	_, file, _, _ := runtime.Caller(0)
 	dir := filepath.Dir(file)
 	for {
@@ -103,7 +104,7 @@ func Open() (map[int]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	m := make(map[int]string)
+	m := make(map[string]*emojipedia.Emoji)
 	err = json.Unmarshal(b, &m)
 	if err != nil {
 		return nil, err

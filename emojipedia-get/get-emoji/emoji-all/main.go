@@ -13,7 +13,7 @@ var Key = "ALL"
 
 var Options = []interface{}{ID, Name}
 
-var emojidex *emojipedia.Emojidex
+var emojidex map[string]*emojipedia.Emoji
 
 func All(options ...string) {}
 
