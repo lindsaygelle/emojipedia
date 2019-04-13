@@ -12,6 +12,18 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
+type Emoji struct {
+	Category    string   `json:"Category"`
+	Code        string   `json:"Code"`
+	Description string   `json:"Description"`
+	Keywords    []string `json:"Keywords"`
+	Name        string   `json:"Name"`
+	Number      int      `json:"Number"`
+	Sample      string   `json:"Sample"`
+	Subcategory string   `json:"Subcategory"`
+	Unicode     string   `json:"Unicode"`
+}
+
 var replacements = []string{" ", "-", "&", "and"}
 
 var replacer = strings.NewReplacer(replacements...)
@@ -132,12 +144,12 @@ func Normalize(value string) string {
 	t := transform.Chain(norm.NFD, transform.RemoveFunc(f), norm.NFC)
 	result, _, _ := transform.String(t, value)
 	result = replacer.Replace(strings.TrimSpace(result))
+	result = reg.ReplaceAllString(strings.ToLower(result), "")
 	if strings.HasPrefix(result, "-") {
-		result = result[1:]
+		result = strings.TrimPrefix(result, "-")
 	}
 	if strings.HasSuffix(result, "-") {
-		result = result[:len(result)-1]
+		result = strings.TrimSuffix(result, "-")
 	}
-	result = reg.ReplaceAllString(result, "")
-	return strings.ToLower(result)
+	return result
 }
