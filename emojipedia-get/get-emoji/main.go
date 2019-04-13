@@ -40,13 +40,13 @@ func Category(name string) {
 
 func Codes(name string) {
 	if e, ok := emojidex[name]; ok {
-		fmt.Println(fmt.Sprintf("%s codes: %s", name, e.Code))
+		fmt.Println(fmt.Sprintf("%s codes: %s.", name, e.Code))
 	}
 }
 
 func Description(name string) {
-	if _, ok := emojidex[name]; ok {
-		fmt.Println(fmt.Sprintf("%s description: %s.", name, "MISSING"))
+	if e, ok := emojidex[name]; ok {
+		fmt.Println(fmt.Sprintf("%s description: %s.", name, e.Description))
 	}
 }
 
