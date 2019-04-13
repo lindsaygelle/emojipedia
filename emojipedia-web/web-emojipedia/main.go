@@ -1,4 +1,4 @@
-package e
+package emojipediaorg
 
 import (
 	"encoding/json"
@@ -10,9 +10,9 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	emojis "github.com/gellel/emojipedia/emojipedia-files/files-emojis"
-
 	"github.com/gellel/emojipedia/manifest"
+
+	emojis "github.com/gellel/emojipedia/emojipedia-files/files-emojis"
 )
 
 const root string = "emojipedia"

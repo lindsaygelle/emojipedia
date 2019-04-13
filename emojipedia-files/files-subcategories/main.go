@@ -11,8 +11,9 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gellel/emojipedia/emojipedia"
-	u "github.com/gellel/emojipedia/emojipedia-web/web-unicode"
 	"github.com/gellel/emojipedia/manifest"
+
+	unicodeorg "github.com/gellel/emojipedia/emojipedia-web/web-unicode"
 )
 
 const Filename string = "subcategories.json"
@@ -60,7 +61,7 @@ func Make() {
 		}
 		dir = filepath.Dir(dir)
 	}
-	path := filepath.Join(dir, u.Filename)
+	path := filepath.Join(dir, unicodeorg.Filename)
 	_, err := os.Stat(path)
 	if err != nil {
 		panic(err)

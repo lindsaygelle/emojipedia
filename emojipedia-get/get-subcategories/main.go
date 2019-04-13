@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	c "github.com/gellel/emojipedia/emojipedia-files/files-subcategories"
 	"github.com/gellel/emojipedia/manifest"
+
+	filesubcategories "github.com/gellel/emojipedia/emojipedia-files/files-subcategories"
 )
 
 const root string = "emojipedia"
@@ -21,7 +22,7 @@ var empty = map[string](func()){
 	"ALL": All}
 
 func All() {
-	m, err := c.Open()
+	m, err := filesubcategories.Open()
 	if err != nil {
 		fmt.Println(fmt.Sprintln("cannot open subcategories. has not been built or is missing."))
 	} else {

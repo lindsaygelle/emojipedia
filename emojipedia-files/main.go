@@ -3,11 +3,12 @@ package files
 import (
 	"strings"
 
+	"github.com/gellel/emojipedia/manifest"
+
 	categories "github.com/gellel/emojipedia/emojipedia-files/files-categories"
 	emojis "github.com/gellel/emojipedia/emojipedia-files/files-emojis"
 	keywords "github.com/gellel/emojipedia/emojipedia-files/files-keywords"
 	subcategories "github.com/gellel/emojipedia/emojipedia-files/files-subcategories"
-	"github.com/gellel/emojipedia/manifest"
 )
 
 var Exports = func(options ...string) {}

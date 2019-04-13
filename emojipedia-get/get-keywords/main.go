@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	f "github.com/gellel/emojipedia/emojipedia-files/files-keywords"
 	"github.com/gellel/emojipedia/manifest"
+
+	fileskeywords "github.com/gellel/emojipedia/emojipedia-files/files-keywords"
 )
 
 const root string = "emojipedia"
@@ -21,7 +22,7 @@ var empty = map[string](func()){
 	"ALL": All}
 
 func All() {
-	m, err := f.Open()
+	m, err := fileskeywords.Open()
 	if err != nil {
 		fmt.Println(fmt.Sprintln("cannot open keywords. has not been built or is missing."))
 	} else {

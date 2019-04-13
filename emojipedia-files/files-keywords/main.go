@@ -9,11 +9,11 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/gellel/emojipedia/emojipedia"
-
 	"github.com/PuerkitoBio/goquery"
-	u "github.com/gellel/emojipedia/emojipedia-web/web-unicode"
+	"github.com/gellel/emojipedia/emojipedia"
 	"github.com/gellel/emojipedia/manifest"
+
+	unicodeorg "github.com/gellel/emojipedia/emojipedia-web/web-unicode"
 )
 
 const Filename string = "keywords.json"
@@ -61,7 +61,7 @@ func Make() {
 		}
 		dir = filepath.Dir(dir)
 	}
-	path := filepath.Join(dir, u.Filename)
+	path := filepath.Join(dir, unicodeorg.Filename)
 	_, err := os.Stat(path)
 	if err != nil {
 		panic(err)
