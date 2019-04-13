@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -18,23 +19,6 @@ import (
 	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
 )
-
-var replacements = []string{
-	")", "",
-	"(", "",
-	"\"", "",
-	".", "",
-	"'", "",
-	":", "",
-	",", "",
-	"⊛", "",
-	"“", "",
-	"”", "",
-	"_", "-",
-	"&", "and",
-	" ", "-"}
-
-var replacer = strings.NewReplacer(replacements...)
 
 func NewEmoji(columns []string) *Emoji {
 	var unicodes string
@@ -85,10 +69,10 @@ func NewEmojipediaFromDocument(document *goquery.Document) *Emojipedia {
 	document.Find("tr").Each(func(i int, selection *goquery.Selection) {
 		var columns []string
 		selection.Find("th.bighead").Each(func(j int, s *goquery.Selection) {
-			category = replacer.Replace(encyclopedia.Categories.Set(strings.TrimSpace(s.Text())))
+			category = Normalize(encyclopedia.Categories.Set(strings.TrimSpace(s.Text())))
 		})
 		selection.Find("th.mediumhead").Each(func(j int, s *goquery.Selection) {
-			subcategory = replacer.Replace(encyclopedia.Subcategories.Set(strings.TrimSpace(s.Text())))
+			subcategory = Normalize(encyclopedia.Subcategories.Set(strings.TrimSpace(s.Text())))
 		})
 		selection.Find("td").Each(func(j int, s *goquery.Selection) {
 			columns = append(columns, strings.TrimSpace(s.Text()))
@@ -137,9 +121,20 @@ func Normalize(value string) string {
 	t := transform.Chain(norm.NFD, transform.RemoveFunc(f), norm.NFC)
 	result, _, _ := transform.String(t, value)
 	result = strings.TrimSpace(result)
-	result = strings.Replace(replacer.Replace(result), " ", "-", -1)
-	result = strings.Replace(strings.ToLower(result), "_", "-", -1)
-	return result
+	result = strings.Replace(result, " ", "-", -1)
+	result = strings.Replace(result, "&", "and", -1)
+	if strings.HasPrefix(result, "-") {
+		result = result[1:]
+	}
+	if strings.HasSuffix(result, "-") {
+		result = result[:len(result)-1]
+	}
+	reg, err := regexp.Compile(`[^a-zA-Z0-9\-\?\!:]+`)
+	if err != nil {
+		panic(err)
+	}
+	result = reg.ReplaceAllString(result, "")
+	return strings.ToLower(result)
 }
 
 func MarshallAssociative(filename string, associative *Associative) string {

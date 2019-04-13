@@ -31,10 +31,6 @@ var empty = map[string](func()){
 	"MAKE":   Make,
 	"REMOVE": Remove}
 
-var replacements = []string{" ", "-", "&", "and"}
-
-var replacer = strings.NewReplacer(replacements...)
-
 func Keywords(options ...string) {}
 
 func Cached() {
@@ -90,10 +86,13 @@ func Make() {
 			return
 		}
 		fields = fields[3:]
-		//name := emojipedia.Normalize(fields[0])
+		name := emojipedia.Normalize(fields[0])
 		for _, key := range strings.Split(fields[1], "|") {
 			key = emojipedia.Normalize(key)
-			fmt.Println(key)
+			if _, ok := m[key]; ok != true {
+				m[key] = []string{}
+			}
+			m[key] = append(m[key], name)
 		}
 	})
 	contents, err := json.Marshal(m)
@@ -104,6 +103,7 @@ func Make() {
 	if err != nil {
 		panic(err)
 	}
+	Cached()
 }
 
 func Open() (map[string][]string, error) {
