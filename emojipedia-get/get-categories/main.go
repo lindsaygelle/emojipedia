@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	api "github.com/gellel/emojipedia/emojipedia-api"
 	"github.com/gellel/emojipedia/manifest"
-
-	filescategories "github.com/gellel/emojipedia/emojipedia-files/files-categories"
 )
 
 const root string = "emojipedia"
@@ -22,7 +21,7 @@ var empty = map[string](func()){
 	"ALL": All}
 
 func All() {
-	m, err := filescategories.Open()
+	m, err := api.GetCategories()
 	if err != nil {
 		fmt.Println(fmt.Sprintln("cannot open categories. has not been built or is missing."))
 	} else {

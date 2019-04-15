@@ -7,7 +7,7 @@ import (
 	"github.com/gellel/emojipedia/emojipedia"
 	"github.com/gellel/emojipedia/manifest"
 
-	filesemojies "github.com/gellel/emojipedia/emojipedia-files/files-emojis"
+	api "github.com/gellel/emojipedia/emojipedia-api"
 	all "github.com/gellel/emojipedia/emojipedia-get/get-emoji/emoji-all"
 )
 
@@ -72,7 +72,7 @@ func Main(m *manifest.Manifest, previous []string, options []string) {
 	if len(options) != 0 {
 		key := strings.ToUpper(strings.Replace(options[0], "-", "", -1))
 		if f, ok := name[key]; ok {
-			emojidex, _ = filesemojies.Open()
+			emojidex, _ = api.GetEmojis()
 			f(options[1])
 		} else if f, ok := set[key]; ok {
 			f(m, append(previous, key), options[1:])

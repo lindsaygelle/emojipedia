@@ -5,8 +5,8 @@ import (
 
 	"github.com/gellel/emojipedia/manifest"
 
-	emojipediaorg "github.com/gellel/emojipedia/emojipedia-web/web-emojipedia"
-	unicodeorg "github.com/gellel/emojipedia/emojipedia-web/web-unicode"
+	emojipedia "github.com/gellel/emojipedia/emojipedia-web/web-emojipedia"
+	unicode "github.com/gellel/emojipedia/emojipedia-web/web-unicode"
 )
 
 var Exports = func(options ...string) {}
@@ -14,12 +14,12 @@ var Exports = func(options ...string) {}
 var Key = "WEB"
 
 var Options = []interface{}{
-	emojipediaorg.Export,
-	unicodeorg.Export}
+	emojipedia.Export,
+	unicode.Export}
 
 var set = map[string](func(m *manifest.Manifest, previous, options []string)){
-	emojipediaorg.Key: emojipediaorg.Main,
-	unicodeorg.Key:    unicodeorg.Main}
+	emojipedia.Key: emojipedia.Main,
+	unicode.Key:    unicode.Main}
 
 func Main(m *manifest.Manifest, previous, options []string) {
 	if len(options) != 0 {

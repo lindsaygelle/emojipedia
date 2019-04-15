@@ -7,7 +7,6 @@ import (
 	"unicode"
 
 	"github.com/PuerkitoBio/goquery"
-
 	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
 )

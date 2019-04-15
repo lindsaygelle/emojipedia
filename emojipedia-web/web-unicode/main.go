@@ -1,4 +1,4 @@
-package unicodeorg
+package org
 
 import (
 	"fmt"

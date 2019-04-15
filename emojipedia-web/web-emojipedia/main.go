@@ -1,4 +1,4 @@
-package emojipediaorg
+package org
 
 import (
 	"encoding/json"
@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strings"
 
@@ -43,11 +44,13 @@ func Get(name string) {
 	if err != nil {
 		panic(err)
 	}
-	var description string
+	description := []string{}
 	doc.Find("section.description").First().Each(func(i int, selection *goquery.Selection) {
-		description = strings.TrimSpace(selection.Find("p").First().Text())
+		selection.Find("p").Each(func(j int, selection *goquery.Selection) {
+			description = append(description, strings.TrimSpace(selection.Text()))
+		})
 	})
-	if description == "" {
+	if len(description) == 0 {
 		panic(fmt.Errorf("%s description not found", name))
 	}
 	m, err := emojis.Open()
@@ -58,7 +61,7 @@ func Get(name string) {
 	if ok != true {
 		panic(fmt.Errorf("%s is missing from json", name))
 	}
-	e.Description = description
+	e.Description = regexp.MustCompile(`\r?\n`).ReplaceAllString(strings.Join(description, " "), " ")
 	m[name] = e
 	dump, err := json.Marshal(m)
 	if err != nil {
