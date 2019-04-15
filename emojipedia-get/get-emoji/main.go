@@ -21,6 +21,7 @@ var emojidex map[string]*emojipedia.Emoji
 
 var name = map[string]func(name string){
 	"CATEGORY":    Category,
+	"CHARACTER":   Character,
 	"CODES":       Codes,
 	"DESCRIPTION": Description,
 	"KEYWORDS":    Keywords,
@@ -35,6 +36,12 @@ func Emoji(options ...string) {}
 func Category(name string) {
 	if e, ok := emojidex[name]; ok {
 		fmt.Println(fmt.Sprintf("%s category: %s.", name, e.Category))
+	}
+}
+
+func Character(name string) {
+	if e, ok := emojidex[name]; ok {
+		fmt.Println(e.Unicode)
 	}
 }
 

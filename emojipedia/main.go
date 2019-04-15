@@ -23,7 +23,7 @@ type Emoji struct {
 	Unicode     string   `json:"Unicode"`
 }
 
-var replacements = []string{" ", "-", "&", "and", ",", "", "⊛", "", "“", "", "”", "", "’", ""}
+var replacements = []string{" ", "-", "&", "and", ",", "", ".", "", "⊛", "", "“", "", "”", "", "’", ""}
 
 var replacer = strings.NewReplacer(replacements...)
 
@@ -83,8 +83,8 @@ func NewEmoji(columns []string) *Emoji {
 	var unicodes string
 	no, columns := columns[0], columns[1:]
 	number, _ := strconv.Atoi(no)
-	sample, columns := columns[0], columns[1:]
 	codes, columns := columns[0], columns[1:]
+	sample, columns := columns[0], columns[1:]
 	for _, code := range strings.Fields(codes) {
 		replacement := "000"
 		if len(code) == 6 {
@@ -92,7 +92,7 @@ func NewEmoji(columns []string) *Emoji {
 		}
 		unicodes = unicodes + strings.Replace(code, "+", replacement, 1)
 	}
-	unicodes = unicodes + strings.Replace(unicodes, "U", "\\U", 1)
+	unicodes = strings.Replace(strings.ToLower(unicodes), "u", "\\U", -1)
 	name, columns := columns[0], columns[1:]
 	name = Normalize(name)
 	keywords, columns := columns[0], columns[1:]
