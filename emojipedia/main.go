@@ -1,7 +1,7 @@
 package emojipedia
 
 import (
-	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 	"unicode"
@@ -23,11 +23,9 @@ type Emoji struct {
 	Unicode     string   `json:"Unicode"`
 }
 
-var replacements = []string{" ", "-", "&", "and"}
+var replacements = []string{" ", "-", "&", "and", ",", "", "⊛", "", "“", "", "”", "", "’", ""}
 
 var replacer = strings.NewReplacer(replacements...)
-
-var reg, _ = regexp.Compile(`[^a-zA-Z0-9\-\?\!:]+`)
 
 func NewCategories(doc *goquery.Document) map[int]string {
 	categories := []string{}
@@ -143,7 +141,7 @@ func Normalize(value string) string {
 	t := transform.Chain(norm.NFD, transform.RemoveFunc(f), norm.NFC)
 	result, _, _ := transform.String(t, value)
 	result = replacer.Replace(strings.TrimSpace(result))
-	result = reg.ReplaceAllString(strings.ToLower(result), "")
+	result = strings.ToLower(result)
 	if strings.HasPrefix(result, "-") {
 		result = strings.TrimPrefix(result, "-")
 	}
@@ -151,4 +149,21 @@ func Normalize(value string) string {
 		result = strings.TrimSuffix(result, "-")
 	}
 	return result
+}
+
+func SortByID(m *map[string]*Emoji) []string {
+	names := make([]string, (len(*m) + 1))
+	for _, e := range *m {
+		names[e.Number] = e.Name
+	}
+	return names[1:]
+}
+
+func SortByName(m *map[string]*Emoji) []string {
+	names := []string{}
+	for _, e := range *m {
+		names = append(names, e.Name)
+	}
+	sort.Strings(names)
+	return names
 }
