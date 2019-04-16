@@ -2,6 +2,7 @@ package emoji
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/gellel/emojipedia/emojipedia"
@@ -41,7 +42,8 @@ func Category(name string) {
 
 func Character(name string) {
 	if e, ok := emojidex[name]; ok {
-		fmt.Println(e.Unicode)
+		r, _ := strconv.ParseInt(strings.TrimPrefix(e.Unicode, "\\U"), 16, 32)
+		fmt.Println(fmt.Sprintf("%s", string(r)))
 	}
 }
 

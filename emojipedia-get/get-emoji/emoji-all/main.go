@@ -2,6 +2,7 @@ package all
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/gellel/emojipedia/emojipedia"
@@ -14,12 +15,13 @@ var Export = All
 
 var Key = "ALL"
 
-var Options = []interface{}{Alphabetic, Numeric}
+var Options = []interface{}{Alphabetic, Characters, Numeric}
 
 var emojidex map[string]*emojipedia.Emoji
 
 var empty = map[string](func()){
 	"ALPHABETIC": Alphabetic,
+	"CHARACTERS": Characters,
 	"NUMERIC":    Numeric}
 
 func All(options ...string) {}
@@ -27,6 +29,13 @@ func All(options ...string) {}
 func Alphabetic() {
 	for i, name := range emojipedia.SortByName(&emojidex) {
 		fmt.Println(i, name)
+	}
+}
+
+func Characters() {
+	for _, e := range emojidex {
+		r, _ := strconv.ParseInt(strings.TrimPrefix(e.Unicode, "\\U"), 16, 32)
+		fmt.Println(e.Name, fmt.Sprintf("%s", string(r)))
 	}
 }
 
