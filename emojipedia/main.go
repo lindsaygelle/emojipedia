@@ -23,7 +23,18 @@ type Emoji struct {
 	Unicode     string   `json:"Unicode"`
 }
 
-var replacements = []string{" ", "-", "&", "and", ",", "", ".", "", "⊛", "", "“", "", "”", "", "’", ""}
+var replacements = []string{
+	" ", "-",
+	"(", "",
+	")", "",
+	"&", "and",
+	":", "",
+	",", "",
+	".", "",
+	"⊛", "",
+	"“", "",
+	"”", "",
+	"’", ""}
 
 var replacer = strings.NewReplacer(replacements...)
 
