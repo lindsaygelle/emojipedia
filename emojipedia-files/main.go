@@ -11,27 +11,20 @@ import (
 	subcategories "github.com/gellel/emojipedia/emojipedia-files/files-subcategories"
 )
 
-var Exports = func(options ...string) {}
-
 var Key = "FILES"
 
-var Options = []interface{}{
-	categories.Export,
-	emojis.Export,
-	keywords.Export,
-	subcategories.Export}
-
-var set = map[string](func(m *manifest.Manifest, previous, options []string)){
+var programs = map[string](func(m *manifest.Manifest, previous, options []string)){
 	categories.Key:    categories.Main,
 	emojis.Key:        emojis.Main,
 	keywords.Key:      keywords.Main,
 	subcategories.Key: subcategories.Main}
 
 func Main(m *manifest.Manifest, previous, options []string) {
+	var argument string
 	if len(options) != 0 {
-		key := strings.ToUpper(strings.Replace(options[0], "-", "", -1))
-		if f, ok := set[key]; ok {
-			f(m, append(previous, key), options[1:])
-		}
+		argument = strings.ToUpper(options[0])
+	}
+	if f, ok := programs[argument]; ok {
+		f(m, append(previous, argument), options[1:])
 	}
 }

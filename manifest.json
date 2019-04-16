@@ -1,18 +1,61 @@
 {
     "author": "gellel",
-	"description": "a small encyclopedia that contains lots of information on unicode emoji's. program can be updated using the update function. if this is the first time running the progam, it needs to first build to get the package data. see build for more details.",
+	"description": "a small encyclopedia about emoji's!",
 	"programs": {
-        "build": {
-            "description": "builds the package dependencies. attempts to get information from unicode.org and store the parsed json. can cache the file if corruption occurs during parse process for faster builds. expects to build a catgories, subcategories, keywords, names and numbers file. can be deleted if there are space concerns, but will limit functionality."
-        },
 		"files": {
-            "description": "access or retrieve required files used by the emojipedia program. packages can be deleted from this interface. once deleted, the program will need to download these again to operate."
+            "description": "make, manage or remove file dependencies used by the emojipedia program.",
+            "programs": {
+                "categories": {
+                    "description": "manage the files used by the emojipedia categories program."
+                },
+                "emojis": {
+                    "description": "manage the files used by the emoji's program."
+                },
+                "keywords": {
+                    "description": "manage the files used by the emoji's keywords program."
+                },
+                "subcategory": {
+                    "description": "manages the files used by the emojipedia subcategories program."
+                }
+            }
         },
 		"get": {
-			"description": "get finds or collects information about the argument emoji. if this is the first time using the emojipedia-get method, most descriptions are missing and need to be collected. this can be done by running the update function. descriptions are fetched per emoji basis. don't want to DOS the site <3",
+			"description": "fetch information from the emojipedia.",
             "programs": {
+                "categories":{
+                    "description": "get information by emoji category."
+                },
                 "emoji": {
-                    "description": "get an emoji character from the stored emojipedia files. lookups are currently supported by id or by name. *names may not resemble their exact unicode.org name due to difficulties in looking up; these have been modified to their closest english match."
+                    "description": "get fragments of information about a specific emoji.",
+                    "programs": {
+                        "category": {
+                            "description": "get the emoji's category."
+                        },
+                        "character": {
+                            "description": "get the emoji's unicode character."
+                        },
+                        "codes": {
+                            "description": "get the emoji's unicode sequence."
+                        },
+                        "description": {
+                            "description": "get the emoji's emojipedia.org description."
+                        },
+                        "keywords": {
+                            "description": "get the associated keywords for the emoji."
+                        },
+                        "number": {
+                            "description": "get the emoji's numeric ID."
+                        },
+                        "subcategory": {
+                            "description": "get the emoji's subcategory."
+                        }
+                    }
+                },
+                "keywords": {
+                    "description": "get information by emoji keywords."
+                },
+                "subcategory": {
+                    "description": "get information by emoji subcategory."
                 }
             }
         }

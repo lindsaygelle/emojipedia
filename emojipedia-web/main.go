@@ -9,23 +9,18 @@ import (
 	unicode "github.com/gellel/emojipedia/emojipedia-web/web-unicode"
 )
 
-var Exports = func(options ...string) {}
-
 var Key = "WEB"
 
-var Options = []interface{}{
-	emojipedia.Export,
-	unicode.Export}
-
-var set = map[string](func(m *manifest.Manifest, previous, options []string)){
+var programs = map[string](func(m *manifest.Manifest, previous, options []string)){
 	emojipedia.Key: emojipedia.Main,
 	unicode.Key:    unicode.Main}
 
 func Main(m *manifest.Manifest, previous, options []string) {
+	var argument string
 	if len(options) != 0 {
-		key := strings.ToUpper(strings.Replace(options[0], "-", "", -1))
-		if f, ok := set[key]; ok {
-			f(m, append(previous, key), options[1:])
-		}
+		argument = strings.ToUpper(options[0])
+	}
+	if f, ok := programs[argument]; ok {
+		f(m, append(previous, argument), options[1:])
 	}
 }

@@ -6,27 +6,32 @@ import (
 	"runtime"
 	"strings"
 
-	f "github.com/gellel/emojipedia/emojipedia-files"
-	g "github.com/gellel/emojipedia/emojipedia-get"
-	w "github.com/gellel/emojipedia/emojipedia-web"
-
 	"github.com/gellel/emojipedia/manifest"
+
+	files "github.com/gellel/emojipedia/emojipedia-files"
+	get "github.com/gellel/emojipedia/emojipedia-get"
+	web "github.com/gellel/emojipedia/emojipedia-web"
 )
 
-var set = map[string](func(m *manifest.Manifest, previous, options []string)){
-	g.Key: g.Main,
-	f.Key: f.Main,
-	w.Key: w.Main}
+const filename = "manifest.json"
+
+var _, file, _, _ = runtime.Caller(0)
+
+var dir = filepath.Dir(file)
+
+var m = manifest.NewManifest(filepath.Join(dir, filename))
+
+var programs = map[string](func(m *manifest.Manifest, previous, options []string)){
+	get.Key:   get.Main,
+	files.Key: files.Main,
+	web.Key:   web.Main}
 
 func main() {
-	filename := "manifest.json"
-	_, file, _, _ := runtime.Caller(0)
-	dir := filepath.Dir(file)
-	m := manifest.NewManifest(filepath.Join(dir, filename))
-	options := os.Args[1:]
-	if len(options) != 0 {
-		if f, ok := set[strings.ToUpper(options[0])]; ok != false {
-			f(m, []string{m.Name, options[0]}, options[1:])
-		}
+	var argument string
+	if len(os.Args[1:]) != 0 {
+		argument = strings.ToUpper(os.Args[1])
+	}
+	if f, ok := programs[argument]; ok {
+		f(m, ([]string{m.Name, argument}), os.Args[2:])
 	}
 }

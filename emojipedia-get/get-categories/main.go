@@ -17,16 +17,14 @@ var Key = "CATEGORIES"
 var Options = []interface{}{
 	All}
 
-var empty = map[string](func()){
+var empty = map[string](func(options ...interface{})){
 	"ALL": All}
 
-func All() {
-	m, err := api.GetCategories()
-	if err != nil {
-		fmt.Println(fmt.Sprintln("cannot open categories. has not been built or is missing."))
-	} else {
+func All(options ...interface{}) {
+	switch t := options[0].(type) {
+	case map[int]string:
 		names := []string{}
-		for _, k := range m {
+		for _, k := range t {
 			names = append(names, k)
 		}
 		fmt.Println(fmt.Sprintf("emoji categories: %s.", strings.Join(names, ", ")))
@@ -39,7 +37,8 @@ func Main(m *manifest.Manifest, previous, options []string) {
 	if len(options) != 0 {
 		key := strings.ToUpper(strings.Replace(options[0], "-", "", -1))
 		if f, ok := empty[key]; ok {
-			f()
+			m, _ := api.GetCategories()
+			f(m)
 		}
 	}
 }
