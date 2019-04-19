@@ -2,6 +2,7 @@ package x
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"reflect"
@@ -18,6 +19,10 @@ var replacer = strings.NewReplacer(replacements...)
 
 type Args []*Argument
 
+func (args Args) Length() (length int) {
+	return len(args)
+}
+
 type Argument struct {
 	Kind      reflect.Kind
 	Parameter string
@@ -32,7 +37,7 @@ type Argument struct {
 type Function struct {
 	Arguments []*Argument
 	Empty     bool
-	Function  interface{}
+	F         interface{}
 	Length    int
 	Pointer   uintptr
 	Name      string
@@ -45,8 +50,22 @@ func (runner Runner) Add(f *Function) {
 	runner[f.Name] = f
 }
 
+func (runner Runner) Next(arguments []string) (caller func(arguments []string), ok bool) {
+	var argument string
+	if len(arguments) != 0 {
+		argument = strings.ToUpper(arguments[0])
+	}
+	fmt.Println(argument)
+	/*if function, ok := runner[argument]; ok {
+		if function.Arguments.Length() {
+
+		}
+	}*/
+	return caller, ok
+}
+
 func (runner Runner) Keys() (keys []string) {
-	for key, _ := range runner {
+	for key := range runner {
 		keys = append(keys, key)
 	}
 	return keys
@@ -87,7 +106,7 @@ func function(f interface{}) (function *Function) {
 	return &Function{
 		Arguments: arguments,
 		Empty:     (length == 0),
-		Function:  f,
+		F:         f,
 		Length:    length,
 		Pointer:   pointer,
 		Name:      name,
