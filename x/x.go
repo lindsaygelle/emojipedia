@@ -19,10 +19,6 @@ var replacer = strings.NewReplacer(replacements...)
 
 type Args []*Argument
 
-func (args Args) Length() (length int) {
-	return len(args)
-}
-
 type Argument struct {
 	Kind      reflect.Kind
 	Parameter string
@@ -35,10 +31,8 @@ type Argument struct {
 }
 
 type Function struct {
-	Arguments []*Argument
-	Empty     bool
+	Arguments *Args
 	F         interface{}
-	Length    int
 	Pointer   uintptr
 	Name      string
 	Variadic  bool
@@ -46,8 +40,41 @@ type Function struct {
 
 type Runner map[string]*Function
 
-func (runner Runner) Add(f *Function) {
-	runner[f.Name] = f
+func (args Args) Bounds(i int) (ok bool) {
+	ok = ((i > -1) && (i < len(args)))
+	return ok
+}
+
+func (args Args) Empty() (empty bool) {
+	empty = (args.Length() == 0)
+	return empty
+}
+
+func (args Args) Length() (length int) {
+	length = (len(args))
+	return length
+}
+
+func (args *Args) Peek(i int) (argument *Argument, ok bool) {
+	if ok = args.Bounds(i); ok != false {
+		argument = (*args)[i]
+	}
+	return argument, ok
+}
+
+func (args Args) Same() bool {
+	var previous string
+	for _, argument := range args {
+		if len(previous) != 0 && previous != argument.Value {
+			return false
+		}
+		previous = argument.Value
+	}
+	return true
+}
+
+func (args *Args) Push(argument *Argument) {
+	*args = append(*args, argument)
 }
 
 func (runner Runner) Next(arguments []string) (caller func(arguments []string), ok bool) {
@@ -71,6 +98,17 @@ func (runner Runner) Keys() (keys []string) {
 	return keys
 }
 
+func args(reflection reflect.Type, pointer uintptr, variadic bool, parameters []string) *Args {
+	args := &Args{}
+	for i, parameter := range parameters {
+		in := reflection.In(i)
+		substrings := strings.Split(parameter, " ")
+		argument := argument(substrings[0], in.String(), i, pointer, variadic, in.Kind())
+		*args = append(*args, argument)
+	}
+	return args
+}
+
 func argument(name, value string, position int, pointer uintptr, variadic bool, kind reflect.Kind) (argument *Argument) {
 	return &Argument{
 		Kind:     kind,
@@ -86,6 +124,7 @@ func function(f interface{}) (function *Function) {
 	reflection := reflect.TypeOf(f)
 	pointer := reflect.ValueOf(f).Pointer()
 	reference := runtime.FuncForPC(pointer)
+	variadic := reflection.IsVariadic()
 	name := filepath.Base(reference.Name())
 	i := strings.Index(name, ".")
 	for i > -1 {
@@ -93,21 +132,10 @@ func function(f interface{}) (function *Function) {
 		i = strings.Index(name, ".")
 	}
 	parameters := parameters(reference.FileLine(pointer))
-	length := len(parameters)
-	arguments := make([]*Argument, length)
-	variadic := reflection.IsVariadic()
-	if len(parameters) != 0 {
-		for i, parameter := range parameters {
-			in := reflection.In(i)
-			substrings := strings.Split(parameter, " ")
-			arguments[i] = argument(substrings[0], in.String(), i, pointer, variadic, in.Kind())
-		}
-	}
+	arguments := args(reflection, pointer, variadic, parameters)
 	return &Function{
 		Arguments: arguments,
-		Empty:     (length == 0),
 		F:         f,
-		Length:    length,
 		Pointer:   pointer,
 		Name:      name,
 		Variadic:  variadic}
