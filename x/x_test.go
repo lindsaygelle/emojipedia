@@ -11,5 +11,5 @@ func X(a int, b int)     {}
 func Y(i ...interface{}) {}
 func Test(t *testing.T) {
 
-	fmt.Println((&x.Runner{}).Set(Y).Get("Y"))
+	fmt.Println((&x.Runner{}).Set(Y).Next("Y").Call())
 }

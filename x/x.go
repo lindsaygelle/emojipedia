@@ -2,7 +2,6 @@ package x
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"reflect"
@@ -13,7 +12,7 @@ import (
 
 var re, _ = regexp.Compile(`\(([^()]+)\)`)
 
-var replacements = []string{"[", "", "]", ""}
+var replacements = []string{"[", "", "]", "", " ", ""}
 
 var replacer = strings.NewReplacer(replacements...)
 
@@ -54,6 +53,10 @@ type Function struct {
 }
 
 type Functions map[string]*Function
+
+type Run struct {
+	F func(i ...interface{})
+}
 
 type Runner struct {
 	Functions *Functions
@@ -154,7 +157,6 @@ func (arg *Arg) Is(key string) (ok bool) {
 }
 
 func (argument *Argument) Is(key string) (ok bool) {
-	fmt.Println(argument.Value)
 	ok = strings.ToUpper(argument.Value) == strings.ToUpper(key)
 	return ok
 }
@@ -223,16 +225,36 @@ func (functions *Functions) Set(f ...interface{}) *Functions {
 	return functions
 }
 
+func (run *Run) Call(i ...interface{}) (ok bool) {
+	if ok = run.F != nil; ok {
+		run.F(i...)
+	}
+	return ok
+}
+
+func (run *Run) Set(function func(i ...interface{})) *Run {
+	run.F = function
+	return run
+}
+
 func (runner *Runner) Get(key string) (f func(i ...interface{}), ok bool) {
 	function, ok := runner.Functions.Get(key)
 	if ok && function.Variadic {
 		if argument, ok := function.Arguments.Get(0); ok {
-			if ok = argument.Is("interface"); ok {
+			if ok = argument.Is("interface{}"); ok {
 				f = function.F.(func(i ...interface{}))
 			}
 		}
 	}
 	return f, ok
+}
+
+func (runner *Runner) Next(key string) (run *Run) {
+	run = &Run{}
+	if function, ok := runner.Get(key); ok {
+		run.Set(function)
+	}
+	return run
 }
 
 func (runner *Runner) Set(f ...interface{}) *Runner {
