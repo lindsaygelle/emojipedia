@@ -1,12 +1,15 @@
-package x
+package x_test
 
-import "testing"
-import "fmt"
+import (
+	"fmt"
+	"testing"
+
+	"github.com/gellel/emojipedia/x"
+)
 
 func X(a int, b int) {}
+func Y()             {}
 func Test(t *testing.T) {
 
-	fmt.Println(function(X).Arguments.Same())
-
-	runner(X).Next([]string{"X"})
+	fmt.Println((&x.Runner{}).Set(X, Y).Functions)
 }

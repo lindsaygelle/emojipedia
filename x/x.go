@@ -2,7 +2,6 @@ package x
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"reflect"
@@ -17,7 +16,7 @@ var replacements = []string{"[", "", "]", ""}
 
 var replacer = strings.NewReplacer(replacements...)
 
-type Args []*Argument
+type Arguments []*Argument
 
 type Argument struct {
 	Kind      reflect.Kind
@@ -30,86 +29,42 @@ type Argument struct {
 	Variadic  bool
 }
 
+type Deconstruct struct {
+	Parameters []string
+	Pointer    uintptr
+	Name       string
+	Type       reflect.Type
+	Variadic   bool
+}
+
 type Function struct {
-	Arguments *Args
+	Arguments *Arguments
+	Empty     bool
 	F         interface{}
+	Length    int
 	Pointer   uintptr
 	Name      string
 	Variadic  bool
 }
 
-type Runner map[string]*Function
+type Functions map[string]*Function
 
-func (args Args) Bounds(i int) (ok bool) {
-	ok = ((i > -1) && (i < len(args)))
-	return ok
+type Runner struct {
+	Functions *Functions
 }
 
-func (args Args) Empty() (empty bool) {
-	empty = (args.Length() == 0)
-	return empty
-}
-
-func (args Args) Length() (length int) {
-	length = (len(args))
-	return length
-}
-
-func (args *Args) Peek(i int) (argument *Argument, ok bool) {
-	if ok = args.Bounds(i); ok != false {
-		argument = (*args)[i]
-	}
-	return argument, ok
-}
-
-func (args Args) Same() bool {
-	var previous string
-	for _, argument := range args {
-		if len(previous) != 0 && previous != argument.Value {
-			return false
-		}
-		previous = argument.Value
-	}
-	return true
-}
-
-func (args *Args) Push(argument *Argument) {
-	*args = append(*args, argument)
-}
-
-func (runner Runner) Next(arguments []string) (caller func(arguments []string), ok bool) {
-	var argument string
-	if len(arguments) != 0 {
-		argument = strings.ToUpper(arguments[0])
-	}
-	fmt.Println(argument)
-	/*if function, ok := runner[argument]; ok {
-		if function.Arguments.Length() {
-
-		}
-	}*/
-	return caller, ok
-}
-
-func (runner Runner) Keys() (keys []string) {
-	for key := range runner {
-		keys = append(keys, key)
-	}
-	return keys
-}
-
-func args(reflection reflect.Type, pointer uintptr, variadic bool, parameters []string) *Args {
-	args := &Args{}
+func NewArguments(reflection reflect.Type, pointer uintptr, variadic bool, parameters []string) *Arguments {
+	arguments := &Arguments{}
 	for i, parameter := range parameters {
 		in := reflection.In(i)
 		substrings := strings.Split(parameter, " ")
-		argument := argument(substrings[0], in.String(), i, pointer, variadic, in.Kind())
-		*args = append(*args, argument)
+		argument := NewArgument(substrings[0], in.String(), i, pointer, variadic, in.Kind())
+		*arguments = append(*arguments, argument)
 	}
-	return args
+	return arguments
 }
 
-func argument(name, value string, position int, pointer uintptr, variadic bool, kind reflect.Kind) (argument *Argument) {
+func NewArgument(name, value string, position int, pointer uintptr, variadic bool, kind reflect.Kind) (argument *Argument) {
 	return &Argument{
 		Kind:     kind,
 		Pointer:  pointer,
@@ -120,7 +75,7 @@ func argument(name, value string, position int, pointer uintptr, variadic bool, 
 		Variadic: variadic}
 }
 
-func function(f interface{}) (function *Function) {
+func NewDeconstruct(f interface{}) *Deconstruct {
 	reflection := reflect.TypeOf(f)
 	pointer := reflect.ValueOf(f).Pointer()
 	reference := runtime.FuncForPC(pointer)
@@ -131,17 +86,39 @@ func function(f interface{}) (function *Function) {
 		name = name[(i + 1):]
 		i = strings.Index(name, ".")
 	}
-	parameters := parameters(reference.FileLine(pointer))
-	arguments := args(reflection, pointer, variadic, parameters)
-	return &Function{
-		Arguments: arguments,
-		F:         f,
-		Pointer:   pointer,
-		Name:      name,
-		Variadic:  variadic}
+	parameters := NewParameters(reference.FileLine(pointer))
+	return &Deconstruct{
+		Parameters: parameters,
+		Pointer:    pointer,
+		Name:       name,
+		Type:       reflection,
+		Variadic:   variadic}
 }
 
-func parameters(file string, line int) (arguments []string) {
+func NewFunction(f interface{}) (function *Function) {
+	deconstruct := NewDeconstruct(f)
+	arguments := NewArguments(deconstruct.Type, deconstruct.Pointer, deconstruct.Variadic, deconstruct.Parameters)
+	length := len(*arguments)
+	return &Function{
+		Arguments: arguments,
+		Empty:     length == 0,
+		F:         f,
+		Length:    length,
+		Pointer:   deconstruct.Pointer,
+		Name:      deconstruct.Name,
+		Variadic:  deconstruct.Variadic}
+}
+
+func NewFunctions(f ...interface{}) (functions *Functions) {
+	functions = &Functions{}
+	for _, x := range f {
+		n := NewFunction(x)
+		(*functions)[strings.ToUpper(n.Name)] = n
+	}
+	return functions
+}
+
+func NewParameters(file string, line int) (arguments []string) {
 	b, err := ioutil.ReadFile(file)
 	if err != nil {
 		panic(err)
@@ -155,10 +132,22 @@ func parameters(file string, line int) (arguments []string) {
 	return arguments
 }
 
-func runner(f ...interface{}) (runner *Runner) {
-	runner = &Runner{}
-	for _, f := range f {
-		runner.Add(function(f))
-	}
+func NewRunner(f ...interface{}) (runner *Runner) {
+	return &Runner{
+		Functions: NewFunctions(f...)}
+}
+
+func (function *Function) Set(f interface{}) *Function {
+	*function = *NewFunction(f)
+	return function
+}
+
+func (functions *Functions) Set(f ...interface{}) *Functions {
+	*functions = *NewFunctions(f...)
+	return functions
+}
+
+func (runner *Runner) Set(f ...interface{}) *Runner {
+	*runner = *NewRunner(f...)
 	return runner
 }
