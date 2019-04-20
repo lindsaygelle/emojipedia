@@ -11,7 +11,7 @@ import (
 	subcategories "github.com/gellel/emojipedia/emojipedia-get/get-subcategories"
 )
 
-var Key = "GET"
+var Export = get
 
 var programs = map[string](func(m *manifest.Manifest, previous, options []string)){
 	categories.Key:    categories.Main,
@@ -19,7 +19,7 @@ var programs = map[string](func(m *manifest.Manifest, previous, options []string
 	keywords.Key:      keywords.Main,
 	subcategories.Key: subcategories.Main}
 
-func Main(m *manifest.Manifest, previous []string, options []string) {
+func main(m *manifest.Manifest, previous []string, options []string) {
 	var argument string
 	if len(options) != 0 {
 		argument = strings.ToUpper(options[0])
@@ -27,4 +27,8 @@ func Main(m *manifest.Manifest, previous []string, options []string) {
 	if f, ok := programs[argument]; ok {
 		f(m, append(previous, argument), options[1:])
 	}
+}
+
+func get(arguments ...interface{}) {
+	main(arguments[0].(*manifest.Manifest), arguments[1].([]string), arguments[2].([]string))
 }

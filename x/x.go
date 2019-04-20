@@ -62,6 +62,8 @@ type Runner struct {
 	Functions *Functions
 }
 
+type Routines []interface{}
+
 func NewArg(argument *Argument) (arg *Arg) {
 	return &Arg{Argument: argument}
 }
@@ -151,6 +153,14 @@ func NewRunner(f ...interface{}) (runner *Runner) {
 		Functions: NewFunctions(f...)}
 }
 
+func NewRoutines(r ...interface{}) (routines *Routines) {
+	routines = &Routines{}
+	for _, routine := range r {
+		*routines = append(*routines, routine)
+	}
+	return routines
+}
+
 func (arg *Arg) Is(key string) (ok bool) {
 	ok = arg.Argument != nil && arg.Argument.Is(key)
 	return ok
@@ -200,8 +210,20 @@ func (function *Function) Set(f interface{}) *Function {
 	return function
 }
 
+func (functions *Functions) Add(function *Function) (ok bool) {
+	if ok = functions.Contains(function) != true; ok {
+		(*functions)[strings.ToUpper(function.Name)] = function
+	}
+	return ok
+}
+
 func (functions *Functions) Contains(function *Function) (ok bool) {
 	ok = functions.Has(function.Name)
+	return ok
+}
+
+func (functions *Functions) Empty() (ok bool) {
+	ok = functions.Length() == 0
 	return ok
 }
 
@@ -216,8 +238,15 @@ func (functions *Functions) Get(key string) (function *Function, ok bool) {
 }
 
 func (functions *Functions) Has(key string) (ok bool) {
-	_, ok = (*functions)[strings.ToUpper(key)]
+	if ok = functions.Empty() != true; ok {
+		_, ok = (*functions)[strings.ToUpper(key)]
+	}
 	return ok
+}
+
+func (functions *Functions) Length() (length int) {
+	length = len(*functions)
+	return length
 }
 
 func (functions *Functions) Set(f ...interface{}) *Functions {
@@ -257,7 +286,30 @@ func (runner *Runner) Next(key string) (run *Run) {
 	return run
 }
 
+func (runner *Runner) OS(args []string) (run *Run) {
+	run = &Run{}
+	if len(args) != 0 {
+		run = runner.Next(args[0]) 
+	}
+	return run
+}
+
 func (runner *Runner) Set(f ...interface{}) *Runner {
 	*runner = *NewRunner(f...)
 	return runner
+}
+
+func (runner *Runner) Use(routines *Routines) *Runner {
+	runner.Functions = &Functions{}
+	for _, function := range routines.Generate() {
+		runner.Functions.Add(function)
+	}
+	return runner
+}
+
+func (routines *Routines) Generate() (functions []*Function) {
+	for _, routine := range *routines {
+		functions = append(functions, NewFunction(routine))
+	}
+	return functions
 }
