@@ -2,6 +2,7 @@ package x
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"reflect"
@@ -16,18 +17,23 @@ var replacements = []string{"[", "", "]", ""}
 
 var replacer = strings.NewReplacer(replacements...)
 
-type Arguments []*Argument
+type Arg struct {
+	Argument *Argument
+}
 
 type Argument struct {
+	Address   uintptr
 	Kind      reflect.Kind
 	Parameter string
-	Pointer   uintptr
+	Pointer   bool
 	Position  int
 	Name      string
 	Slice     bool
 	Value     string
 	Variadic  bool
 }
+
+type Arguments []*Argument
 
 type Deconstruct struct {
 	Parameters []string
@@ -53,6 +59,22 @@ type Runner struct {
 	Functions *Functions
 }
 
+func NewArg(argument *Argument) (arg *Arg) {
+	return &Arg{Argument: argument}
+}
+
+func NewArgument(name, value string, position int, pointer uintptr, variadic bool, kind reflect.Kind) (argument *Argument) {
+	return &Argument{
+		Address:  pointer,
+		Kind:     kind,
+		Pointer:  strings.Index(value, "*") != -1,
+		Position: position,
+		Slice:    (kind.String() == "slice"),
+		Name:     name,
+		Value:    replacer.Replace(value),
+		Variadic: variadic}
+}
+
 func NewArguments(reflection reflect.Type, pointer uintptr, variadic bool, parameters []string) *Arguments {
 	arguments := &Arguments{}
 	for i, parameter := range parameters {
@@ -62,17 +84,6 @@ func NewArguments(reflection reflect.Type, pointer uintptr, variadic bool, param
 		*arguments = append(*arguments, argument)
 	}
 	return arguments
-}
-
-func NewArgument(name, value string, position int, pointer uintptr, variadic bool, kind reflect.Kind) (argument *Argument) {
-	return &Argument{
-		Kind:     kind,
-		Pointer:  pointer,
-		Position: position,
-		Slice:    (kind.String() == "slice"),
-		Name:     name,
-		Value:    replacer.Replace(value),
-		Variadic: variadic}
 }
 
 func NewDeconstruct(f interface{}) *Deconstruct {
@@ -137,14 +148,91 @@ func NewRunner(f ...interface{}) (runner *Runner) {
 		Functions: NewFunctions(f...)}
 }
 
+func (arg *Arg) Is(key string) (ok bool) {
+	ok = arg.Argument != nil && arg.Argument.Is(key)
+	return ok
+}
+
+func (argument *Argument) Is(key string) (ok bool) {
+	fmt.Println(argument.Value)
+	ok = strings.ToUpper(argument.Value) == strings.ToUpper(key)
+	return ok
+}
+
+func (argument *Argument) IsEach(values ...string) {}
+
+func (arguments *Arguments) Bounds(i int) (ok bool) {
+	ok = ((i > -1) && (i < len(*arguments)))
+	return ok
+}
+
+func (arguments *Arguments) Each(function func(i int, argument *Argument)) *Arguments {
+	for i, argument := range *arguments {
+		function(i, argument)
+	}
+	return arguments
+}
+
+func (arguments *Arguments) Get(i int) (argument *Argument, ok bool) {
+	if ok = arguments.Bounds(i); ok {
+		argument = (*arguments)[i]
+	}
+	return argument, ok
+}
+
+func (arguments *Arguments) Length() (length int) {
+	length = len(*arguments)
+	return length
+}
+
+func (arguments *Arguments) Peek(i int) (arg *Arg) {
+	arg = &Arg{}
+	if argument, ok := arguments.Get(i); ok {
+		arg.Argument = argument
+	}
+	return arg
+}
+
 func (function *Function) Set(f interface{}) *Function {
 	*function = *NewFunction(f)
 	return function
 }
 
+func (functions *Functions) Contains(function *Function) (ok bool) {
+	ok = functions.Has(function.Name)
+	return ok
+}
+
+func (functions *Functions) Fetch(key string) (function *Function) {
+	function, _ = functions.Get(key)
+	return function
+}
+
+func (functions *Functions) Get(key string) (function *Function, ok bool) {
+	function, ok = (*functions)[strings.ToUpper(key)]
+	return function, ok
+}
+
+func (functions *Functions) Has(key string) (ok bool) {
+	_, ok = (*functions)[strings.ToUpper(key)]
+	return ok
+}
+
 func (functions *Functions) Set(f ...interface{}) *Functions {
 	*functions = *NewFunctions(f...)
 	return functions
+}
+
+func (runner *Runner) Get(key string) (f func(i ...interface{}), ok bool) {
+	function, ok := runner.Functions.Get(key)
+	if ok && function.Variadic {
+		if argument, ok := function.Arguments.Get(0); ok {
+			if ok = argument.Is("interface"); ok {
+				f = function.F.(func(i ...interface{}))
+			}
+		}
+	}
+	return f, ok
 }
 
 func (runner *Runner) Set(f ...interface{}) *Runner {
