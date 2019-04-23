@@ -67,12 +67,59 @@ var (
 )
 
 var (
-	filenames = map[string]int{
+	files = map[string]int{
 		CategorizationFile:    1,
 		EncyclopediaFile:      1,
 		KeywordsFile:          1,
-		SubcategorizationFile: 1}
+		SubcategorizationFile: 1,
+		UnicodeFile:           1}
+
+	folders = map[string]int{
+		CategorizationFolder:    1,
+		EncyclopediaFolder:      1,
+		KeywordsFolder:          1,
+		SubcategorizationFolder: 1,
+		UnicodeFolder:           1}
 )
+
+func hasFile(name string) (ok bool) {
+	_, err := os.Stat(Storagepath)
+	ok = (err == nil)
+	if ok != true {
+		return ok
+	}
+	_, err = os.Stat(filepath.Join(Storagepath, name))
+	ok = (err == nil)
+	if ok != true {
+		return ok
+	}
+	return ok
+}
+
+// HasDirectory checks that a supported emojipedia folder exists.
+func HasDirectory(name string) (ok bool) {
+	_, ok = folders[name]
+	if ok != true {
+		return ok
+	}
+	ok = hasFile(name)
+	return ok
+}
+
+// HasFile checks that a supported emojipedia file exists.
+func HasFile(name string) (ok bool) {
+	_, ok = files[name]
+	if ok != true {
+		return ok
+	}
+	if ok = strings.HasSuffix(name, ".json"); ok {
+		name = filepath.Join(strings.TrimSuffix(name, ".json"), name)
+	} else if ok = strings.HasSuffix(name, ".html"); ok {
+		name = filepath.Join(strings.TrimSuffix(name, ".html"), name)
+	}
+	ok = hasFile(name)
+	return ok
+}
 
 // NewCategory makes an Emoji category.
 func NewCategory(anchor string, emoji *Strings, href string, position int, name string, number int, subcategories *Strings) (category *Category) {
@@ -296,7 +343,7 @@ func NewUnicodeOrgHTMLDump() (dump []byte, ok bool) {
 
 // OpenEmojipediaFile opens a file made by the Emojipedia program.
 func OpenEmojipediaFile(name string) (bytes []byte, ok bool) {
-	_, ok = filenames[name]
+	_, ok = files[name]
 	if ok != true {
 		return nil, ok
 	}
@@ -379,9 +426,21 @@ func OpenSubcategorizationFromFile() (subcategorization *Subcategorization, ok b
 	return subcategorization, ok
 }
 
+// OpenUnicodesFromFile opens a stored unicode.org HTML file.
+func OpenUnicodesFromFile() (document *goquery.Document, ok bool) {
+	reader, err := os.Open(filepath.Join(Storagepath, UnicodeFolder, UnicodeFile))
+	ok = (err == nil)
+	if ok != true {
+		return nil, ok
+	}
+	document, err = goquery.NewDocumentFromReader(reader)
+	ok = (err == nil)
+	return document, ok
+}
+
 // RemoveEmojipediaFile removes a file made by the Emojipedia program.
 func RemoveEmojipediaFile(name string) (ok bool) {
-	_, ok = filenames[name]
+	_, ok = files[name]
 	if ok != true {
 		return ok
 	}
