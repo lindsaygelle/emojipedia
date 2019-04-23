@@ -17,8 +17,4 @@ func TestEncyclopedia(t *testing.T) {
 	if ok != true {
 		t.Fatalf("emojipedia.Encyclopedia is empty")
 	}
-	ok = emojipedia.StoreEncyclopediaAsJSON(encyclopedia)
-	if ok != true {
-		t.Fatalf("emojipedia.Encyclopedia unable to deconstruct and store.")
-	}
 }

@@ -2,6 +2,7 @@ package emojipedia
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
@@ -178,6 +179,9 @@ func NewEncyclopediaFromDocument(document *goquery.Document) (encyclopedia *Ency
 				keywords.Push(strings.TrimSpace(substring))
 			}
 		})
+		if len(name) == 0 {
+			return
+		}
 		codes.Each(func(i int, code string) {
 			replacement := "000"
 			if len(code) == 6 {
@@ -303,6 +307,7 @@ func OpenEmojipediaFile(name string) (bytes []byte, ok bool) {
 		return nil, ok
 	}
 	bytes, err = ioutil.ReadAll(reader)
+	reader.Close()
 	ok = (err == nil)
 	if ok != true {
 		return nil, ok
@@ -322,6 +327,28 @@ func OpenCategorizationFromFile() (categorization *Categorization, ok bool) {
 		return nil, ok
 	}
 	return categorization, ok
+}
+
+// OpenEmojiFromFile opens a stored Emoji.
+func OpenEmojiFromFile(name string) (emoji *Emoji, ok bool) {
+	filename := filepath.Join(Storagepath, EncyclopediaFolder, (name + ".json"))
+	reader, err := os.Open(filename)
+	ok = (err == nil)
+	if ok != true {
+		return nil, ok
+	}
+	bytes, err := ioutil.ReadAll(reader)
+	reader.Close()
+	ok = (err == nil)
+	if ok != true {
+		return nil, ok
+	}
+	emoji = &Emoji{}
+	ok = (json.Unmarshal(bytes, emoji) == nil)
+	if ok != true {
+		return nil, ok
+	}
+	return emoji, ok
 }
 
 // OpenEncyclopediaFromFile opens a stored encyclopedia file.
@@ -371,6 +398,16 @@ func RemoveCategorizationJSON() (ok bool) {
 		return ok
 	}
 	ok = (os.Mkdir(filename, FileMode) == nil)
+	return ok
+}
+
+// RemoveEmojiJSON removes a stored emoji JSON.
+func RemoveEmojiJSON(name string) (ok bool) {
+	filename := filepath.Join(Storagepath, EncyclopediaFolder, (name + ".json"))
+	fmt.Println(filename)
+	err := os.Remove(filename)
+	fmt.Println(err)
+	ok = (err == nil)
 	return ok
 }
 
