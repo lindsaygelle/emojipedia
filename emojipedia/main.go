@@ -2,7 +2,6 @@ package emojipedia
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
@@ -515,8 +514,8 @@ func RemoveEmojipediaFile(name string) (ok bool) {
 	return ok
 }
 
-// RemoveCategorizationJSON removes stored categorization JSON.
-func RemoveCategorizationJSON() (ok bool) {
+// RemoveCategorizationFile removes stored categorization JSON.
+func RemoveCategorizationFile() (ok bool) {
 	filename := filepath.Join(Storagepath, CategorizationFolder)
 	ok = (os.RemoveAll(filename) == nil)
 	if ok != true {
@@ -526,18 +525,16 @@ func RemoveCategorizationJSON() (ok bool) {
 	return ok
 }
 
-// RemoveEmojiJSON removes a stored emoji JSON.
-func RemoveEmojiJSON(name string) (ok bool) {
+// RemoveEmojiFile removes a stored emoji JSON.
+func RemoveEmojiFile(name string) (ok bool) {
 	filename := filepath.Join(Storagepath, EncyclopediaFolder, (name + ".json"))
-	fmt.Println(filename)
 	err := os.Remove(filename)
-	fmt.Println(err)
 	ok = (err == nil)
 	return ok
 }
 
-// RemoveEncyclopediaJSON removes stored encyclopedia JSON.
-func RemoveEncyclopediaJSON() (ok bool) {
+// RemoveEncyclopediaFile removes stored encyclopedia JSON.
+func RemoveEncyclopediaFile() (ok bool) {
 	filename := filepath.Join(Storagepath, EncyclopediaFolder)
 	ok = (os.RemoveAll(filename) == nil)
 	if ok != true {
@@ -547,8 +544,8 @@ func RemoveEncyclopediaJSON() (ok bool) {
 	return ok
 }
 
-// RemoveSubcategorizationJSON removes stored subcategorization JSON.
-func RemoveSubcategorizationJSON() (ok bool) {
+// RemoveSubcategorizationFile removes stored subcategorization JSON.
+func RemoveSubcategorizationFile() (ok bool) {
 	filename := filepath.Join(Storagepath, SubcategorizationFolder)
 	ok = (os.RemoveAll(filename) == nil)
 	if ok != true {

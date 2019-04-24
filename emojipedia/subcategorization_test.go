@@ -7,9 +7,9 @@ import (
 )
 
 func TestSubcategorization(t *testing.T) {
-	doc, ok := emojipedia.OpenUnicodesFromFile()
+	doc, ok := emojipedia.OpenUnicodesFile()
 	if ok != true {
-		t.Fatalf("unicode.html does not exist")
+		t.Fatalf("%s does not exist", emojipedia.UnicodeFile)
 	}
 	subcategorization := emojipedia.NewSubcategorizationFromDocument(doc)
 	ok = (subcategorization.Len() != 0)

@@ -1,7 +1,6 @@
 package emojipedia_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/gellel/emojipedia/emojipedia"
@@ -14,13 +13,12 @@ func TestEmoji(t *testing.T) {
 	if ok != true {
 		t.Fatalf("emojipedia.StoreEmojiAsJSON did not NIL.json")
 	}
-	emoji, ok = emojipedia.OpenEmojiFromFile(emoji.Name)
-	fmt.Println(emoji)
+	emoji, ok = emojipedia.OpenEmojiFile(emoji.Name)
 	if ok != true {
 		t.Fatalf("emojipedia.OpenEmojiFromFile did not open NIL.json")
 	}
-	ok = emojipedia.RemoveEmojiJSON(emoji.Name)
+	ok = emojipedia.RemoveEmojiFile(emoji.Name)
 	if ok != true {
-		t.Fatalf("emojipedia.RemoveEmojiJSON did not remove NIL.json")
+		t.Fatalf("emojipedia.RemoveEmojiFile did not remove NIL.json")
 	}
 }

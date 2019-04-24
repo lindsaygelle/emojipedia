@@ -7,7 +7,7 @@ import (
 )
 
 func TestCategorization(t *testing.T) {
-	doc, ok := emojipedia.OpenUnicodesFromFile()
+	doc, ok := emojipedia.OpenUnicodesFile()
 	if ok != true {
 		t.Fatalf("unicode.html does not exist")
 	}

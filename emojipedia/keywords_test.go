@@ -4,11 +4,10 @@ import (
 	"testing"
 
 	"github.com/gellel/emojipedia/emojipedia"
-	"github.com/gellel/emojipedia/files"
 )
 
 func TestKeywords(t *testing.T) {
-	doc, exists := files.HTML(files.Unicode)
+	doc, exists := emojipedia.OpenUnicodesFile()
 	if exists != true {
 		t.Fatalf("required document does not exist")
 	}

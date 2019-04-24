@@ -7,9 +7,9 @@ import (
 )
 
 func TestEncyclopedia(t *testing.T) {
-	doc, ok := emojipedia.OpenUnicodesFromFile()
+	doc, ok := emojipedia.OpenUnicodesFile()
 	if ok != true {
-		t.Fatalf("unicode.html does not exist")
+		t.Fatalf("%s does not exist", emojipedia.UnicodeFile)
 	}
 	encyclopedia := emojipedia.NewEncyclopediaFromDocument(doc)
 	ok = (encyclopedia.Len() != 0)
