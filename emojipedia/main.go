@@ -121,6 +121,24 @@ func HasFile(name string) (ok bool) {
 	return ok
 }
 
+// HasCategorizationFile checks that the categorization JSON file exists.
+func HasCategorizationFile() (ok bool) {
+	ok = HasFile(CategorizationFile)
+	return ok
+}
+
+// HasKeywordsFile checks that the keywords JSON file exists.
+func HasKeywordsFile() (ok bool) {
+	ok = HasFile(KeywordsFile)
+	return ok
+}
+
+// HasSubcategorizationFile checks that the subcategorization JSON file exists.
+func HasSubcategorizationFile() (ok bool) {
+	ok = HasFile(SubcategorizationFile)
+	return ok
+}
+
 // NewCategory makes an Emoji category.
 func NewCategory(anchor string, emoji *Strings, href string, position int, name string, number int, subcategories *Strings) (category *Category) {
 	category = &Category{anchor, emoji, href, position, name, number, subcategories}
@@ -321,6 +339,48 @@ func NewSubcategorizationFromDocument(document *goquery.Document) (subcategoriza
 	return subcategorization
 }
 
+// NewEmojipediaOrgHTMLRequest requests the emojipedia.org page for the emoji name and creates a GoQuery DOM.
+func NewEmojipediaOrgHTMLRequest(name string) (document *goquery.Document, ok bool) {
+	resp, err := http.Get(EmojipediaOrgHref + name)
+	ok = (err == nil)
+	if ok != true {
+		return nil, ok
+	}
+	defer resp.Body.Close()
+	ok = (resp.StatusCode == 200)
+	if ok != true {
+		return nil, ok
+	}
+	document, err = goquery.NewDocumentFromReader(resp.Body)
+	ok = (err == nil)
+	if ok != true {
+		return nil, ok
+	}
+	return document, ok
+}
+
+// NewEmojiDescriptionFromDocument sets an emoji's description from a GoQuery document.
+func NewEmojiDescriptionFromDocument(name string, document *goquery.Document) (ok bool) {
+	paragraphs := &Strings{}
+	document.Find("section.description").Each(func(i int, selection *goquery.Selection) {
+		selection.Find("p").Each(func(j int, s *goquery.Selection) {
+			paragraph := strings.Replace(strings.TrimSpace(s.Text()), "\n", " ", -1)
+			paragraphs.Push(paragraph)
+		})
+	})
+	ok = (paragraphs.Len() > 0)
+	if ok != true {
+		return ok
+	}
+	emoji, ok := OpenEmojiFile(name)
+	if ok != true {
+		return ok
+	}
+	emoji.Description = paragraphs.Join()
+	ok = StoreEmojiAsJSON(emoji)
+	return ok
+}
+
 // NewUnicodeOrgHTMLDump requests the unicode.org data from the net and dumps the HTTP response.
 func NewUnicodeOrgHTMLDump() (dump []byte, ok bool) {
 	resp, err := http.Get(UnicodeOrgHref)
@@ -362,8 +422,8 @@ func OpenEmojipediaFile(name string) (bytes []byte, ok bool) {
 	return bytes, ok
 }
 
-// OpenCategorizationFromFile opens a stored categorization file.
-func OpenCategorizationFromFile() (categorization *Categorization, ok bool) {
+// OpenCategorizationFile opens a stored categorization file.
+func OpenCategorizationFile() (categorization *Categorization, ok bool) {
 	bytes, ok := OpenEmojipediaFile(CategorizationFile)
 	if ok != true {
 		return nil, ok
@@ -376,8 +436,8 @@ func OpenCategorizationFromFile() (categorization *Categorization, ok bool) {
 	return categorization, ok
 }
 
-// OpenEmojiFromFile opens a stored Emoji.
-func OpenEmojiFromFile(name string) (emoji *Emoji, ok bool) {
+// OpenEmojiFile opens a stored Emoji.
+func OpenEmojiFile(name string) (emoji *Emoji, ok bool) {
 	filename := filepath.Join(Storagepath, EncyclopediaFolder, (name + ".json"))
 	reader, err := os.Open(filename)
 	ok = (err == nil)
@@ -398,22 +458,28 @@ func OpenEmojiFromFile(name string) (emoji *Emoji, ok bool) {
 	return emoji, ok
 }
 
-// OpenEncyclopediaFromFile opens a stored encyclopedia file.
-func OpenEncyclopediaFromFile() (encyclopedia *Encyclopedia, ok bool) {
-	bytes, ok := OpenEmojipediaFile(EncyclopediaFile)
+// OpenEncyclopediaFile opens a stored encyclopedia file.
+func OpenEncyclopediaFile() (encyclopedia *Encyclopedia, ok bool) {
+	filename := filepath.Join(Storagepath, EncyclopediaFolder)
+	files, err := ioutil.ReadDir(filename)
+	ok = (err == nil)
 	if ok != true {
 		return nil, ok
 	}
 	encyclopedia = &Encyclopedia{}
-	ok = (json.Unmarshal(bytes, encyclopedia) == nil)
-	if ok != true {
-		return nil, ok
+	for _, f := range files {
+		name := strings.TrimSuffix(f.Name(), ".json")
+		emoji, ok := OpenEmojiFile(name)
+		if ok != true {
+			return nil, ok
+		}
+		encyclopedia.Assign(emoji)
 	}
 	return encyclopedia, ok
 }
 
-// OpenSubcategorizationFromFile opens a stored subcategorization file.
-func OpenSubcategorizationFromFile() (subcategorization *Subcategorization, ok bool) {
+// OpenSubcategorizationFile opens a stored subcategorization file.
+func OpenSubcategorizationFile() (subcategorization *Subcategorization, ok bool) {
 	bytes, ok := OpenEmojipediaFile(SubcategorizationFile)
 	if ok != true {
 		return nil, ok
@@ -426,8 +492,8 @@ func OpenSubcategorizationFromFile() (subcategorization *Subcategorization, ok b
 	return subcategorization, ok
 }
 
-// OpenUnicodesFromFile opens a stored unicode.org HTML file.
-func OpenUnicodesFromFile() (document *goquery.Document, ok bool) {
+// OpenUnicodesFile opens a stored unicode.org HTML file.
+func OpenUnicodesFile() (document *goquery.Document, ok bool) {
 	reader, err := os.Open(filepath.Join(Storagepath, UnicodeFolder, UnicodeFile))
 	ok = (err == nil)
 	if ok != true {

@@ -49,6 +49,14 @@ func (slice *Strings) Has(value string) (position int, ok bool) {
 	return -1, ok
 }
 
+func (slice *Strings) Join(s ...string) (value string) {
+	separate := strings.Join(s, "")
+	slice.Each(func(i int, s string) {
+		value = (value + separate + s)
+	})
+	return value
+}
+
 func (slice *Strings) Last() (value string) {
 	value = slice.Peek(slice.Len() - 1)
 	return value
