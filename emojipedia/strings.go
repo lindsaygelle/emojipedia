@@ -26,6 +26,18 @@ func (slice *Strings) Bounds(i int) (ok bool) {
 	return ok
 }
 
+func (slice *Strings) Drop(i int) *Strings {
+	switch i {
+	case 0:
+		*slice = (*slice)[1:]
+	case (slice.Len() - 1):
+		*slice = (*slice)[:(slice.Len() - 1)]
+	default:
+		*slice = append((*slice)[:i], (*slice)[i:]...)
+	}
+	return slice
+}
+
 func (slice *Strings) Each(f func(i int, value string)) *Strings {
 	for i, value := range *slice {
 		f(i, value)
@@ -86,6 +98,13 @@ func (slice *Strings) Push(value string) (i int) {
 func (slice *Strings) Peek(i int) (value string) {
 	value, _ = slice.Get(i)
 	return value
+}
+
+func (slice *Strings) New(s ...string) *Strings {
+	for i := range s {
+		slice.Push(s[i])
+	}
+	return slice
 }
 
 func (slice *Strings) Set(s *Strings) *Strings {

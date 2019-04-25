@@ -2,6 +2,7 @@ package emojipedia
 
 import (
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
@@ -48,6 +49,26 @@ const (
 	UnicodeOrgHref string = "https://unicode.org/emoji/charts/emoji-list.html"
 	// EmojipediaOrgHref is the resource URL emojipedia information is stored.
 	EmojipediaOrgHref string = "https://emojipedia.org/"
+)
+
+const (
+	ErrorPrefix string = "error! directory"
+	ErrorSuffix string = "does not exist!"
+)
+
+const (
+	// ErrorCategorizationFolder describes the missing categorization storage folder.
+	ErrorCategorizationFolder string = (ErrorPrefix + " " + CategorizationFolder + " " + ErrorSuffix)
+	// ErrorEncyclopediaFolder describes the missing encyclopedia storage folder.
+	ErrorEncyclopediaFolder string = (ErrorPrefix + " " + EncyclopediaFolder + " " + ErrorSuffix)
+	// ErrorKeywordsFolder describes the missing keywords storage folder.
+	ErrorKeywordsFolder string = (ErrorPrefix + " " + KeywordsFolder + " " + ErrorSuffix)
+	// ErrorPackageFolder describes the msising package folder.
+	ErrorPackageFolder string = (ErrorPrefix + " " + PackageFolder + " " + ErrorSuffix)
+	// ErrorSubcategorizationFolder describes the missing subcategorization storage folder.
+	ErrorSubcategorizationFolder string = (ErrorPrefix + " " + SubcategorizationFolder + " " + ErrorSuffix)
+	// ErrorUnicodeFolder describes the missing unicode storage folder.
+	ErrorUnicodeFolder string = (ErrorPrefix + " " + UnicodeFolder + " " + ErrorSuffix)
 )
 
 const (
@@ -124,6 +145,22 @@ func HasFile(name string) (ok bool) {
 func HasCategorizationFile() (ok bool) {
 	ok = HasFile(CategorizationFile)
 	return ok
+}
+
+// HasEncyclopediaFile checks that the enyclopedia JSON file exists.
+func HasEncyclopediaFile() (ok bool) {
+	f, err := os.Open(filepath.Join(Storagepath, EncyclopediaFolder))
+	ok = (err == nil)
+	if ok != true {
+		return ok
+	}
+	defer f.Close()
+	_, err = f.Readdirnames(1)
+	ok = (err != io.EOF)
+	if ok != true {
+		return ok
+	}
+	return true
 }
 
 // HasKeywordsFile checks that the keywords JSON file exists.
