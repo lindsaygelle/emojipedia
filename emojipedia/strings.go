@@ -45,6 +45,11 @@ func (slice *Strings) Each(f func(i int, value string)) *Strings {
 	return slice
 }
 
+func (slice *Strings) Empty() (ok bool) {
+	ok = (slice.Len() == 0)
+	return ok
+}
+
 func (slice *Strings) Get(i int) (value string, ok bool) {
 	if ok = slice.Bounds(i); ok {
 		value = (*slice)[i]

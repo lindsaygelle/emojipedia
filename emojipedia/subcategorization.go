@@ -1,6 +1,8 @@
 package emojipedia
 
-import "github.com/gellel/emojipedia/text"
+import (
+	text "github.com/gellel/emojipedia/emojipedia-text"
+)
 
 // A Subcategorization of Emoji.
 type Subcategorization map[string]*Subcategory

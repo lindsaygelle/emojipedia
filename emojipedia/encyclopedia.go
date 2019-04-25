@@ -1,6 +1,8 @@
 package emojipedia
 
-import "github.com/gellel/emojipedia/text"
+import (
+	text "github.com/gellel/emojipedia/emojipedia-text"
+)
 
 // Encyclopedia is a map of Emoji.
 type Encyclopedia map[string]*Emoji

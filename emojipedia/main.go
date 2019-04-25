@@ -2,6 +2,7 @@ package emojipedia
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -13,7 +14,8 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gellel/emojipedia/text"
+
+	text "github.com/gellel/emojipedia/emojipedia-text"
 )
 
 const (
@@ -52,46 +54,12 @@ const (
 )
 
 const (
-	errorFilePrefix   string = "error! file"
-	errorFileSuffix   string = "does not exist!"
-	errorFolderPrefix string = "error! directory"
-	errorFolderSuffix string = "does not exist!"
-)
-
-const (
-	// ErrorCategorizationFolder describes a missing categorization storage folder.
-	ErrorCategorizationFolder string = (errorFolderPrefix + " " + CategorizationFolder + " " + errorFolderSuffix)
-	// ErrorEncyclopediaFolder describes a missing encyclopedia storage folder.
-	ErrorEncyclopediaFolder string = (errorFolderPrefix + " " + EncyclopediaFolder + " " + errorFolderSuffix)
-	// ErrorKeywordsFolder describes a missing keywords storage folder.
-	ErrorKeywordsFolder string = (errorFolderPrefix + " " + KeywordsFolder + " " + errorFolderSuffix)
-	// ErrorPackageFolder describes a msising package folder.
-	ErrorPackageFolder string = (errorFolderPrefix + " " + PackageFolder + " " + errorFolderSuffix)
-	// ErrorSubcategorizationFolder describes a missing subcategorization storage folder.
-	ErrorSubcategorizationFolder string = (errorFolderPrefix + " " + SubcategorizationFolder + " " + errorFolderSuffix)
-	// ErrorUnicodeFolder describes a missing unicode storage folder.
-	ErrorUnicodeFolder string = (errorFolderPrefix + " " + UnicodeFolder + " " + errorFolderSuffix)
-)
-
-const (
-	// ErrorCategorizationFile describes a missing categorization file.
-	ErrorCategorizationFile string = (errorFilePrefix + " " + CategorizationFile + " " + errorFileSuffix)
-	// ErrorEncyclopediaFile describes a missing encyclopedia file.
-	ErrorEncyclopediaFile string = (errorFilePrefix + " " + EncyclopediaFile + " " + errorFileSuffix)
-	// ErrorKeywordsFile describes a missing keywords file.
-	ErrorKeywordsFile string = (errorFilePrefix + " " + KeywordsFile + " " + errorFileSuffix)
-	// ErrorSubcategorizationFile describes a missing subcategorization file.
-	ErrorSubcategorizationFile string = (errorFilePrefix + " " + SubcategorizationFile + " " + errorFileSuffix)
-	// ErrorUnicodeFile describes a missing unicode file.
-	ErrorUnicodeFile string = (errorFilePrefix + " " + UnicodeFile + " " + errorFileSuffix)
-)
-
-const (
 	// FileMode is the setting for which JSON files are stored.
 	FileMode os.FileMode = 0644
 )
 
 var (
+	name       = "emojipedia"
 	_, b, _, _ = runtime.Caller(0)
 	// Basepath is the directory of the package.
 	Basepath = filepath.Dir(b)
@@ -99,6 +67,30 @@ var (
 	Rootpath = filepath.Dir(Basepath)
 	// Storagepath is the directory of the program files.
 	Storagepath = filepath.Join(Rootpath, PackageFolder)
+	// Categorizationpath is the direct of the categorization file.
+	Categorizationpath = filepath.Join(Storagepath, CategorizationFolder)
+	// Encyclopediapath is the direct of the encyclopedia file.
+	Encyclopediapath = filepath.Join(Storagepath, EncyclopediaFile)
+	// Keywordspath is the direct of the keywords file.
+	Keywordspath = filepath.Join(Storagepath, KeywordsFolder)
+)
+
+var (
+	// ErrorArgumentTemplate is the base string used to build argument error messages.
+	ErrorArgumentTemplate = name + ": error. \"%s\" is not a supported command. please try again."
+)
+
+var (
+	// ErrorFileTemplate is the base string used to build file error messages.
+	ErrorFileTemplate = name + ": error. \"%s\" is missing.\nprogram checked directory \"%s\".\nplease use the appropriate program ($ emojipedia %s) to create this file and try again."
+	// ErrorCategorizationFile is the message that identifies a missing categorization file.
+	ErrorCategorizationFile = fmt.Sprintf(ErrorFileTemplate, CategorizationFile, Categorizationpath, CategorizationFolder)
+	// ErrorKeywordsFile is the message that identifies a missing keywords file.
+	ErrorKeywordsFile = fmt.Sprintf(ErrorFileTemplate, KeywordsFile, Keywordspath, KeywordsFolder)
+	// ErrorSubcategorizationFile is the message that identifies a missing categorization file.
+	ErrorSubcategorizationFile = fmt.Sprintf(ErrorFileTemplate, SubcategorizationFile, SubcategorizationFolder, KeywordsFolder)
+	// ErrorUnicodeFile is the message that identifies a missing unicode file.
+	ErrorUnicodeFile = fmt.Sprintf(ErrorFileTemplate, UnicodeFile, UnicodeFolder, UnicodeFolder)
 )
 
 var (
@@ -160,20 +152,6 @@ func HasFile(name string) (ok bool) {
 func HasCategorizationFile() (ok bool) {
 	ok = HasFile(CategorizationFile)
 	return ok
-}
-
-// HasCategorizationFolder checks that the categorization folder exists.
-func HasCategorizationFolder() (message string, ok bool) {
-	ok = HasDirectory(Storagepath)
-	if ok != true {
-		return ErrorPackageFolder, ok
-	}
-	filename := filepath.Join(Storagepath, CategorizationFolder)
-	ok = HasDirectory(filename)
-	if ok != true {
-		return ErrorCategorizationFolder, ok
-	}
-	return message, ok
 }
 
 // HasEncyclopediaFile checks that the enyclopedia JSON file exists.
@@ -341,6 +319,28 @@ func NewEncyclopediaFromDocument(document *goquery.Document) (encyclopedia *Ency
 		encyclopedia.Assign(emoji)
 	})
 	return encyclopedia
+}
+
+// NewFileInfo makes a new FileInfo.
+func NewFileInfo(folder, name string) (fileinfo *FileInfo, ok bool) {
+	filename := filepath.Join(Storagepath, folder, name)
+	info, err := os.Stat(filename)
+	ok = (err == nil)
+	if ok != true {
+		return nil, ok
+	}
+	bytes := int(info.Size())
+	kilobytes := (bytes / 1024)
+	megabytes := (kilobytes / 1024)
+	fileinfo = &FileInfo{
+		Directory: folder,
+		Format:    strings.Split(filename, ".")[1],
+		Name:      name,
+		Size: FileSize{
+			Bytes:     bytes,
+			Kilobytes: kilobytes,
+			Megabytes: megabytes}}
+	return fileinfo, ok
 }
 
 // NewKeywordsFromDocument makes a Emoji keywords from a GoQuery document.

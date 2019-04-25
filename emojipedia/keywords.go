@@ -1,7 +1,7 @@
 package emojipedia
 
 import (
-	"github.com/gellel/emojipedia/text"
+	text "github.com/gellel/emojipedia/emojipedia-text"
 )
 
 // Keywords is a map of string slices.
