@@ -52,23 +52,38 @@ const (
 )
 
 const (
-	ErrorPrefix string = "error! directory"
-	ErrorSuffix string = "does not exist!"
+	errorFilePrefix   string = "error! file"
+	errorFileSuffix   string = "does not exist!"
+	errorFolderPrefix string = "error! directory"
+	errorFolderSuffix string = "does not exist!"
 )
 
 const (
-	// ErrorCategorizationFolder describes the missing categorization storage folder.
-	ErrorCategorizationFolder string = (ErrorPrefix + " " + CategorizationFolder + " " + ErrorSuffix)
-	// ErrorEncyclopediaFolder describes the missing encyclopedia storage folder.
-	ErrorEncyclopediaFolder string = (ErrorPrefix + " " + EncyclopediaFolder + " " + ErrorSuffix)
-	// ErrorKeywordsFolder describes the missing keywords storage folder.
-	ErrorKeywordsFolder string = (ErrorPrefix + " " + KeywordsFolder + " " + ErrorSuffix)
-	// ErrorPackageFolder describes the msising package folder.
-	ErrorPackageFolder string = (ErrorPrefix + " " + PackageFolder + " " + ErrorSuffix)
-	// ErrorSubcategorizationFolder describes the missing subcategorization storage folder.
-	ErrorSubcategorizationFolder string = (ErrorPrefix + " " + SubcategorizationFolder + " " + ErrorSuffix)
-	// ErrorUnicodeFolder describes the missing unicode storage folder.
-	ErrorUnicodeFolder string = (ErrorPrefix + " " + UnicodeFolder + " " + ErrorSuffix)
+	// ErrorCategorizationFolder describes a missing categorization storage folder.
+	ErrorCategorizationFolder string = (errorFolderPrefix + " " + CategorizationFolder + " " + errorFolderSuffix)
+	// ErrorEncyclopediaFolder describes a missing encyclopedia storage folder.
+	ErrorEncyclopediaFolder string = (errorFolderPrefix + " " + EncyclopediaFolder + " " + errorFolderSuffix)
+	// ErrorKeywordsFolder describes a missing keywords storage folder.
+	ErrorKeywordsFolder string = (errorFolderPrefix + " " + KeywordsFolder + " " + errorFolderSuffix)
+	// ErrorPackageFolder describes a msising package folder.
+	ErrorPackageFolder string = (errorFolderPrefix + " " + PackageFolder + " " + errorFolderSuffix)
+	// ErrorSubcategorizationFolder describes a missing subcategorization storage folder.
+	ErrorSubcategorizationFolder string = (errorFolderPrefix + " " + SubcategorizationFolder + " " + errorFolderSuffix)
+	// ErrorUnicodeFolder describes a missing unicode storage folder.
+	ErrorUnicodeFolder string = (errorFolderPrefix + " " + UnicodeFolder + " " + errorFolderSuffix)
+)
+
+const (
+	// ErrorCategorizationFile describes a missing categorization file.
+	ErrorCategorizationFile string = (errorFilePrefix + " " + CategorizationFile + " " + errorFileSuffix)
+	// ErrorEncyclopediaFile describes a missing encyclopedia file.
+	ErrorEncyclopediaFile string = (errorFilePrefix + " " + EncyclopediaFile + " " + errorFileSuffix)
+	// ErrorKeywordsFile describes a missing keywords file.
+	ErrorKeywordsFile string = (errorFilePrefix + " " + KeywordsFile + " " + errorFileSuffix)
+	// ErrorSubcategorizationFile describes a missing subcategorization file.
+	ErrorSubcategorizationFile string = (errorFilePrefix + " " + SubcategorizationFile + " " + errorFileSuffix)
+	// ErrorUnicodeFile describes a missing unicode file.
+	ErrorUnicodeFile string = (errorFilePrefix + " " + UnicodeFile + " " + errorFileSuffix)
 )
 
 const (
@@ -147,6 +162,20 @@ func HasCategorizationFile() (ok bool) {
 	return ok
 }
 
+// HasCategorizationFolder checks that the categorization folder exists.
+func HasCategorizationFolder() (message string, ok bool) {
+	ok = HasDirectory(Storagepath)
+	if ok != true {
+		return ErrorPackageFolder, ok
+	}
+	filename := filepath.Join(Storagepath, CategorizationFolder)
+	ok = HasDirectory(filename)
+	if ok != true {
+		return ErrorCategorizationFolder, ok
+	}
+	return message, ok
+}
+
 // HasEncyclopediaFile checks that the enyclopedia JSON file exists.
 func HasEncyclopediaFile() (ok bool) {
 	f, err := os.Open(filepath.Join(Storagepath, EncyclopediaFolder))
@@ -172,6 +201,12 @@ func HasKeywordsFile() (ok bool) {
 // HasSubcategorizationFile checks that the subcategorization JSON file exists.
 func HasSubcategorizationFile() (ok bool) {
 	ok = HasFile(SubcategorizationFile)
+	return ok
+}
+
+// HasUnicodeFile checks that the uncode HTML file exists.
+func HasUnicodeFile() (ok bool) {
+	ok = HasFile(UnicodeFile)
 	return ok
 }
 
