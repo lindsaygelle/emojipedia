@@ -3,32 +3,34 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
-	"runtime"
 
-	"github.com/gellel/emojipedia/x"
+	"github.com/gellel/emojipedia/emojipedia"
 
-	"github.com/gellel/emojipedia/manifest"
-
-	files "github.com/gellel/emojipedia/emojipedia-files"
-	get "github.com/gellel/emojipedia/emojipedia-get"
-	web "github.com/gellel/emojipedia/emojipedia-web"
-)
-
-const filename = "manifest.json"
-
-var (
-	_, file, _, _ = runtime.Caller(0)
-	dir           = filepath.Dir(file)
-	m             = manifest.NewManifest(filepath.Join(dir, filename))
-	routines      = x.NewRoutines(files.Export, get.Export, web.Export)
-	runner        = (&x.Runner{}).Use(routines)
+	unicodes "github.com/gellel/emojipedia/unicode-org"
 )
 
 func main() {
-
-	ok := runner.Next(os.Args[1]).Call(m, []string{os.Args[1]}, os.Args[2:])
-	if ok != true {
-		fmt.Println("help msg.")
+	var (
+		args     = (&emojipedia.Strings{}).New(os.Args[1:]...)
+		argument = args.Peek(0)
+	)
+	switch argument {
+	case "", "-h", "--help":
+	case "-v", "--version":
+		fmt.Println(emojipedia.VersionString)
+	case "-a", "--about":
+		fmt.Println("about")
+	case emojipedia.CategorizationKey:
+		//categories.Go(args.Drop(0))
+	case emojipedia.EmojiKey:
+		//emoji.Go(args.Drop(0))
+	case emojipedia.KeywordsKey:
+		//keywords.Go(args.Drop(0))
+	case emojipedia.SubcategorizationKey:
+		//subcategories.Go(args.Drop(0))
+	case emojipedia.UnicodeKey:
+		unicodes.Go(args.Drop(0))
+	default:
+		fmt.Println(fmt.Sprintf(emojipedia.ErrorArgumentTemplate, argument))
 	}
 }

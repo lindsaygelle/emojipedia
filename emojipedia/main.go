@@ -19,31 +19,43 @@ import (
 )
 
 const (
-	// CategorizationFolder is the name for the stored categorization folder.
-	CategorizationFolder string = "categorization"
-	// EncyclopediaFolder is the name for the stored encyclopedia folder.
-	EncyclopediaFolder string = "encyclopedia"
-	// KeywordsFolder is the name for the stored keywords folder.
-	KeywordsFolder string = "keywords"
-	// SubcategorizationFolder is the name for the stored subcategorization folder.
-	SubcategorizationFolder string = "subcategorization"
-	// UnicodeFolder is the name for the stored unicode HTML folder.
-	UnicodeFolder string = "unicode"
-	// PackageFolder is the directory of the Emojipedia files.
-	PackageFolder string = "emojipedia-storage"
+	name    = "emojipedia"
+	version = 1.0
+)
+
+var (
+	// VersionNumber is the numeric program number.
+	VersionNumber = version
+	// VersionString is the current program version.
+	VersionString = ("emojipedia version" + " " + strconv.FormatFloat(version, 'f', 2, 64))
+)
+
+const (
+	// CategorizationKey is the name for the stored categorization folder or namespace.
+	CategorizationKey string = "categorization"
+	// EmojiKey is the name for the emoji folder or namespace.
+	EmojiKey string = "emoji"
+	// EncyclopediaKey is the name for the stored encyclopedia folder or namespace.
+	EncyclopediaKey string = "encyclopedia"
+	// KeywordsKey is the name for the stored keywords folder or namespace.
+	KeywordsKey string = "keywords"
+	// SubcategorizationKey is the name for the stored subcategorization folder or namespace.
+	SubcategorizationKey string = "subcategorization"
+	// UnicodeKey is the name for the stored unicode HTML folder or namespace.
+	UnicodeKey string = "unicode"
 )
 
 const (
 	// CategorizationFile is the name for the stored categorization JSON file.
-	CategorizationFile string = (CategorizationFolder + ".json")
+	CategorizationFile string = (CategorizationKey + ".json")
 	// EncyclopediaFile is the name for the stored encyclopedia JSON file.
-	EncyclopediaFile string = (EncyclopediaFolder + ".json")
+	EncyclopediaFile string = (EncyclopediaKey + ".json")
 	// KeywordsFile is the name for the stored keywords JSON file.
-	KeywordsFile string = (KeywordsFolder + ".json")
+	KeywordsFile string = (KeywordsKey + ".json")
 	// SubcategorizationFile is the name for the stored subcategorization JSON file.
-	SubcategorizationFile string = (SubcategorizationFolder + ".json")
+	SubcategorizationFile string = (SubcategorizationKey + ".json")
 	// UnicodeFile is the name for the stored unicode HTML file.
-	UnicodeFile string = (UnicodeFolder + ".html")
+	UnicodeFile string = (UnicodeKey + ".html")
 )
 
 const (
@@ -59,38 +71,37 @@ const (
 )
 
 var (
-	name       = "emojipedia"
 	_, b, _, _ = runtime.Caller(0)
 	// Basepath is the directory of the package.
 	Basepath = filepath.Dir(b)
 	// Rootpath is the direct of the main package.
 	Rootpath = filepath.Dir(Basepath)
 	// Storagepath is the directory of the program files.
-	Storagepath = filepath.Join(Rootpath, PackageFolder)
+	Storagepath = filepath.Join(Rootpath, "emojipedia-storage")
 	// Categorizationpath is the direct of the categorization file.
-	Categorizationpath = filepath.Join(Storagepath, CategorizationFolder)
+	Categorizationpath = filepath.Join(Storagepath, CategorizationKey)
 	// Encyclopediapath is the direct of the encyclopedia file.
 	Encyclopediapath = filepath.Join(Storagepath, EncyclopediaFile)
 	// Keywordspath is the direct of the keywords file.
-	Keywordspath = filepath.Join(Storagepath, KeywordsFolder)
+	Keywordspath = filepath.Join(Storagepath, KeywordsKey)
 )
 
 var (
 	// ErrorArgumentTemplate is the base string used to build argument error messages.
-	ErrorArgumentTemplate = name + ": error. \"%s\" is not a supported command. please try again."
+	ErrorArgumentTemplate = name + ": error. \"%s\" is not a supported command."
 )
 
 var (
 	// ErrorFileTemplate is the base string used to build file error messages.
 	ErrorFileTemplate = name + ": error. \"%s\" is missing.\nprogram checked directory \"%s\".\nplease use the appropriate program ($ emojipedia %s) to create this file and try again."
 	// ErrorCategorizationFile is the message that identifies a missing categorization file.
-	ErrorCategorizationFile = fmt.Sprintf(ErrorFileTemplate, CategorizationFile, Categorizationpath, CategorizationFolder)
+	ErrorCategorizationFile = fmt.Sprintf(ErrorFileTemplate, CategorizationFile, Categorizationpath, CategorizationKey)
 	// ErrorKeywordsFile is the message that identifies a missing keywords file.
-	ErrorKeywordsFile = fmt.Sprintf(ErrorFileTemplate, KeywordsFile, Keywordspath, KeywordsFolder)
+	ErrorKeywordsFile = fmt.Sprintf(ErrorFileTemplate, KeywordsFile, Keywordspath, KeywordsKey)
 	// ErrorSubcategorizationFile is the message that identifies a missing categorization file.
-	ErrorSubcategorizationFile = fmt.Sprintf(ErrorFileTemplate, SubcategorizationFile, SubcategorizationFolder, KeywordsFolder)
+	ErrorSubcategorizationFile = fmt.Sprintf(ErrorFileTemplate, SubcategorizationFile, SubcategorizationKey, KeywordsKey)
 	// ErrorUnicodeFile is the message that identifies a missing unicode file.
-	ErrorUnicodeFile = fmt.Sprintf(ErrorFileTemplate, UnicodeFile, UnicodeFolder, UnicodeFolder)
+	ErrorUnicodeFile = fmt.Sprintf(ErrorFileTemplate, UnicodeFile, UnicodeKey, UnicodeKey)
 )
 
 var (
@@ -102,11 +113,11 @@ var (
 		UnicodeFile:           1}
 
 	folders = map[string]int{
-		CategorizationFolder:    1,
-		EncyclopediaFolder:      1,
-		KeywordsFolder:          1,
-		SubcategorizationFolder: 1,
-		UnicodeFolder:           1}
+		CategorizationKey:    1,
+		EncyclopediaKey:      1,
+		KeywordsKey:          1,
+		SubcategorizationKey: 1,
+		UnicodeKey:           1}
 )
 
 func hasFile(name string) (ok bool) {
@@ -156,7 +167,7 @@ func HasCategorizationFile() (ok bool) {
 
 // HasEncyclopediaFile checks that the enyclopedia JSON file exists.
 func HasEncyclopediaFile() (ok bool) {
-	f, err := os.Open(filepath.Join(Storagepath, EncyclopediaFolder))
+	f, err := os.Open(filepath.Join(Storagepath, EncyclopediaKey))
 	ok = (err == nil)
 	if ok != true {
 		return ok
@@ -509,7 +520,7 @@ func OpenCategorizationFile() (categorization *Categorization, ok bool) {
 
 // OpenEmojiFile opens a stored Emoji.
 func OpenEmojiFile(name string) (emoji *Emoji, ok bool) {
-	filename := filepath.Join(Storagepath, EncyclopediaFolder, (name + ".json"))
+	filename := filepath.Join(Storagepath, EncyclopediaKey, (name + ".json"))
 	reader, err := os.Open(filename)
 	ok = (err == nil)
 	if ok != true {
@@ -531,7 +542,7 @@ func OpenEmojiFile(name string) (emoji *Emoji, ok bool) {
 
 // OpenEncyclopediaFile opens a stored encyclopedia file.
 func OpenEncyclopediaFile() (encyclopedia *Encyclopedia, ok bool) {
-	filename := filepath.Join(Storagepath, EncyclopediaFolder)
+	filename := filepath.Join(Storagepath, EncyclopediaKey)
 	files, err := ioutil.ReadDir(filename)
 	ok = (err == nil)
 	if ok != true {
@@ -565,7 +576,7 @@ func OpenSubcategorizationFile() (subcategorization *Subcategorization, ok bool)
 
 // OpenUnicodesFile opens a stored unicode.org HTML file.
 func OpenUnicodesFile() (document *goquery.Document, ok bool) {
-	reader, err := os.Open(filepath.Join(Storagepath, UnicodeFolder, UnicodeFile))
+	reader, err := os.Open(filepath.Join(Storagepath, UnicodeKey, UnicodeFile))
 	ok = (err == nil)
 	if ok != true {
 		return nil, ok
@@ -588,7 +599,7 @@ func RemoveEmojipediaFile(name string) (ok bool) {
 
 // RemoveCategorizationFile removes stored categorization JSON.
 func RemoveCategorizationFile() (ok bool) {
-	filename := filepath.Join(Storagepath, CategorizationFolder)
+	filename := filepath.Join(Storagepath, CategorizationKey)
 	ok = (os.RemoveAll(filename) == nil)
 	if ok != true {
 		return ok
@@ -599,7 +610,7 @@ func RemoveCategorizationFile() (ok bool) {
 
 // RemoveEmojiFile removes a stored emoji JSON.
 func RemoveEmojiFile(name string) (ok bool) {
-	filename := filepath.Join(Storagepath, EncyclopediaFolder, (name + ".json"))
+	filename := filepath.Join(Storagepath, EncyclopediaKey, (name + ".json"))
 	err := os.Remove(filename)
 	ok = (err == nil)
 	return ok
@@ -607,7 +618,7 @@ func RemoveEmojiFile(name string) (ok bool) {
 
 // RemoveEncyclopediaFile removes stored encyclopedia JSON.
 func RemoveEncyclopediaFile() (ok bool) {
-	filename := filepath.Join(Storagepath, EncyclopediaFolder)
+	filename := filepath.Join(Storagepath, EncyclopediaKey)
 	ok = (os.RemoveAll(filename) == nil)
 	if ok != true {
 		return ok
@@ -618,7 +629,7 @@ func RemoveEncyclopediaFile() (ok bool) {
 
 // RemoveSubcategorizationFile removes stored subcategorization JSON.
 func RemoveSubcategorizationFile() (ok bool) {
-	filename := filepath.Join(Storagepath, SubcategorizationFolder)
+	filename := filepath.Join(Storagepath, SubcategorizationKey)
 	ok = (os.RemoveAll(filename) == nil)
 	if ok != true {
 		return ok
@@ -634,7 +645,7 @@ func StoreCategorizationAsJSON(categorization *Categorization) (ok bool) {
 	if ok != true {
 		return ok
 	}
-	filename := filepath.Join(Storagepath, CategorizationFolder, CategorizationFile)
+	filename := filepath.Join(Storagepath, CategorizationKey, CategorizationFile)
 	ok = (ioutil.WriteFile(filename, bytes, FileMode) == nil)
 	return ok
 }
@@ -646,7 +657,7 @@ func StoreKeywordsAsJSON(keywords *Keywords) (ok bool) {
 	if ok != true {
 		return ok
 	}
-	filename := filepath.Join(Storagepath, KeywordsFolder, KeywordsFile)
+	filename := filepath.Join(Storagepath, KeywordsKey, KeywordsFile)
 	ok = (ioutil.WriteFile(filename, bytes, FileMode) == nil)
 	return ok
 }
@@ -658,7 +669,7 @@ func StoreEmojiAsJSON(emoji *Emoji) (ok bool) {
 	if ok != true {
 		return ok
 	}
-	filename := filepath.Join(Storagepath, EncyclopediaFolder, (emoji.Name + ".json"))
+	filename := filepath.Join(Storagepath, EncyclopediaKey, (emoji.Name + ".json"))
 	ok = (ioutil.WriteFile(filename, bytes, FileMode) == nil)
 	return ok
 }
@@ -678,14 +689,14 @@ func StoreSubcategorizationAsJSON(subcategorization *Subcategorization) (ok bool
 	if ok != true {
 		return ok
 	}
-	filename := filepath.Join(Storagepath, SubcategorizationFolder, SubcategorizationFile)
+	filename := filepath.Join(Storagepath, SubcategorizationKey, SubcategorizationFile)
 	ok = (ioutil.WriteFile(filename, bytes, FileMode) == nil)
 	return ok
 }
 
 // StoreUnicodeOrgFileAsHTML stores a unicode HTML file requested from the internet.
 func StoreUnicodeOrgFileAsHTML(dump *[]byte) (ok bool) {
-	filename := filepath.Join(Storagepath, UnicodeFolder, UnicodeFile)
+	filename := filepath.Join(Storagepath, UnicodeKey, UnicodeFile)
 	ok = (ioutil.WriteFile(filename, *dump, FileMode) == nil)
 	return ok
 }
