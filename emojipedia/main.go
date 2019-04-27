@@ -12,10 +12,11 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/PuerkitoBio/goquery"
-
-	text "github.com/gellel/emojipedia/emojipedia-text"
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 )
 
 const (
@@ -118,7 +119,27 @@ var (
 		KeywordsKey:          1,
 		SubcategorizationKey: 1,
 		UnicodeKey:           1}
+
+	replacements = []string{
+		" ", "-",
+		"(", "",
+		")", "",
+		"&", "and",
+		":", "",
+		",", "",
+		".", "",
+		"⊛", "",
+		"“", "",
+		"”", "",
+		"’", ""}
+
+	replacer = strings.NewReplacer(replacements...)
 )
+
+func Emojize(value string) (emoji string) {
+	r, _ := strconv.ParseInt(strings.TrimPrefix(value, "\\U"), 16, 32)
+	return fmt.Sprintf("%s", string(r))
+}
 
 func hasFile(name string) (ok bool) {
 	_, err := os.Stat(Storagepath)
@@ -225,7 +246,7 @@ func NewCategorizationFromDocument(document *goquery.Document) (categorization *
 				emoji         = &Strings{}
 				href          = (UnicodeOrgHref + anchor)
 				position      = i
-				name          = text.Normalize(s.Text())
+				name          = Normalize(s.Text())
 				number        = categorization.Len()
 				subcategories = &Strings{}
 				category      = NewCategory(anchor, emoji, href, position, name, number, subcategories)
@@ -236,14 +257,14 @@ func NewCategorizationFromDocument(document *goquery.Document) (categorization *
 		selection.Find("th.mediumhead a").Each(func(j int, s *goquery.Selection) {
 			var (
 				category, _ = categorization.Get(key)
-				subcategory = text.Normalize(s.Text())
+				subcategory = Normalize(s.Text())
 			)
 			category.Subcategories.Push(subcategory)
 		})
 		selection.Find("td").Eq(3).Each(func(j int, s *goquery.Selection) {
 			var (
 				category, _ = categorization.Get(key)
-				name        = text.Normalize(s.Text())
+				name        = Normalize(s.Text())
 			)
 			category.Emoji.Push(name)
 		})
@@ -280,10 +301,10 @@ func NewEncyclopediaFromDocument(document *goquery.Document) (encyclopedia *Ency
 			unicodes string
 		)
 		selection.Find("th.bighead a").Each(func(j int, s *goquery.Selection) {
-			category = text.Normalize(s.Text())
+			category = Normalize(s.Text())
 		})
 		selection.Find("th.mediumhead a").Each(func(j int, s *goquery.Selection) {
-			subcategory = text.Normalize(s.Text())
+			subcategory = Normalize(s.Text())
 		})
 		selection.Find("td.rchars").Each(func(j int, s *goquery.Selection) {
 			number, _ = strconv.Atoi(strings.TrimSpace(s.Text()))
@@ -297,7 +318,7 @@ func NewEncyclopediaFromDocument(document *goquery.Document) (encyclopedia *Ency
 			anchor, _ = s.Attr("href")
 		})
 		selection.Find("td.name").First().Each(func(j int, s *goquery.Selection) {
-			name = text.Normalize(s.Text())
+			name = Normalize(s.Text())
 		})
 		selection.Find("td.name").Last().Each(func(j int, s *goquery.Selection) {
 			for _, substring := range strings.Split(s.Text(), "|") {
@@ -364,10 +385,10 @@ func NewKeywordsFromDocument(document *goquery.Document) (keywords *Keywords) {
 		if len(name) == 0 {
 			return
 		}
-		name = text.Normalize(name)
+		name = Normalize(name)
 		for _, key := range strings.Split(keys, "|") {
 			key = strings.TrimSpace(key)
-			key = text.Normalize(key)
+			key = Normalize(key)
 			keywords.Append(key, name)
 		}
 	})
@@ -395,7 +416,7 @@ func NewSubcategorizationFromDocument(document *goquery.Document) (subcategoriza
 	subcategorization = &Subcategorization{}
 	document.Find("tr").Each(func(i int, selection *goquery.Selection) {
 		selection.Find("th.bighead a").Each(func(j int, s *goquery.Selection) {
-			category = text.Normalize(s.Text())
+			category = Normalize(s.Text())
 		})
 		selection.Find("th.mediumhead a").Each(func(j int, s *goquery.Selection) {
 			var (
@@ -403,7 +424,7 @@ func NewSubcategorizationFromDocument(document *goquery.Document) (subcategoriza
 				emoji       = &Strings{}
 				href        = (UnicodeOrgHref + anchor)
 				position    = i
-				name        = text.Normalize(s.Text())
+				name        = Normalize(s.Text())
 				number      = subcategorization.Len()
 				subcategory = NewSubcategory(anchor, category, emoji, href, position, name, number)
 			)
@@ -412,7 +433,7 @@ func NewSubcategorizationFromDocument(document *goquery.Document) (subcategoriza
 		})
 		selection.Find("td").Eq(3).Each(func(j int, s *goquery.Selection) {
 			var (
-				name           = text.Normalize(s.Text())
+				name           = Normalize(s.Text())
 				subcategory, _ = subcategorization.Get(key)
 			)
 			subcategory.Emoji.Push(name)
@@ -481,6 +502,25 @@ func NewUnicodeOrgHTMLDump() (dump []byte, ok bool) {
 		return nil, ok
 	}
 	return dump, ok
+}
+
+func Normalizer(r rune) (ok bool) {
+	ok = unicode.Is(unicode.Mn, r)
+	return ok
+}
+
+func Normalize(value string) (result string) {
+	transformer := transform.Chain(norm.NFD, transform.RemoveFunc(Normalizer), norm.NFC)
+	result, _, _ = transform.String(transformer, value)
+	result = replacer.Replace(strings.TrimSpace(result))
+	result = strings.ToLower(result)
+	if len(result) != 1 && strings.HasPrefix(result, "-") {
+		result = strings.TrimPrefix(result, "-")
+	}
+	if len(result) != 1 && strings.HasSuffix(result, "-") {
+		result = strings.TrimSuffix(result, "-")
+	}
+	return result
 }
 
 // OpenEmojipediaFile opens a file made by the Emojipedia program.

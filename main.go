@@ -5,11 +5,11 @@ import (
 	"os"
 
 	"github.com/gellel/emojipedia/emojipedia"
-
-	unicodes "github.com/gellel/emojipedia/unicode-org"
+	"github.com/gellel/emojipedia/x"
 )
 
 func main() {
+	fmt.Println(x.Help())
 	var (
 		args     = (&emojipedia.Strings{}).New(os.Args[1:]...)
 		argument = args.Peek(0)
@@ -20,16 +20,8 @@ func main() {
 		fmt.Println(emojipedia.VersionString)
 	case "-a", "--about":
 		fmt.Println("about")
-	case emojipedia.CategorizationKey:
-		//categories.Go(args.Drop(0))
-	case emojipedia.EmojiKey:
-		//emoji.Go(args.Drop(0))
-	case emojipedia.KeywordsKey:
-		//keywords.Go(args.Drop(0))
-	case emojipedia.SubcategorizationKey:
-		//subcategories.Go(args.Drop(0))
 	case emojipedia.UnicodeKey:
-		unicodes.Go(args.Drop(0))
+		unicodeorg(args.Drop(0))
 	default:
 		fmt.Println(fmt.Sprintf(emojipedia.ErrorArgumentTemplate, argument))
 	}

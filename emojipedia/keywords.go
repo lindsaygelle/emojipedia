@@ -1,9 +1,5 @@
 package emojipedia
 
-import (
-	text "github.com/gellel/emojipedia/emojipedia-text"
-)
-
 // Keywords is a map of string slices.
 type Keywords map[string]*Strings
 
@@ -67,7 +63,7 @@ func (keywords *Keywords) Len() (number int) {
 
 // New strings.
 func (keywords *Keywords) New(value string) (key string) {
-	key = text.Normalize(value)
+	key = Normalize(value)
 	(*keywords)[key] = &Strings{}
 	return key
 }

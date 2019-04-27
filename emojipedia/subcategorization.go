@@ -1,9 +1,5 @@
 package emojipedia
 
-import (
-	text "github.com/gellel/emojipedia/emojipedia-text"
-)
-
 // A Subcategorization of Emoji.
 type Subcategorization map[string]*Subcategory
 
@@ -57,7 +53,7 @@ func (subcategorization *Subcategorization) Len() (number int) {
 
 // New subcategory.
 func (subcategorization *Subcategorization) New(position int, value string) (key string) {
-	key = text.Normalize(value)
+	key = Normalize(value)
 	(*subcategorization)[key] = &Subcategory{}
 	return key
 }

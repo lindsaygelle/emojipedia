@@ -1,9 +1,5 @@
 package emojipedia
 
-import (
-	text "github.com/gellel/emojipedia/emojipedia-text"
-)
-
 // Encyclopedia is a map of Emoji.
 type Encyclopedia map[string]*Emoji
 
@@ -57,7 +53,7 @@ func (encyclopedia *Encyclopedia) Len() (number int) {
 
 // New Emoji.
 func (encyclopedia *Encyclopedia) New(value string) (key string) {
-	key = text.Normalize(value)
+	key = Normalize(value)
 	(*encyclopedia)[key] = &Emoji{}
 	return key
 }

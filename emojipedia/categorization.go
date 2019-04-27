@@ -1,9 +1,5 @@
 package emojipedia
 
-import (
-	text "github.com/gellel/emojipedia/emojipedia-text"
-)
-
 // Categorization is a map of category.
 type Categorization map[string]*Category
 
@@ -57,7 +53,7 @@ func (categorization *Categorization) Len() (number int) {
 
 // New category.
 func (categorization *Categorization) New(position int, value string) (key string) {
-	key = text.Normalize(value)
+	key = Normalize(value)
 	(*categorization)[key] = &Category{}
 	return key
 }
