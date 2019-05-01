@@ -78,7 +78,7 @@ var (
 	// Rootpath is the direct of the main package.
 	Rootpath = filepath.Dir(Basepath)
 	// Storagepath is the directory of the program files.
-	Storagepath = filepath.Join(Rootpath, "emojipedia-storage")
+	Storagepath = filepath.Join(Rootpath, ".package")
 	// Categorizationpath is the direct of the categorization file.
 	Categorizationpath = filepath.Join(Storagepath, CategorizationKey)
 	// Encyclopediapath is the direct of the encyclopedia file.
