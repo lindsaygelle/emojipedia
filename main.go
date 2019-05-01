@@ -1,28 +1,37 @@
 package main
 
-import (
-	"fmt"
-	"os"
+import "github.com/gellel/emojipedia/emojipedia"
 
-	"github.com/gellel/emojipedia/emojipedia"
-	"github.com/gellel/emojipedia/x"
+var (
+	categories = emojipedia.Section{
+		About: "explore bundled emoji information by category",
+		Arguments: []emojipedia.Argument{
+			emojipedia.Argument{
+				Abbreviation: "-c",
+				About:        "execute program to interface with emoji-categories",
+				Key:          "categories"}}}
+
+	emoji = emojipedia.Section{
+		About: "explore emoji specific information",
+		Arguments: []emojipedia.Argument{
+			emojipedia.Argument{
+				Abbreviation: "-e",
+				About:        "explore information by emoji-name",
+				Key:          "emoji"}}}
+
+	unicode = emojipedia.Section{
+		About: "manage content from unicode.org",
+		Arguments: []emojipedia.Argument{
+			emojipedia.Argument{
+				Abbreviation: "-u",
+				About:        "execute program to manage data from unicode.org",
+				Key:          "unicode"}}}
+
+	feature = emojipedia.Feature{
+		Sections: []emojipedia.Section{categories, emoji, unicode}}
 )
 
 func main() {
-	fmt.Println(x.Help())
-	var (
-		args     = (&emojipedia.Strings{}).New(os.Args[1:]...)
-		argument = args.Peek(0)
-	)
-	switch argument {
-	case "", "-h", "--help":
-	case "-v", "--version":
-		fmt.Println(emojipedia.VersionString)
-	case "-a", "--about":
-		fmt.Println("about")
-	case emojipedia.UnicodeKey:
-		unicodeorg(args.Drop(0))
-	default:
-		fmt.Println(fmt.Sprintf(emojipedia.ErrorArgumentTemplate, argument))
-	}
+
+	feature.Describe()
 }
