@@ -2,43 +2,38 @@ package main
 
 import (
 	"fmt"
+	"os"
 
-	"github.com/gellel/emojipedia/emojipedia"
+	"github.com/gellel/emojipedia/directory"
+
+	"github.com/gellel/emojipedia/arguments"
+	"github.com/gellel/emojipedia/pkg"
 )
 
-var (
-	unicodeOrgHTTPRequestMessage = "emojipedia: status. program is attempting to make a request to \"%s\".\ncontent response is quite large and may take awhile."
-	unicodeOrgHTTPStoreMessage   = "emojipedia: status. program storing downloaded package \"%s\" to directory \"%s\".\nthank you for being patient."
-)
-
-func unicodeorg(args *emojipedia.Strings) {
-	argument := args.Peek(0)
-	switch argument {
-	case "", "-h", "--help":
-		fmt.Println("help")
-	case "-a", "--about":
-		fmt.Println("about")
-	case "get":
-		unicodeorgBuild(args.Drop(0))
-	default:
-		fmt.Println(fmt.Sprintf(emojipedia.ErrorArgumentTemplate, argument))
-	}
-}
-
-func unicodeorgBuild(args *emojipedia.Strings) {
-	verbose := (args.Peek(0) == "-v") || (args.Peek(0) == "--verbose")
-	if verbose {
-		fmt.Println(unicodeOrgHTTPRequestMessage)
-	}
-	//dump, ok := emojipedia.NewUnicodeOrgHTMLDump()
-	//if ok != true {
-
-	//}
-	if verbose {
-		fmt.Println(unicodeOrgHTTPStoreMessage)
-	}
-	//ok = emojipedia.StoreUnicodeOrgFileAsHTML(&dump)
-	if verbose {
-		fmt.Println("x")
+func unicodeorgMain(arguments *arguments.Arguments) {
+	switch arguments.Get(0) {
+	case "build":
+		fmt.Println("attempting to build unicode-org package.")
+		if _, err := os.Stat(directory.Unicode); os.IsExist(err) {
+			fmt.Println("already built. nothing to do.")
+			os.Exit(0)
+		}
+		fmt.Println("must collect package. making http request. can take awhile.")
+		response, err := pkg.HTTP()
+		if err != nil {
+			fmt.Println("cannot collect content. encountered error.")
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		fmt.Println("http request succeeded. attempting to store.")
+		err = pkg.Write(response)
+		if err != nil {
+			fmt.Println("unable to store content. error occurred.")
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		fmt.Println("successfully stored content.")
+		fmt.Println(directory.Unicode)
+		os.Exit(0)
 	}
 }
