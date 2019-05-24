@@ -12,7 +12,7 @@ import (
 
 func unicodeorgMain(arguments *arguments.Arguments) {
 	switch arguments.Get(0) {
-	case "build":
+	case "-b", "build":
 		fmt.Println("attempting to build unicode-org package.")
 		if _, err := os.Stat(directory.Unicode); os.IsExist(err) {
 			fmt.Println("already built. nothing to do.")
@@ -35,5 +35,7 @@ func unicodeorgMain(arguments *arguments.Arguments) {
 		fmt.Println("successfully stored content.")
 		fmt.Println(directory.Unicode)
 		os.Exit(0)
+	case "-r", "remove":
+		fmt.Println("delete the unicode-org package? note - cannot build supporting dependencies without it!")
 	}
 }

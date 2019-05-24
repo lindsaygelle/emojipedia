@@ -5,15 +5,15 @@ import (
 	"os"
 
 	"github.com/gellel/emojipedia/arguments"
+	"github.com/gellel/emojipedia/categories"
 	"github.com/gellel/emojipedia/directory"
 	"github.com/gellel/emojipedia/pkg"
-	"github.com/gellel/emojipedia/subcategories"
 )
 
-func subcategoriesMain(arguments *arguments.Arguments) {
+func categoriesMain(arguments *arguments.Arguments) {
 	switch arguments.Get(0) {
 	case "-b", "build":
-		fmt.Println("attempting to build subcategories package")
+		fmt.Println("attempting to build categories package")
 		if _, err := os.Stat(directory.Unicode); os.IsNotExist(err) {
 			fmt.Println("cannot build without unicode package. please build and try again")
 			os.Exit(2)
@@ -24,27 +24,27 @@ func subcategoriesMain(arguments *arguments.Arguments) {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		subcategories.Make(document)
-		fmt.Println("successfully built subcategories")
+		categories.Make(document)
+		fmt.Println("successfully built categories")
 	case "-g", "get":
-		subcategories, err := subcategories.Open()
+		categories, err := categories.Open()
 		if err != nil {
-			fmt.Println("something went wrong when openining the subcategories package")
+			fmt.Println("something went wrong when openining the categories package")
 		}
-		subcategory, ok := subcategories.Get(arguments.Next().Get(0))
+		category, ok := categories.Get(arguments.Next().Get(0))
 		if ok != true {
-			fmt.Println("subcategory does not exist")
+			fmt.Println("category does not exist")
 			os.Exit(2)
 		}
-		subcategory.TabWriter()
+		fmt.Println(category)
 	case "-l", "list":
-		subcategories, err := subcategories.Open()
+		categories, err := categories.Open()
 		if err != nil {
-			fmt.Println("something went wrong when opening the subcategories package")
+			fmt.Println("something went wrong when opening the categories package")
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		subcategories.List()
+		categories.List()
 	case "-r", "-remove":
 
 	}

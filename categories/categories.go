@@ -1,9 +1,11 @@
 package categories
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
+	"text/tabwriter"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gellel/emojipedia/category"
@@ -166,6 +168,24 @@ func (pointer *Categories) Len() int {
 // Remove method removes a entry from the Categories if it exists. Returns a boolean to confirm if it succeeded.
 func (pointer *Categories) Remove(key string) bool {
 	return pointer.lexicon.Remove(key)
+}
+
+// List prints out all subcategories in a tabwriter.
+func (pointer *Categories) List() {
+	writer := new(tabwriter.Writer)
+	writer.Init(os.Stdout, 0, 8, 0, '\t', 0)
+	keys := []string{"category", "number", "emoji"}
+	fmt.Fprintln(writer, strings.Join(keys, "\t"))
+	fmt.Fprintln(writer, strings.Join([]string{"-", "-", "-"}, "\t"))
+	pointer.Each(func(category *category.Category) {
+		values := []string{
+			category.Name,
+			fmt.Sprintf("%v", category.Number),
+			fmt.Sprintf("%v", category.Emoji.Len())}
+		fmt.Fprintln(writer, strings.Join(values, "\t"))
+	})
+	fmt.Fprintln(writer)
+	writer.Flush()
 }
 
 // Values method returns a Slice of a given Categories's own enumerable property values,
