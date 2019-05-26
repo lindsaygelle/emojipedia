@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 
 	"github.com/gellel/emojipedia/directory"
-
 	"github.com/gellel/emojipedia/slice"
 )
 
@@ -101,6 +100,7 @@ type emoji interface {
 	SetUnicode(unicode string) *Emoji
 }
 
+// Emoji stores the contents about an emoji scraped from the unicode consortium.
 type Emoji struct {
 	Anchor      string       `json:"anchor"`
 	Category    string       `json:"category"`
@@ -116,61 +116,73 @@ type Emoji struct {
 	Unicode     string       `json:"unicode"`
 }
 
+// SetAnchor sets the Emoji.Anchor property.
 func (pointer *Emoji) SetAnchor(anchor string) *Emoji {
 	pointer.Anchor = anchor
 	return pointer
 }
 
+// SetCategory sets the Emoji.Category property.
 func (pointer *Emoji) SetCategory(category string) *Emoji {
 	pointer.Category = category
 	return pointer
 }
 
+// SetCodes sets the Emoji.Codes property.
 func (pointer *Emoji) SetCodes(codes *slice.Slice) *Emoji {
 	pointer.Codes = codes
 	return pointer
 }
 
+// SetDescription sets the Emoji.Description property.
 func (pointer *Emoji) SetDescription(description string) *Emoji {
 	pointer.Description = description
 	return pointer
 }
 
+// SetHref sets the Emoji.Href property.
 func (pointer *Emoji) SetHref(href string) *Emoji {
 	pointer.Href = href
 	return pointer
 }
 
+// SetImage sets the Emoji.Image property.
 func (pointer *Emoji) SetImage(image string) *Emoji {
 	pointer.Image = image
 	return pointer
 }
 
+// SetKeywords sets the Emoji.Keywords property.
 func (pointer *Emoji) SetKeywords(keywords *slice.Slice) *Emoji {
 	pointer.Keywords = keywords
 	return pointer
 }
 
+// SetName sets the Emoji.Name property.
 func (pointer *Emoji) SetName(name string) *Emoji {
 	pointer.Name = name
 	return pointer
 }
 
+// SetNumber sets the Emoji.Number property.
 func (pointer *Emoji) SetNumber(number int) *Emoji {
 	pointer.Number = number
 	return pointer
 }
 
+// SetPosition sets the Emoji.Position property.
 func (pointer *Emoji) SetPosition(position int) *Emoji {
 	pointer.Position = position
 	return pointer
 }
 
+// SetSubcategory sets the Emoji.Subcategory property.
 func (pointer *Emoji) SetSubcategory(subcategory string) *Emoji {
 	pointer.Subcategory = subcategory
 	return pointer
 }
 
+// SetUnicode sets the Emoji.Unicode property.
 func (pointer *Emoji) SetUnicode(unicode string) *Emoji {
 	pointer.Unicode = unicode
 	return pointer
