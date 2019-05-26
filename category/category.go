@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 
 	"github.com/gellel/emojipedia/directory"
-
 	"github.com/gellel/emojipedia/slice"
 )
 
@@ -91,6 +90,7 @@ type category interface {
 	SetSubcategories(subcategories *slice.Slice) *Category
 }
 
+// Category stores the categorical superset of the emoji data.
 type Category struct {
 	Anchor        string       `json:"anchor"`
 	Emoji         *slice.Slice `json:"emoji"`
