@@ -103,16 +103,19 @@ type Subcategory struct {
 	Position int          `json:"position"`
 }
 
+// SetAnchor sets the Subcategory.Anchor property.
 func (pointer *Subcategory) SetAnchor(anchor string) *Subcategory {
 	pointer.Anchor = anchor
 	return pointer
 }
 
+// SetCategory sets the Subcategory.Category property.
 func (pointer *Subcategory) SetCategory(category string) *Subcategory {
 	pointer.Category = category
 	return pointer
 }
 
+// SetEmoji sets the Subcategory.Emoji property.
 func (pointer *Subcategory) SetEmoji(emoji *slice.Slice) *Subcategory {
 	pointer.Emoji = emoji
 	return pointer
