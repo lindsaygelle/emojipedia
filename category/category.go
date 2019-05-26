@@ -101,36 +101,43 @@ type Category struct {
 	Subcategories *slice.Slice `json:"subcategories"`
 }
 
+// SetAnchor sets the Category.Anchor property.
 func (pointer *Category) SetAnchor(anchor string) *Category {
 	pointer.Anchor = anchor
 	return pointer
 }
 
+// SetEmoji sets the Category.Emoji property.
 func (pointer *Category) SetEmoji(emoji *slice.Slice) *Category {
 	pointer.Emoji = emoji
 	return pointer
 }
 
+// SetHref sets the Category.Href property.
 func (pointer *Category) SetHref(href string) *Category {
 	pointer.Href = href
 	return pointer
 }
 
+// SetName sets the Category.Name property.
 func (pointer *Category) SetName(name string) *Category {
 	pointer.Name = name
 	return pointer
 }
 
+// SetNumber sets the Category.Number property.
 func (pointer *Category) SetNumber(number int) *Category {
 	pointer.Number = number
 	return pointer
 }
 
+// SetPosition sets the Category.Position property.
 func (pointer *Category) SetPosition(position int) *Category {
 	pointer.Position = position
 	return pointer
 }
 
+// SetSubcategories sets the Category.Subcategories property.
 func (pointer *Category) SetSubcategories(subcategories *slice.Slice) *Category {
 	pointer.Subcategories = subcategories
 	return pointer
