@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/gellel/emojipedia/arguments"
@@ -13,6 +14,8 @@ func main() {
 		categoriesMain(arguments.Next())
 	case "-e", "emoji":
 		emojiMain(arguments.Next())
+	case "-k", "keywords":
+		keywordsMain(arguments.Next())
 	case "-s", "subcategories":
 		subcategoriesMain(arguments.Next())
 	case "-u", "unicode", "unicode-org":
