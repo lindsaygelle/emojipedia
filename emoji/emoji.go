@@ -6,9 +6,11 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"text/tabwriter"
 
 	"github.com/gellel/emojipedia/directory"
 	"github.com/gellel/emojipedia/slice"
+	"github.com/gellel/emojipedia/text"
 )
 
 var _ emoji = (*Emoji)(nil)
@@ -44,6 +46,19 @@ func Get(name string) *Emoji {
 		panic(err)
 	}
 	return emoji
+}
+
+// List formats an interface representation of an Emoji pointer for os.Stdout.
+func List(writer *tabwriter.Writer, i interface{}) {
+	emoji := i.(*Emoji)
+	fields := []interface{}{
+		text.Emojize(emoji.Unicode), "\t",
+		emoji.Name, "\t",
+		emoji.Number, "\t",
+		emoji.Category, "\t",
+		emoji.Subcategory, "\t",
+		fmt.Sprintf("[%v ...]", emoji.Keywords.Len())}
+	fmt.Fprintln(writer, fields...)
 }
 
 // Open attempts to open a Emoji from the emojipedia/emoji folder.

@@ -1,11 +1,9 @@
 package subcategories
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
-	"text/tabwriter"
 
 	"github.com/gellel/emojipedia/directory"
 
@@ -40,6 +38,14 @@ func Get() *Subcategories {
 		panic(err)
 	}
 	return subcategories
+}
+
+func List() (*lexicon.Lexicon, error) {
+	subcategories, err := Open()
+	if err != nil {
+		return nil, err
+	}
+	return subcategories.lexicon, nil
 }
 
 func Make(document *goquery.Document) {
@@ -164,25 +170,6 @@ func (pointer *Subcategories) Len() int {
 // Remove method removes a entry from the Subcategories if it exists. Returns a boolean to confirm if it succeeded.
 func (pointer *Subcategories) Remove(key string) bool {
 	return pointer.lexicon.Remove(key)
-}
-
-// List prints out all subcategories in a tabwriter.
-func (pointer *Subcategories) List() {
-	writer := new(tabwriter.Writer)
-	writer.Init(os.Stdout, 0, 8, 0, '\t', 0)
-	keys := []string{"subcategory", "category", "number", "emoji"}
-	fmt.Fprintln(writer, strings.Join(keys, "\t"))
-	fmt.Fprintln(writer, strings.Join([]string{"-", "-", "-", "-"}, "\t"))
-	pointer.Each(func(subcategory *subcategory.Subcategory) {
-		values := []string{
-			subcategory.Name,
-			subcategory.Category,
-			fmt.Sprintf("%v", subcategory.Number),
-			fmt.Sprintf("%v", subcategory.Emoji.Len())}
-		fmt.Fprintln(writer, strings.Join(values, "\t"))
-	})
-	fmt.Fprintln(writer)
-	writer.Flush()
 }
 
 // Values method returns a Slice of a given Subcategories's own enumerable property values,

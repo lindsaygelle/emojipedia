@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"text/tabwriter"
 
 	"github.com/gellel/emojipedia/directory"
 	"github.com/gellel/emojipedia/slice"
@@ -39,6 +40,18 @@ func Get(name string) *Category {
 		panic(err)
 	}
 	return category
+}
+
+// List formats an interface representation of an Category pointer for os.Stdout.
+func List(writer *tabwriter.Writer, i interface{}) {
+	category := i.(*Category)
+	fields := []interface{}{
+		category.Name, "\t",
+		category.Number, "\t",
+		category.Subcategories.Len(), "\t",
+		category.Emoji.Len()}
+
+	fmt.Fprintln(writer, fields...)
 }
 
 // Open attempts to open a Category from the emojipedia/categories folder.

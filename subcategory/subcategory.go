@@ -44,6 +44,17 @@ func Get(name string) *Subcategory {
 	return subcategory
 }
 
+// List formats an interface representation of an Category pointer for os.Stdout.
+func List(writer *tabwriter.Writer, i interface{}) {
+	subcategory := i.(*Subcategory)
+	fields := []interface{}{
+		subcategory.Name, "\t",
+		subcategory.Number, "\t",
+		subcategory.Category, "\t",
+		subcategory.Emoji.Len()}
+	fmt.Fprintln(writer, fields...)
+}
+
 // Open attempts to open a Subcategory from the emojipedia/subcategories folder.
 func Open(name string) (*Subcategory, error) {
 	filepath := filepath.Join(directory.Subcategory, fmt.Sprintf("%s.json", name))
@@ -143,18 +154,4 @@ func (pointer *Subcategory) SetNumber(number int) *Subcategory {
 func (pointer *Subcategory) SetPosition(position int) *Subcategory {
 	pointer.Position = position
 	return pointer
-}
-
-func (pointer *Subcategory) TabWriter() {
-	writer := new(tabwriter.Writer)
-	writer.Init(os.Stdout, 0, 8, 1, '\t', 0)
-	fmt.Fprintln(writer, "key", "\t", "value")
-	fmt.Fprintln(writer, "-", "\t", "-")
-	fmt.Fprintln(writer, "category", "\t", pointer.Category)
-	fmt.Fprintln(writer, "emoji", "\t", pointer.Emoji.Join(", "))
-	fmt.Fprintln(writer, "href", "\t", pointer.Href)
-	fmt.Fprintln(writer, "name", "\t", pointer.Name)
-	fmt.Fprintln(writer, "number", "\t", pointer.Number)
-	fmt.Fprintln(writer, "position", "\t", pointer.Position)
-	writer.Flush()
 }

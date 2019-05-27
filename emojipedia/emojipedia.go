@@ -40,6 +40,14 @@ func Get() *Emojipedia {
 	return emojipedia
 }
 
+func List() (*lexicon.Lexicon, error) {
+	emojipedia, err := Open()
+	if err != nil {
+		return nil, err
+	}
+	return emojipedia.lexicon, nil
+}
+
 // Make builds Emoji dependencies from HTML scraped from unicode.org.
 func Make(document *goquery.Document) {
 	var category, subcategory string
