@@ -37,7 +37,7 @@ func categoriesMain(arguments *arguments.Arguments) {
 		})
 	case L, LIST:
 		list(CATEGORIES, categories.List, category.List)
-	case "-r", "-remove":
-
+	case R, REMOVE:
+		remove(CATEGORIES, categories.Remove)
 	}
 }

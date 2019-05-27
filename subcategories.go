@@ -16,5 +16,7 @@ func subcategoriesMain(arguments *arguments.Arguments) {
 
 	case L, LIST:
 		list(SUBCATEGORIES, subcategories.List, subcategory.List)
+	case R, REMOVE:
+		remove(SUBCATEGORIES, subcategories.Remove)
 	}
 }

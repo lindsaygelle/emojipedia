@@ -28,16 +28,23 @@ const (
 	L    string = "-L"
 	LIST string = "LIST"
 )
-
 const (
-	errorCannotFind string = "cannot find dependency \"%s\". content either missing or not built"
-	errorCannotOpen string = "cannot open \"%s\"; encountered unexpected error \"%s\""
+	R      string = "-R"
+	REMOVE string = "REMOVE"
 )
 
 const (
-	statusBuildPackage string = "attempting to build \"%s\" package"
+	errorCannotFind    string = "cannot find dependency \"%s\". content either missing or not built"
+	errorCannotOpen    string = "cannot open \"%s\"; encountered unexpected error \"%s\""
+	errorRemovePackage string = "cannot remove \"%s\"; encountered error \"%s\""
 )
 
 const (
-	successBuildPackage string = "success! program has built package \"%s\""
+	statusBuildPackage  string = "attempting to build \"%s\" package"
+	statusRemovePackage string = "attempting to remove \"%s\" package; deleting core packages can affect building!"
+)
+
+const (
+	successBuildPackage  string = "success! program has built package \"%s\""
+	successRemovePackage string = "success! program has removed \"%s\"!"
 )

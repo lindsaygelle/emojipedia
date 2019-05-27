@@ -16,5 +16,7 @@ func emojipediaMain(arguments *arguments.Arguments) {
 	case K, KEYS:
 	case L, LIST:
 		list(EMOJIPEDIA, emojipedia.List, emoji.List)
+	case R, REMOVE:
+		remove(EMOJIPEDIA, emojipedia.Remove)
 	}
 }

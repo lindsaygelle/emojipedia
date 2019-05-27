@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/gellel/emojipedia/directory"
 
@@ -11,8 +12,8 @@ import (
 )
 
 func unicodeorgMain(arguments *arguments.Arguments) {
-	switch arguments.Get(0) {
-	case "-b", "build":
+	switch strings.ToUpper(arguments.Get(0)) {
+	case B, BUILD:
 		fmt.Println("attempting to build unicode-org package.")
 		if _, err := os.Stat(directory.Unicode); os.IsExist(err) {
 			fmt.Println("already built. nothing to do.")
@@ -35,7 +36,7 @@ func unicodeorgMain(arguments *arguments.Arguments) {
 		fmt.Println("successfully stored content.")
 		fmt.Println(directory.Unicode)
 		os.Exit(0)
-	case "-r", "remove":
-		fmt.Println("delete the unicode-org package? note - cannot build supporting dependencies without it!")
+	case R, REMOVE:
+		remove(UNICODE, pkg.Remove)
 	}
 }
