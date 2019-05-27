@@ -121,21 +121,25 @@ func (pointer *Subcategory) SetEmoji(emoji *slice.Slice) *Subcategory {
 	return pointer
 }
 
+// SetHref sets the Subcategory.Href property.
 func (pointer *Subcategory) SetHref(href string) *Subcategory {
 	pointer.Href = href
 	return pointer
 }
 
+// SetName sets the Subcategory.Name property.
 func (pointer *Subcategory) SetName(name string) *Subcategory {
 	pointer.Name = name
 	return pointer
 }
 
+// SetNumber sets the Subcategory.Number property.
 func (pointer *Subcategory) SetNumber(number int) *Subcategory {
 	pointer.Number = number
 	return pointer
 }
 
+// SetPosition sets the Subcategory.Position property.
 func (pointer *Subcategory) SetPosition(position int) *Subcategory {
 	pointer.Position = position
 	return pointer
