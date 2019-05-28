@@ -12,6 +12,8 @@ func main() {
 	switch strings.ToUpper(arguments.Get(0)) {
 	case CATEGORIES:
 		categoriesMain(arguments.Next())
+	case CATEGORY:
+		categoryMain(arguments.Next())
 	case EMOJI:
 		emojiMain(arguments.Next())
 	case EMOJIPEDIA:

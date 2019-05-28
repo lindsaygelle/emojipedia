@@ -2,10 +2,12 @@ package main
 
 const (
 	CATEGORIES    string = "CATEGORIES"
+	CATEGORY      string = "CATEGORY"
 	EMOJIPEDIA    string = "EMOJIPEDIA"
 	EMOJI         string = "EMOJI"
 	KEYWORDS      string = "KEYWORDS"
 	SUBCATEGORIES string = "SUBCATEGORIES"
+	SUBCATEGORY   string = "SUBCATEGORY"
 	UNICODE       string = "UNICODE"
 )
 
