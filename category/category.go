@@ -14,6 +14,21 @@ import (
 
 var _ category = (*Category)(nil)
 
+var (
+	tabs = []interface{}{
+		"Name",
+		"\t",
+		"Number",
+		"\t",
+		"Position",
+		"\t",
+		"Href",
+		"\t",
+		"Subcategories",
+		"\t",
+		"Emoji"}
+)
+
 // New instantiates a new empty Category pointer.
 func New() *Category {
 	return &Category{
@@ -31,6 +46,25 @@ func NewCategory(anchor, href, name string, number, position int, emoji, subcate
 		Number:        number,
 		Position:      position,
 		Subcategories: subcategories}
+}
+
+func Detail(content *[]byte) {
+	category, err := Parse(content)
+	if err != nil {
+		panic(err)
+	}
+	fields := []interface{}{
+		category.Name, "\t",
+		category.Number, "\t",
+		category.Position, "\t",
+		category.Href, "\t",
+		category.Subcategories.Len(), "\t",
+		category.Emoji.Len()}
+
+	w := new(tabwriter.Writer).Init(os.Stdout, 0, 8, 0, '\t', 0)
+	fmt.Fprintln(w, tabs...)
+	fmt.Fprintln(w, fields...)
+	w.Flush()
 }
 
 // Get attempts to open a Category from the emojipedia/categories folder, but panics if an error occurs.
@@ -56,6 +90,23 @@ func List(writer *tabwriter.Writer, i interface{}) {
 
 // Open attempts to open a Category from the emojipedia/categories folder.
 func Open(name string) (*Category, error) {
+	content, err := Read(name)
+	if err != nil {
+		return nil, err
+	}
+	return Parse(content)
+}
+
+func Parse(content *[]byte) (*Category, error) {
+	category := &Category{}
+	err := json.Unmarshal(*content, category)
+	if err != nil {
+		return nil, err
+	}
+	return category, nil
+}
+
+func Read(name string) (*[]byte, error) {
 	filepath := filepath.Join(directory.Category, fmt.Sprintf("%s.json", name))
 	reader, err := os.Open(filepath)
 	if err != nil {
@@ -66,12 +117,12 @@ func Open(name string) (*Category, error) {
 	if err != nil {
 		return nil, err
 	}
-	category := &Category{}
-	err = json.Unmarshal(content, category)
-	if err != nil {
-		return nil, err
-	}
-	return category, nil
+	return &content, nil
+}
+
+// Remove deletes the Category data stored in the dependencies folder.
+func Remove(name string) error {
+	return os.Remove(filepath.Join(directory.Category, fmt.Sprintf("%s.json", name)))
 }
 
 // Write stores and Category pointer to the dependencies folder.
@@ -86,11 +137,6 @@ func Write(category *Category) error {
 	}
 	filepath := filepath.Join(directory.Category, fmt.Sprintf("%s.json", category.Name))
 	return ioutil.WriteFile(filepath, content, 0644)
-}
-
-// Remove deletes the Category data stored in the dependencies folder.
-func Remove(name string) error {
-	return os.Remove(filepath.Join(directory.Category, fmt.Sprintf("%s.json", name)))
 }
 
 type category interface {

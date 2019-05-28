@@ -14,6 +14,7 @@ func emojipediaMain(arguments *arguments.Arguments) {
 		build(EMOJIPEDIA, emojipedia.Make)
 	case G, GET:
 	case K, KEYS:
+		keys(EMOJIPEDIA, emojipedia.List)
 	case L, LIST:
 		list(EMOJIPEDIA, emojipedia.List, emoji.List)
 	case R, REMOVE:
