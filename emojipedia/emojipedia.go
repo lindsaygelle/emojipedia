@@ -93,6 +93,11 @@ func Make(document *goquery.Document) {
 		if len(name) == 0 {
 			return
 		}
+		if substrings := strings.Split(anchor, "#"); len(substrings) > 1 {
+			anchor = "#" + substrings[1]
+		} else {
+			anchor = "#"
+		}
 		codes.Each(func(_ int, i interface{}) {
 			code := i.(string)
 			replacement := "000"
