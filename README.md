@@ -4,22 +4,27 @@ Small program that scrapes unicode.org for Emoji data. Can be used to write out 
 
 #### Get
 
-`go get github.com/gellel/emojipedia`
+`$ go get github.com/gellel/emojipedia`
 
 #### Building
 
 Before you can run any of the command line hooks, the program must first parse and store the HTML content from unicode.org. This can take awhile due to the size of the HTML document. Best to grab a snack and let it do its thing. Program still can access https://unicode.org/emoji/charts/emoji-list.html. If it breaks, chances are there's been a change to the URL or HTML.
 
-`$ emojipedia unicode -b`
+`$ emojipedia unicode [-b, build]`
 
-The program should output a status message if it succeeds parsing the page. The contents can be found in the hidden folder within your GoPath. 
+The program should output a status message if it succeeds fetches and downloads the page. The unicode HTML document can be found within the .emojipedia folder within your bundle inside the program GoPath. 
 
 ## Hooks
 The program supports several ways of accessing the content scraped from the unicode.org site. 
 
 #### Categories
 Categories explores the collection of category data fetched from the HTML. Prints out information at a high-level view of each found category. Assumes that all categories are stored on the disc, however specific categories can be removed from the category hook.
-`$ emojipedia categories [options]`
+
+```$ emojipedia categories [-b, build | -g get | -k, keys | -l, list]```
+
+##### categories build
+Builds the categories bundle. Requires the unicode HTML to be on disc.
+
 #### Category
 `$ emojipedia category [options]`
 #### Emojipedia
