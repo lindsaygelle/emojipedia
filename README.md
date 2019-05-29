@@ -15,34 +15,34 @@ Before you can run any of the command line hooks, the program must first parse a
 The program should output a status message if it succeeds fetches and downloads the page. The unicode HTML document can be found within the .emojipedia folder within your bundle inside the program GoPath. 
 
 ## Common commands
-The program supports several ways of accessing the content scraped from the unicode.org site. There are a number of common commands that are shared amongst the top-level programs, these are listed below.
+The program supports several ways of accessing the content scraped from the unicode.org site. There are a number of common commands that are shared amongst the top-level programs, these the `categories`, `emojipedia`, `subcategories`.
  
 #### Build
 
-```$ emojipedia [categories | emojipedia | subcategories] [-b | build]```
+```$ emojipedia <package> [-b | build]```
 
-Builds a specific bundle. Requires the unicode HTML to be on disc. Program cannot run the bundle routines without the package being generated. Run this command first so that the appropriate hooks can be explored.
+Builds a specific bundle. Requires the unicode HTML to be on disc. Program cannot run the bundle routines without the package being generated. Run this command beforehand so that the appropriate hooks can be explored. If missing, the program will raise a missing file status and exit.
 
 #### Get
 
-```$ emojipedia [categories | emojipedia | subcategories] [-g | get]```
+```$ emojipedia <package> [-g | get]```
 
-Fetches a specific element from the accessed bundle (if it exists). Prints out the top-level detail for the accessed element. Is more verbose than the list command, but less-so than accessing the element directly. 
+Fetches a specific element from the accessed bundle (if it exists). Prints out the top-level detail for the accessed element. Is more verbose than the list command, but less-so than accessing the element directly.
 
 #### Keys
 
-```$ emojipedia [categories | emojipedia | subcategories] [-k | keys]```
+```$ emojipedia <package> [-k | keys]```
 
-Lists out the available options that can be picked from.
+Lists out the available options that can be picked from. Is a fast way for looking up a collection of elements for an accessed package. The keys are sorted alphabetically for convienence. 
 
 #### List
 
-```$ emojipedia [categories | emojipedia | subcategories] [-l | list]```
-
-#### Remove
+```$ emojipedia <package> [-l | list]```
 
 Lists all the elements and prints out top-level detail. Less verbose than `-g | get`.
 
-```$ emojipedia [categories | emojipedia | subcategories] [-r | remove]```
+#### Remove
+
+```$ emojipedia <package>  [-r | remove]```
 
 Removes all of the bundle for the selected program. Does not delete the unicode HTML file.
