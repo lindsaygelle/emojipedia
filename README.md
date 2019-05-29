@@ -8,6 +8,12 @@ Installing the package is as easy as running Go's get command.
 
 `$ go get github.com/gellel/emojipedia`
 
+## Build
+
+Creating an exe.
+
+`$GOPATH/TO/EMOJIPEDIA go build`
+
 ## Example
 
 Here's an example of listing out the categories using the program. 
