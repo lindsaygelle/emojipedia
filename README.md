@@ -35,6 +35,12 @@ Before you can run any of the command line hooks, the program must first parse a
 
 The program should output a status message if it succeeds fetches and downloads the page. The unicode HTML document can be found within the .emojipedia folder within your bundle inside the program GoPath. 
 
+## Full install
+
+This command will "quick" install all of the separate packages.
+
+`$ emojipedia unicode -b && emojipedia categories -b && emojipedia emojipedia -b && emojipedia subcategories -b && emojipedia unicode -r`
+
 ## Common commands
 The program supports several ways of accessing the content scraped from the unicode.org site. There are a number of common commands that are shared amongst the top-level programs, these the `categories`, `emojipedia`, `subcategories`.
  
