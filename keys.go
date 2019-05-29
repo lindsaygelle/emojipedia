@@ -11,7 +11,7 @@ func keys(name string, getter func() (*lexicon.Lexicon, error)) {
 	if err != nil {
 		fmt.Println(fmt.Sprintf(errorCannotOpen, name, err))
 	} else {
-		lexicon.Keys().Each(func(_ int, i interface{}) {
+		lexicon.Keys().Sort().Each(func(_ int, i interface{}) {
 			fmt.Println(i.(string))
 		})
 	}

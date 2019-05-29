@@ -14,8 +14,8 @@ func list(name string, getter func() (*lexicon.Lexicon, error), printer func(w *
 	case true:
 		writer := new(tabwriter.Writer)
 		writer.Init(os.Stdout, 0, 8, 0, '\t', 0)
-		lexicon.Each(func(key string, i interface{}) {
-			printer(writer, i)
+		lexicon.Keys().Sort().Each(func(_ int, i interface{}) {
+			printer(writer, lexicon.Fetch(i.(string)))
 		})
 		writer.Flush()
 	default:
