@@ -6,6 +6,21 @@ Small program that scrapes unicode.org for Emoji data. Can be used to write out 
 
 `$ go get github.com/gellel/emojipedia`
 
+## Example
+
+```$ clear && emojipedia categories -l
+symbols                  8       11      217
+activities               6       5       79
+component                2       1       4
+food-and-drink           4       8       121
+objects                  7       18      233
+people-and-body          1       16      311
+smileys-and-emotion      0       15      149
+travel-and-places        5       11      210
+animals-and-nature       3       8       127
+flags                    9       3       268
+```
+
 ## Building
 
 Before you can run any of the command line hooks, the program must first parse and store the HTML content from unicode.org. This can take awhile due to the size of the HTML document. Best to grab a snack and let it do its thing. Program still can access https://unicode.org/emoji/charts/emoji-list.html. If it breaks, chances are there's been a change to the URL or HTML.
