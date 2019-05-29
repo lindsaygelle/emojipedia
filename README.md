@@ -8,17 +8,22 @@ Small program that scrapes unicode.org for Emoji data. Can be used to write out 
 
 ## Example
 
-```$ clear && emojipedia categories -l
-symbols                  8       11      217
+Here's an example of listing out the categories using the program. 
+
+```
+$ clear && emojipedia categories -l
+
 activities               6       5       79
+animals-and-nature       3       8       127
 component                2       1       4
+flags                    9       3       268
 food-and-drink           4       8       121
 objects                  7       18      233
 people-and-body          1       16      311
 smileys-and-emotion      0       15      149
+symbols                  8       11      217
 travel-and-places        5       11      210
-animals-and-nature       3       8       127
-flags                    9       3       268
+
 ```
 
 ## Building
