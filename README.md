@@ -17,19 +17,29 @@ The program should output a status message if it succeeds fetches and downloads 
 ## Common commands
 The program supports several ways of accessing the content scraped from the unicode.org site. There are a number of common commands that are shared amongst the top-level programs, these are listed below.
  
+#### Build
+
 ```$ emojipedia [categories | emojipedia | subcategories] [-b | build]```
 
 Builds a specific bundle. Requires the unicode HTML to be on disc. Program cannot run the bundle routines without the package being generated. Run this command first so that the appropriate hooks can be explored.
+
+#### Get
 
 ```$ emojipedia [categories | emojipedia | subcategories] [-g | get]```
 
 Fetches a specific element from the accessed bundle (if it exists). Prints out the top-level detail for the accessed element. Is more verbose than the list command, but less-so than accessing the element directly. 
 
+#### Keys
+
 ```$ emojipedia [categories | emojipedia | subcategories] [-k | keys]```
 
 Lists out the available options that can be picked from.
 
+#### List
+
 ```$ emojipedia [categories | emojipedia | subcategories] [-l | list]```
+
+#### Remove
 
 Lists all the elements and prints out top-level detail. Less verbose than `-g | get`.
 
