@@ -14,8 +14,11 @@ Before you can run any of the command line hooks, the program must first parse a
 
 The program should output a status message if it succeeds parsing the page. The contents can be found in the hidden folder within your GoPath. 
 
-#### Hooks
+## Hooks
+The program supports several ways of accessing the content scraped from the unicode.org site. 
+
 #### Categories
+Categories explores the collection of category data fetched from the HTML. Prints out information at a high-level view of each found category. Assumes that all categories are stored on the disc, however specific categories can be removed from the category hook.
 `$ emojipedia categories [options]`
 #### Category
 `$ emojipedia category [options]`
