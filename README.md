@@ -26,6 +26,16 @@ smileys-and-emotion      0       15      149
 symbols                  8       11      217
 travel-and-places        5       11      210
 ```
+Or perhaps you'd like the emoji.
+
+```
+$ clear && emojipedia emojipedia -l
+
+🥇       1st-place-medal                                 947     activities              award-medal             [4 ...]
+🥈       2nd-place-medal                                 948     activities              award-medal             [4 ...]
+🥉       3rd-place-medal                                 949     activities              award-medal             [4 ...]
+...
+```
 
 ## Building
 
