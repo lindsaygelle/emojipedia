@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/tabwriter"
 
 	"github.com/gellel/emojipedia/directory"
@@ -15,18 +16,12 @@ import (
 var _ category = (*Category)(nil)
 
 var (
-	tabs = []interface{}{
+	tabs = []string{
+		"Emoji",
 		"Name",
-		"\t",
 		"Number",
-		"\t",
 		"Position",
-		"\t",
-		"Href",
-		"\t",
-		"Subcategories",
-		"\t",
-		"Emoji"}
+		"Subcategories"}
 )
 
 // New instantiates a new empty Category pointer.
@@ -53,17 +48,15 @@ func Detail(content *[]byte) {
 	if err != nil {
 		panic(err)
 	}
-	fields := []interface{}{
-		category.Name, "\t",
-		category.Number, "\t",
-		category.Position, "\t",
-		category.Href, "\t",
-		category.Subcategories.Len(), "\t",
-		category.Emoji.Len()}
-
-	w := new(tabwriter.Writer).Init(os.Stdout, 0, 8, 0, '\t', 0)
-	fmt.Fprintln(w, tabs...)
-	fmt.Fprintln(w, fields...)
+	fields := []string{
+		fmt.Sprintf("%v", category.Emoji.Len()),
+		category.Name,
+		fmt.Sprintf("%v", category.Number),
+		fmt.Sprintf("%v", category.Position),
+		fmt.Sprintf("%v", category.Subcategories.Len())}
+	w := new(tabwriter.Writer).Init(os.Stdout, 0, 8, 1, '\t', 0)
+	fmt.Fprintln(w, strings.Join(tabs, "\t"))
+	fmt.Fprintln(w, strings.Join(fields, "\t"))
 	w.Flush()
 }
 

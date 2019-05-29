@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/tabwriter"
 
 	"github.com/gellel/emojipedia/directory"
@@ -14,6 +15,17 @@ import (
 )
 
 var _ emoji = (*Emoji)(nil)
+
+var (
+	tabs = []string{
+		"Category",
+		"Codes",
+		"Keywords",
+		"Name",
+		"Number",
+		"Position",
+		"Unicode"}
+)
 
 // New instantiates a new empty Emoji pointer.
 func New() *Emoji {
@@ -37,6 +49,25 @@ func NewEmoji(anchor, category, href, image, name, subcategory, unicode string, 
 		Position:    position,
 		Subcategory: subcategory,
 		Unicode:     unicode}
+}
+
+func Detail(content *[]byte) {
+	emoji, err := Parse(content)
+	if err != nil {
+		panic(err)
+	}
+	fields := []string{
+		emoji.Category,
+		fmt.Sprintf("%v", emoji.Codes.Len()),
+		fmt.Sprintf("%v", emoji.Keywords.Len()),
+		emoji.Name,
+		fmt.Sprintf("%v", emoji.Number),
+		fmt.Sprintf("%v", emoji.Position),
+		emoji.Unicode}
+	w := new(tabwriter.Writer).Init(os.Stdout, 0, 8, 1, '\t', 0)
+	fmt.Fprintln(w, strings.Join(tabs, "\t"))
+	fmt.Fprintln(w, strings.Join(fields, "\t"))
+	w.Flush()
 }
 
 // Get attempts to open a Category from the emojipedia/emoji folder, but panics if an error occurs.
@@ -81,6 +112,34 @@ func Open(name string) (*Emoji, error) {
 	return emoji, nil
 }
 
+func Parse(content *[]byte) (*Emoji, error) {
+	category := &Emoji{}
+	err := json.Unmarshal(*content, category)
+	if err != nil {
+		return nil, err
+	}
+	return category, nil
+}
+
+func Read(name string) (*[]byte, error) {
+	filepath := filepath.Join(directory.Emoji, fmt.Sprintf("%s.json", name))
+	reader, err := os.Open(filepath)
+	if err != nil {
+		return nil, err
+	}
+	content, err := ioutil.ReadAll(reader)
+	defer reader.Close()
+	if err != nil {
+		return nil, err
+	}
+	return &content, nil
+}
+
+// Remove deletes the Emoji data stored in the dependencies folder.
+func Remove(name string) error {
+	return os.Remove(filepath.Join(directory.Emoji, fmt.Sprintf("%s.json", name)))
+}
+
 // Write stores and Emoji pointer to the dependencies folder.
 func Write(emoji *Emoji) error {
 	err := os.MkdirAll(directory.Emoji, 0644)
@@ -93,11 +152,6 @@ func Write(emoji *Emoji) error {
 	}
 	filepath := filepath.Join(directory.Emoji, fmt.Sprintf("%s.json", emoji.Name))
 	return ioutil.WriteFile(filepath, content, 0644)
-}
-
-// Remove deletes the Emoji data stored in the dependencies folder.
-func Remove(name string) error {
-	return os.Remove(filepath.Join(directory.Emoji, fmt.Sprintf("%s.json", name)))
 }
 
 type emoji interface {

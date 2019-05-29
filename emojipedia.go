@@ -13,6 +13,7 @@ func emojipediaMain(arguments *arguments.Arguments) {
 	case B, BUILD:
 		build(EMOJIPEDIA, emojipedia.Make)
 	case G, GET:
+		get(arguments.Next().Get(0), emoji.Read, emoji.Detail)
 	case K, KEYS:
 		keys(EMOJIPEDIA, emojipedia.List)
 	case L, LIST:

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/tabwriter"
 
 	"github.com/gellel/emojipedia/directory"
@@ -15,7 +16,12 @@ import (
 var _ subcategory = (*Subcategory)(nil)
 
 var (
-	Keys = []string{"anchor", "category", "emoji", "href", "name", "number", "position"}
+	tabs = []string{
+		"Category",
+		"Emoji",
+		"Name",
+		"Number",
+		"Position"}
 )
 
 // New instantiates a new empty Subcategory pointer.
@@ -33,6 +39,23 @@ func NewSubcategory(anchor, category, href, name string, number, position int, e
 		Name:     name,
 		Number:   number,
 		Position: position}
+}
+
+func Detail(content *[]byte) {
+	subcategory, err := Parse(content)
+	if err != nil {
+		panic(err)
+	}
+	fields := []string{
+		subcategory.Category,
+		fmt.Sprintf("%v", subcategory.Emoji.Len()),
+		subcategory.Name,
+		fmt.Sprintf("%v", subcategory.Number),
+		fmt.Sprintf("%v", subcategory.Position)}
+	w := new(tabwriter.Writer).Init(os.Stdout, 0, 8, 1, '\t', 0)
+	fmt.Fprintln(w, strings.Join(tabs, "\t"))
+	fmt.Fprintln(w, strings.Join(fields, "\t"))
+	w.Flush()
 }
 
 // Get attempts to open a Subcategory from the emojipedia/subcategories folder, but panics if an error occurs.
@@ -75,6 +98,34 @@ func Open(name string) (*Subcategory, error) {
 	return subcategory, nil
 }
 
+func Parse(content *[]byte) (*Subcategory, error) {
+	category := &Subcategory{}
+	err := json.Unmarshal(*content, category)
+	if err != nil {
+		return nil, err
+	}
+	return category, nil
+}
+
+func Read(name string) (*[]byte, error) {
+	filepath := filepath.Join(directory.Subcategory, fmt.Sprintf("%s.json", name))
+	reader, err := os.Open(filepath)
+	if err != nil {
+		return nil, err
+	}
+	content, err := ioutil.ReadAll(reader)
+	defer reader.Close()
+	if err != nil {
+		return nil, err
+	}
+	return &content, nil
+}
+
+// Remove deletes the Subcategory data stored in the dependencies folder.
+func Remove(name string) error {
+	return os.Remove(filepath.Join(directory.Subcategory, fmt.Sprintf("%s.json", name)))
+}
+
 // Write stores and Subcategory pointer to the dependencies folder.
 func Write(subcategory *Subcategory) error {
 	err := os.MkdirAll(directory.Subcategory, 0644)
@@ -87,11 +138,6 @@ func Write(subcategory *Subcategory) error {
 	}
 	filepath := filepath.Join(directory.Subcategory, fmt.Sprintf("%s.json", subcategory.Name))
 	return ioutil.WriteFile(filepath, content, 0644)
-}
-
-// Remove deletes the Subcategory data stored in the dependencies folder.
-func Remove(name string) error {
-	return os.Remove(filepath.Join(directory.Subcategory, fmt.Sprintf("%s.json", name)))
 }
 
 type subcategory interface {

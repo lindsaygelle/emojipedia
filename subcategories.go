@@ -13,6 +13,7 @@ func subcategoriesMain(arguments *arguments.Arguments) {
 	case B, BUILD:
 		build(SUBCATEGORIES, subcategories.Make)
 	case G, GET:
+		get(arguments.Next().Get(0), subcategory.Read, subcategory.Detail)
 	case K, KEYS:
 		keys(SUBCATEGORIES, subcategories.List)
 	case L, LIST:

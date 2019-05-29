@@ -1,10 +1,12 @@
 package main
 
 const (
+	ANCHOR        string = "ANCHOR"
 	CATEGORIES    string = "CATEGORIES"
 	CATEGORY      string = "CATEGORY"
 	EMOJIPEDIA    string = "EMOJIPEDIA"
 	EMOJI         string = "EMOJI"
+	HREF          string = "HREF"
 	KEYWORDS      string = "KEYWORDS"
 	SUBCATEGORIES string = "SUBCATEGORIES"
 	SUBCATEGORY   string = "SUBCATEGORY"
