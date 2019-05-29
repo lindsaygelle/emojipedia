@@ -23,7 +23,6 @@ people-and-body          1       16      311
 smileys-and-emotion      0       15      149
 symbols                  8       11      217
 travel-and-places        5       11      210
-
 ```
 
 ## Building
@@ -37,31 +36,31 @@ The program should output a status message if it succeeds fetches and downloads 
 ## Common commands
 The program supports several ways of accessing the content scraped from the unicode.org site. There are a number of common commands that are shared amongst the top-level programs, these the `categories`, `emojipedia`, `subcategories`.
  
-#### Build
+##### Building packages
 
 ```$ emojipedia <package> [-b | build]```
 
 Builds a specific bundle. Requires the unicode HTML to be on disc. Program cannot run the bundle routines without the package being generated. Run this command beforehand so that the appropriate hooks can be explored. If missing, the program will raise a missing file status and exit.
 
-#### Get
+##### Getting specific element from package
 
 ```$ emojipedia <package> [-g | get]```
 
 Fetches a specific element from the accessed bundle (if it exists). Prints out the top-level detail for the accessed element. Is more verbose than the list command, but less-so than accessing the element directly.
 
-#### Keys
+##### Fetching keys from package
 
 ```$ emojipedia <package> [-k | keys]```
 
 Lists out the available options that can be picked from. Is a fast way for looking up a collection of elements for an accessed package. The keys are sorted alphabetically for convienence. 
 
-#### List
+##### Listing elements from a package
 
 ```$ emojipedia <package> [-l | list]```
 
 Lists all the elements and prints out top-level detail. Less verbose than `-g | get`.
 
-#### Remove
+##### Removing a package
 
 ```$ emojipedia <package>  [-r | remove]```
 
