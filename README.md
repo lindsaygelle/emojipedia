@@ -14,28 +14,23 @@ Before you can run any of the command line hooks, the program must first parse a
 
 The program should output a status message if it succeeds fetches and downloads the page. The unicode HTML document can be found within the .emojipedia folder within your bundle inside the program GoPath. 
 
-## Hooks
+## Commands
 The program supports several ways of accessing the content scraped from the unicode.org site. 
 
-### Categories
+#### Categories
 Categories explores the collection of category data fetched from the HTML. Prints out information at a high-level view of each found category. Assumes that all categories are stored on the disc, however specific categories can be removed from the category hook.
  
-`$ emojipedia categories [-b, build]`
+```$ emojipedia categories [-b, build]```
 Builds the categories bundle. Requires the unicode HTML to be on disc. Program cannot run the categories routines without this package being generated. Run this command first so that the categories hooks can be explored.
 
-`$ emojipedia categories [-g, get]`
-Fetches a category from the categories bundle if it exists. Prints out the top-level detail for the access category.
+```$ emojipedia categories [-g, get]```
+Fetches a specific category from the categories bundle (if it exists). Prints out the top-level detail for the access category. Is more verbose than the list command, but less-so than accessing the category directly. 
 
-`$ emojipedia categories [-k, keys]`
+```$ emojipedia categories [-k, keys]```
 Lists out the available categories that can be picked from.
 
-#### Category
-`$ emojipedia category [options]`
-#### Emojipedia
-`$ emojipedia emojipedia [options]`
-#### Emoji
-`$ emojipedia emoji [options]`
-#### Subcategories 
-`$ emojipedia subcategories [options]`
-#### Subcategory
-`$ emojipedia subcategory [options]`
+```$ emojipedia categories [-l, list]```
+Lists all the categories and prints out top-level detail. Less verbose than `-g | get`.
+
+```$ emojipedia categories [-r, remove]```
+Removes all of the bundle for the categories program. Does not delete the unicode HTML file.
