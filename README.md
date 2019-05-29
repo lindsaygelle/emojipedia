@@ -13,3 +13,17 @@ Before you can run any of the command line hooks, the program must first parse a
 `$ emojipedia unicode -b`
 
 The program should output a status message if it succeeds parsing the page. The contents can be found in the hidden folder within your GoPath. 
+
+#### Hooks
+#### Categories
+`$ emojipedia categories [options]`
+#### Category
+`$ emojipedia category [options]`
+#### Emojipedia
+`$ emojipedia emojipedia [options]`
+#### Emoji
+`$ emojipedia emoji [options]`
+#### Subcategories 
+`$ emojipedia subcategories [options]`
+#### Subcategory
+`$ emojipedia subcategory [options]`
