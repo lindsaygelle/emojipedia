@@ -17,13 +17,17 @@ The program should output a status message if it succeeds fetches and downloads 
 ## Hooks
 The program supports several ways of accessing the content scraped from the unicode.org site. 
 
-#### Categories
+### Categories
 Categories explores the collection of category data fetched from the HTML. Prints out information at a high-level view of each found category. Assumes that all categories are stored on the disc, however specific categories can be removed from the category hook.
+ 
+`$ emojipedia categories [-b, build]`
+Builds the categories bundle. Requires the unicode HTML to be on disc. Program cannot run the categories routines without this package being generated. Run this command first so that the categories hooks can be explored.
 
-```$ emojipedia categories [-b, build | -g get | -k, keys | -l, list]```
+`$ emojipedia categories [-g, get]`
+Fetches a category from the categories bundle if it exists. Prints out the top-level detail for the access category.
 
-##### categories build
-Builds the categories bundle. Requires the unicode HTML to be on disc.
+`$ emojipedia categories [-k, keys]`
+Lists out the available categories that can be picked from.
 
 #### Category
 `$ emojipedia category [options]`
