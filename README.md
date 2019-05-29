@@ -34,15 +34,7 @@ $ clear && emojipedia emojipedia -l
 🥇       1st-place-medal                                 947     activities              award-medal             [4 ...]
 🥈       2nd-place-medal                                 948     activities              award-medal             [4 ...]
 🥉       3rd-place-medal                                 949     activities              award-medal             [4 ...]
-🅰        a-button-blood-type                             1384    symbols                 alphanum                [3 ...]
-🆎       ab-button-blood-type                            1385    symbols                 alphanum                [3 ...]
-🧮        abacus                                          1088    objects                 computer                [2 ...]
-🩹        adhesive-bandage                               1212    objects                 medical                 [2 ...]
-🎟        admission-tickets                               942     activities              event                   [3 ...]
-🚡       aerial-tramway                                   839     travel-and-places       transport-air           [5 ...]
-✈        airplane                                        830     travel-and-places       transport-air           [2 ...]
-🛬       airplane-arrival                                833     travel-and-places       transport-air           [6 ...]
-🛫       airplane-departure                              832     travel-and-places       transport-air           [5 ...]
+...
 ```
 
 ## Building
