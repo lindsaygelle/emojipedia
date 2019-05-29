@@ -4,6 +4,8 @@ Small program that scrapes unicode.org for Emoji data. Can be used to write out 
 
 ## Get
 
+Installing the package is as easy as running Go's get command.
+
 `$ go get github.com/gellel/emojipedia`
 
 ## Example
