@@ -8,12 +8,6 @@ Installing the package is as easy as running Go's get command.
 
 `$ go get github.com/gellel/emojipedia`
 
-## Build
-
-Creating an exe.
-
-`$GOPATH/TO/EMOJIPEDIA go build`
-
 ## Example
 
 Here's an example of listing out the categories using the program. 
@@ -37,9 +31,9 @@ Or perhaps you'd like the emoji.
 ```
 $ clear && emojipedia emojipedia -l
 
-🥇       1st-place-medal                                 947     activities              award-medal             [4 ...]
-🥈       2nd-place-medal                                 948     activities              award-medal             [4 ...]
-🥉       3rd-place-medal                                 949     activities              award-medal             [4 ...]
+🥇       1st-place-medal              947     activities              award-medal              [4 ...]
+🥈       2nd-place-medal              948     activities              award-medal              [4 ...]
+🥉       3rd-place-medal              949     activities              award-medal              [4 ...]
 ...
 ```
 
