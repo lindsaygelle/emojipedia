@@ -47,7 +47,7 @@ The program should output a status message if it succeeds fetches and downloads 
 
 ## Full install
 
-This command will "quick" install all of the separate packages.
+This command will _"quick"_ install all of the separate packages. Futher update will compress this into a single command.
 
 `$ emojipedia unicode -b && emojipedia categories -b && emojipedia emojipedia -b && emojipedia subcategories -b && emojipedia unicode -r`
 
