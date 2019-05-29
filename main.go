@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -25,6 +26,6 @@ func main() {
 	case UNICODE:
 		unicodeorgMain(arguments.Next())
 	default:
-		os.Exit(2)
+		fmt.Println("usage: emojipedia <command> [<args>]")
 	}
 }

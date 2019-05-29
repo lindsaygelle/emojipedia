@@ -1,13 +1,35 @@
 package keywords
 
 import (
+	"strings"
+
+	"github.com/PuerkitoBio/goquery"
 	"github.com/gellel/emojipedia/lexicon"
 	"github.com/gellel/emojipedia/slice"
+	"github.com/gellel/emojipedia/text"
 )
 
 // New instantiates a new empty Keywords pointer.
 func New() *Keywords {
 	return &Keywords{&lexicon.Lexicon{}}
+}
+
+// Make builds Keywords dependencies from HTML scraped from unicode.org.
+func Make(document *goquery.Document) {
+	keywords := New()
+	document.Find("tr").Each(func(i int, selection *goquery.Selection) {
+		s := selection.Find("td.name")
+		name := strings.TrimSpace(s.First().Text())
+		keys := strings.TrimSpace(s.Last().Text())
+		if len(name) == 0 {
+			return
+		}
+		name = text.Normalize(name)
+		for _, key := range strings.Split(keys, "|") {
+			key = text.Normalize(strings.TrimSpace(key))
+			keywords.Add(key, name)
+		}
+	})
 }
 
 type keywords interface {

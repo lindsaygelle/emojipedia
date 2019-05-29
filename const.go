@@ -28,6 +28,11 @@ const (
 )
 
 const (
+	H    string = "-H"
+	HELP string = "HELP"
+)
+
+const (
 	K    string = "-K"
 	KEYS string = "KEYS"
 )
