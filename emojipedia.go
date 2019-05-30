@@ -5,9 +5,29 @@ import (
 	"strings"
 
 	"github.com/gellel/emojipedia/arguments"
-	"github.com/gellel/emojipedia/emoji"
 	"github.com/gellel/emojipedia/emojipedia"
 )
+
+func emojipediaGet(arguments *arguments.Arguments) {
+	var (
+		emojipedia = emojipedia.Get()
+	)
+	fmt.Fprintln(writer, "Name\t|Number\t|Category\t|Subcategory\t|Keywords")
+	arguments.Each(func(_ int, argument string) {
+		if emoji, ok := emojipedia.Get(argument); ok {
+			var (
+				name        = emoji.Name
+				number      = emoji.Number
+				category    = emoji.Category
+				subcategory = emoji.Subcategory
+				keywords    = emoji.Keywords.Sort().Join(" ")
+				output      = fmt.Sprintf("%v\t|%v\t|%v\t|%v\t|%v", name, number, category, subcategory, keywords)
+			)
+			fmt.Fprintln(writer, output)
+		}
+	})
+	writer.Flush()
+}
 
 func emojipediaKeys(arguments *arguments.Arguments) {
 	var (
@@ -45,7 +65,7 @@ func emojipediaMain(arguments *arguments.Arguments) {
 	case B, BUILD:
 		build(EMOJIPEDIA, emojipedia.Make)
 	case G, GET:
-		get(arguments.Next().Get(0), emoji.Read, emoji.Detail)
+		emojipediaGet(arguments.Next())
 	case K, KEYS:
 		emojipediaKeys(arguments.Next())
 	case L, LIST:

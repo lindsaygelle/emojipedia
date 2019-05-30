@@ -6,26 +6,12 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
-	"text/tabwriter"
 
 	"github.com/gellel/emojipedia/directory"
 	"github.com/gellel/emojipedia/slice"
-	"github.com/gellel/emojipedia/text"
 )
 
 var _ emoji = (*Emoji)(nil)
-
-var (
-	tabs = []string{
-		"Category",
-		"Codes",
-		"Keywords",
-		"Name",
-		"Number",
-		"Position",
-		"Unicode"}
-)
 
 // New instantiates a new empty Emoji pointer.
 func New() *Emoji {
@@ -51,25 +37,6 @@ func NewEmoji(anchor, category, href, image, name, subcategory, unicode string, 
 		Unicode:     unicode}
 }
 
-func Detail(content *[]byte) {
-	emoji, err := Parse(content)
-	if err != nil {
-		panic(err)
-	}
-	fields := []string{
-		emoji.Category,
-		fmt.Sprintf("%v", emoji.Codes.Len()),
-		fmt.Sprintf("%v", emoji.Keywords.Len()),
-		emoji.Name,
-		fmt.Sprintf("%v", emoji.Number),
-		fmt.Sprintf("%v", emoji.Position),
-		emoji.Unicode}
-	w := new(tabwriter.Writer).Init(os.Stdout, 0, 8, 1, '\t', 0)
-	fmt.Fprintln(w, strings.Join(tabs, "\t"))
-	fmt.Fprintln(w, strings.Join(fields, "\t"))
-	w.Flush()
-}
-
 // Get attempts to open a Category from the emojipedia/emoji folder, but panics if an error occurs.
 func Get(name string) *Emoji {
 	emoji, err := Open(name)
@@ -77,19 +44,6 @@ func Get(name string) *Emoji {
 		panic(err)
 	}
 	return emoji
-}
-
-// List formats an interface representation of an Emoji pointer for os.Stdout.
-func List(writer *tabwriter.Writer, i interface{}) {
-	emoji := i.(*Emoji)
-	fields := []interface{}{
-		text.Emojize(emoji.Unicode), "\t",
-		emoji.Name, "\t",
-		emoji.Number, "\t",
-		emoji.Category, "\t",
-		emoji.Subcategory, "\t",
-		fmt.Sprintf("[%v ...]", emoji.Keywords.Len())}
-	fmt.Fprintln(writer, fields...)
 }
 
 // Open attempts to open a Emoji from the emojipedia/emoji folder.

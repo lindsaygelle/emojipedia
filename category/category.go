@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
-	"text/tabwriter"
 
 	"github.com/gellel/emojipedia/directory"
 	"github.com/gellel/emojipedia/slice"
@@ -43,23 +41,6 @@ func NewCategory(anchor, href, name string, number, position int, emoji, subcate
 		Subcategories: subcategories}
 }
 
-func Detail(content *[]byte) {
-	category, err := Parse(content)
-	if err != nil {
-		panic(err)
-	}
-	fields := []string{
-		fmt.Sprintf("%v", category.Emoji.Len()),
-		category.Name,
-		fmt.Sprintf("%v", category.Number),
-		fmt.Sprintf("%v", category.Position),
-		fmt.Sprintf("%v", category.Subcategories.Len())}
-	w := new(tabwriter.Writer).Init(os.Stdout, 0, 8, 1, '\t', 0)
-	fmt.Fprintln(w, strings.Join(tabs, "\t"))
-	fmt.Fprintln(w, strings.Join(fields, "\t"))
-	w.Flush()
-}
-
 // Get attempts to open a Category from the emojipedia/categories folder, but panics if an error occurs.
 func Get(name string) *Category {
 	category, err := Open(name)
@@ -67,18 +48,6 @@ func Get(name string) *Category {
 		panic(err)
 	}
 	return category
-}
-
-// List formats an interface representation of an Category pointer for os.Stdout.
-func List(writer *tabwriter.Writer, i interface{}) {
-	category := i.(*Category)
-	fields := []interface{}{
-		category.Name, "\t",
-		category.Number, "\t",
-		category.Subcategories.Len(), "\t",
-		category.Emoji.Len()}
-
-	fmt.Fprintln(writer, fields...)
 }
 
 // Open attempts to open a Category from the emojipedia/categories folder.
