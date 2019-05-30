@@ -83,3 +83,10 @@ Lists all the elements and prints out top-level detail. Less verbose than `-g | 
 ```$ emojipedia <package>  [-r | remove]```
 
 Removes all of the bundle for the selected program. Does not delete the unicode HTML file.
+
+
+## Category commands
+
+```$ emojipedia category <name> [-a | anchor]```
+```$ emojipedia category <name> [-e | emoji]```
+```$ emojipedia category <name> [-h | href]```
