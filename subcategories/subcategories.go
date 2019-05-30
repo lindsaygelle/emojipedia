@@ -40,7 +40,7 @@ func Get() *Subcategories {
 	return subcategories
 }
 
-func List() (*lexicon.Lexicon, error) {
+func Lexicon() (*lexicon.Lexicon, error) {
 	subcategories, err := Open()
 	if err != nil {
 		return nil, err

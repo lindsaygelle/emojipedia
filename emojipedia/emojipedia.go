@@ -40,8 +40,8 @@ func Get() *Emojipedia {
 	return emojipedia
 }
 
-// List returns the internal lexicon.Lexicon pointer to be consumed by a shared function.
-func List() (*lexicon.Lexicon, error) {
+// Lexicon returns the internal lexicon.Lexicon pointer to be consumed by a shared function.
+func Lexicon() (*lexicon.Lexicon, error) {
 	emojipedia, err := Open()
 	if err != nil {
 		return nil, err

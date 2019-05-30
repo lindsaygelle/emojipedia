@@ -34,9 +34,19 @@ func (pointer *Arguments) Get(i int) (argument string) {
 	return argument
 }
 
+// Each method executes a provided function once for each argument.
+func (pointer *Arguments) Each(f func(i int, argument string)) *Arguments {
+	pointer.slice.Each(func(i int, x interface{}) {
+		f(i, x.(string))
+	})
+	return pointer
+}
+
 // Next unshifts the first element of the Arguments struct and returns the modified struct.
 func (pointer *Arguments) Next() *Arguments {
-	pointer.slice.Splice(1, pointer.slice.Len())
+	if pointer.slice.Len() != 0 {
+		pointer.slice.Splice(1, pointer.slice.Len())
+	}
 	return pointer
 }
 

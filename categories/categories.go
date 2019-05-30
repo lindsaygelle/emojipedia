@@ -39,7 +39,7 @@ func Get() *Categories {
 	return categories
 }
 
-func List() (*lexicon.Lexicon, error) {
+func Lexicon() (*lexicon.Lexicon, error) {
 	categories, err := Open()
 	if err != nil {
 		return nil, err
