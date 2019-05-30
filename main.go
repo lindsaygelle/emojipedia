@@ -11,18 +11,20 @@ import (
 func main() {
 	arguments := arguments.NewArguments(os.Args[1:])
 	switch strings.ToUpper(arguments.Get(0)) {
-	case CATEGORIES:
+	case "-C", CATEGORIES:
 		categoriesMain(arguments.Next())
-	case CATEGORY:
+	case "-CC", CATEGORY:
 		categoryMain(arguments.Next())
-	case EMOJI:
+	case "-EE", EMOJI:
 		emojiMain(arguments.Next())
-	case EMOJIPEDIA:
+	case "-E", EMOJIPEDIA:
 		emojipediaMain(arguments.Next())
-	case KEYWORDS:
+	case "-K", KEYWORDS:
 		keywordsMain(arguments.Next())
-	case SUBCATEGORIES:
+	case "-S", SUBCATEGORIES:
 		subcategoriesMain(arguments.Next())
+	case "-SS", SUBCATEGORY:
+		subcategoryMain(arguments.Next())
 	case UNICODE:
 		unicodeorgMain(arguments.Next())
 	default:
