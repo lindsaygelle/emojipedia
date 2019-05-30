@@ -15,26 +15,37 @@ Here's an example of listing out the categories using the program.
 ```
 $ clear && emojipedia categories -l
 
-activities               6       5       79
-animals-and-nature       3       8       127
-component                2       1       4
-flags                    9       3       268
-food-and-drink           4       8       121
-objects                  7       18      233
-people-and-body          1       16      311
-smileys-and-emotion      0       15      149
-symbols                  8       11      217
-travel-and-places        5       11      210
+Name                    |Number |Emoji  |Subcategories
+activities              |6      |79     |5
+animals-and-nature      |3      |127    |8
+component               |2      |4      |1
+flags                   |9      |268    |3
+food-and-drink          |4      |121    |8
+objects                 |7      |233    |18
+people-and-body         |1      |311    |16
+smileys-and-emotion     |0      |149    |15
+symbols                 |8      |217    |11
+travel-and-places       |5      |210    |11
 ```
 Or perhaps you'd like the emoji.
 
 ```
 $ clear && emojipedia emojipedia -l
 
-🥇       1st-place-medal              947     activities              award-medal              [4 ...]
-🥈       2nd-place-medal              948     activities              award-medal              [4 ...]
-🥉       3rd-place-medal              949     activities              award-medal              [4 ...]
-...
+Name                                            |Number |Category               |Subcategory            |Keywords
+1st-place-medal                                 |947    |activities             |award-medal            |4
+2nd-place-medal                                 |948    |activities             |award-medal            |4
+3rd-place-medal                                 |949    |activities             |award-medal            |4
+a-button-blood-type                             |1384   |symbols                |alphanum               |3
+ab-button-blood-type                            |1385   |symbols                |alphanum               |3
+abacus                                          |1088   |objects                |computer               |2
+adhesive-bandage                                |1212   |objects                |medical                |2
+admission-tickets                               |942    |activities             |event                  |3
+aerial-tramway                                  |839    |travel-and-places      |transport-air          |5
+airplane                                        |830    |travel-and-places      |transport-air          |2
+airplane-arrival                                |833    |travel-and-places      |transport-air          |6
+airplane-departure                              |832    |travel-and-places      |transport-air          |5
+... 
 ```
 
 ## Building
