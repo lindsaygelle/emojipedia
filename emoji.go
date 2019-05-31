@@ -6,12 +6,11 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/gellel/emojipedia/slice"
-
 	"github.com/PuerkitoBio/goquery"
 
 	"github.com/gellel/emojipedia/arguments"
 	"github.com/gellel/emojipedia/emoji"
+	"github.com/gellel/emojipedia/slice"
 	"github.com/gellel/emojipedia/text"
 )
 
