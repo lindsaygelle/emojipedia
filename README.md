@@ -109,15 +109,20 @@ Removes all of the bundle for the selected program. Does not delete the unicode 
 
 Category refers to the specific parent grouping of all emoji. Each category can be accessed using the `-cc` or `category` command.
 
-`-a, anchor`
+#### Getting the Category's anchor reference
 
 ```$ emojipedia [-cc|category] <category> [-a|anchor]```
 
-`-e, emoji`
+Anchor fetches the specific unique reference for the category from unicode.org.
+
+#### Listing the Category's emoji
 
 ```$ emojipedia [-cc|category] <category> [-e|emoji]```
 
-`-h, href`
+Emoji lists the emoji that belong the accessed category. Prints each emoji out in a sequence in a sorted order. Does not print the unicode character. 
+
+#### URL to the category (with anchor)
 
 ```$ emojipedia [-cc|category] <category> [-h | href]```
 
+Generates the direct URL to the category on the unicode.org page.
