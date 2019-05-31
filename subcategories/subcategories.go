@@ -145,7 +145,10 @@ func (pointer *Subcategories) Fetch(key string) *subcategory.Subcategory {
 // Panics if cannot convert to subcategory.Subcategory pointer.
 func (pointer *Subcategories) Get(key string) (*subcategory.Subcategory, bool) {
 	property, ok := pointer.lexicon.Get(key)
-	return property.(*subcategory.Subcategory), ok
+	if ok == true {
+		return property.(*subcategory.Subcategory), ok
+	}
+	return nil, ok
 }
 
 // Has method checks that a given key exists in the Subcategories.

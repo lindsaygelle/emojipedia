@@ -6,22 +6,24 @@ import (
 
 	"github.com/gellel/emojipedia/arguments"
 	"github.com/gellel/emojipedia/emojipedia"
+	"github.com/gellel/emojipedia/text"
 )
 
 func emojipediaGet(arguments *arguments.Arguments) {
 	var (
 		emojipedia = emojipedia.Get()
 	)
-	fmt.Fprintln(writer, "Name\t|Number\t|Category\t|Subcategory\t|Keywords")
+	fmt.Fprintln(writer, "\t|Name\t|Number\t|Category\t|Subcategory\t|Keywords")
 	arguments.Each(func(_ int, argument string) {
 		if emoji, ok := emojipedia.Get(argument); ok {
 			var (
+				character   = text.Emojize(emoji.Unicode)
 				name        = emoji.Name
 				number      = emoji.Number
 				category    = emoji.Category
 				subcategory = emoji.Subcategory
 				keywords    = emoji.Keywords.Sort().Join(" ")
-				output      = fmt.Sprintf("%v\t|%v\t|%v\t|%v\t|%v", name, number, category, subcategory, keywords)
+				output      = fmt.Sprintf("%v\t|%v\t|%v\t|%v\t|%v\t|%v", character, name, number, category, subcategory, keywords)
 			)
 			fmt.Fprintln(writer, output)
 		}

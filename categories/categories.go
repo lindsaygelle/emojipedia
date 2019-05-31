@@ -149,7 +149,10 @@ func (pointer *Categories) Fetch(key string) *category.Category {
 // Panics if cannot convert to category.Category pointer.
 func (pointer *Categories) Get(key string) (*category.Category, bool) {
 	property, ok := pointer.lexicon.Get(key)
-	return property.(*category.Category), ok
+	if ok == true {
+		return property.(*category.Category), ok
+	}
+	return nil, ok
 }
 
 // Has method checks that a given key exists in the Categories.

@@ -186,7 +186,10 @@ func (pointer *Emojipedia) Fetch(key string) *emoji.Emoji {
 // Panics if cannot convert to emoji.Emoji pointer.
 func (pointer *Emojipedia) Get(key string) (*emoji.Emoji, bool) {
 	property, ok := pointer.lexicon.Get(key)
-	return property.(*emoji.Emoji), ok
+	if ok == true {
+		return property.(*emoji.Emoji), ok
+	}
+	return nil, ok
 }
 
 // Has method checks that a given key exists in the Emojipedia.
