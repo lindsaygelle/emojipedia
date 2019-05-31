@@ -106,12 +106,21 @@ Removes all of the bundle for the selected program. Does not delete the unicode 
 
 
 ## Category commands
-#### -a, anchor
-Print out specific anchor point that the category is found on the unicode.org page.
+
+`-a, anchor`
+
 ```$ emojipedia category <name> [-a | anchor]```
-#### -e, emoji
-Print out the emoji that fall under this particular category.
+
+Print out specific anchor point that the category is found on the unicode.org page.
+
+`-e, emoji`
+
 ```$ emojipedia category <name> [-e | emoji]```
-#### -h, href
-Print out the URL with the anchor tag appended for the accessed category.
+
+Print out the emoji that fall under this particular category.
+
+`-h, href`
+
 ```$ emojipedia category <name> [-h | href]```
+
+Print out the URL with the anchor tag appended for the accessed category.
