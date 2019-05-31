@@ -52,8 +52,7 @@ And of course, the emoji in detail.
 
 ```
 clear && emojipedia [-ee|emoji] boar [-t|table]
-
-        |category               |codes  |href            |keywords       |name   |number |subcategory
+...
 🐗     |animals-and-nature     |U+1F417|http://....     |boar pig       |boar   |494    |animal-mammal
 
 ```
@@ -107,7 +106,12 @@ Removes all of the bundle for the selected program. Does not delete the unicode 
 
 
 ## Category commands
-
+#### -a, anchor
+Print out specific anchor point that the category is found on the unicode.org page.
 ```$ emojipedia category <name> [-a | anchor]```
+#### -e, emoji
+Print out the emoji that fall under this particular category.
 ```$ emojipedia category <name> [-e | emoji]```
+#### -h, href
+Print out the URL with the anchor tag appended for the accessed category.
 ```$ emojipedia category <name> [-h | href]```
