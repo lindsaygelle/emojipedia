@@ -41,6 +41,12 @@ const (
 	L    string = "-L"
 	LIST string = "LIST"
 )
+
+const (
+	P        string = "-P"
+	POSITION string = "POSITION"
+)
+
 const (
 	R      string = "-R"
 	REMOVE string = "REMOVE"

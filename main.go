@@ -25,7 +25,7 @@ func main() {
 		subcategoriesMain(arguments.Next())
 	case "-SS", SUBCATEGORY:
 		subcategoryMain(arguments.Next())
-	case UNICODE:
+	case "-U", UNICODE:
 		unicodeorgMain(arguments.Next())
 	default:
 		fmt.Println("usage: emojipedia <command> [<args>]")

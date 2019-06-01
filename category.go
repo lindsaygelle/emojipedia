@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/gellel/emojipedia/arguments"
@@ -10,25 +9,28 @@ import (
 )
 
 func categoryMain(arguments *arguments.Arguments) {
-	category, err := category.Open(arguments.Get(0))
-	if err != nil {
-		fmt.Println(fmt.Sprintf(errorCannotOpen, CATEGORY, err))
-		os.Exit(1)
-	}
-	switch strings.ToUpper(arguments.Next().Get(0)) {
-	case "-A", ANCHOR:
-		fmt.Println(category.Anchor)
-	case "-E", EMOJI:
-		category.Emoji.Sort().Each(func(_ int, i interface{}) {
-			fmt.Println(i.(string))
-		})
-	case "-H", HREF:
-		fmt.Println(category.Href)
-	case "-N", NUMBER:
-		fmt.Println(category.Number)
-	case "-S", SUBCATEGORIES:
-		category.Subcategories.Sort().Each(func(_ int, i interface{}) {
-			fmt.Println(i.(string))
-		})
+	c, err := category.Open(arguments.Get(0))
+	switch err == nil {
+	case true:
+		switch strings.ToUpper(arguments.Next().Get(0)) {
+		case "-A", ANCHOR:
+			fmt.Println(c.Anchor)
+		case "-E", EMOJI:
+			c.Emoji.Sort().Each(func(_ int, i interface{}) {
+				fmt.Println(i.(string))
+			})
+		case "-H", HREF:
+			fmt.Println(c.Href)
+		case "-P", POSITION:
+			fmt.Println(c.Position)
+		case "-N", NUMBER:
+			fmt.Println(c.Number)
+		case "-S", SUBCATEGORIES:
+			c.Subcategories.Sort().Each(func(_ int, i interface{}) {
+				fmt.Println(i.(string))
+			})
+		}
+	default:
+		fmt.Println(fmt.Sprintf("%s \"%s\" not found", CATEGORY, arguments.Get(0)))
 	}
 }
