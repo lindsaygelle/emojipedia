@@ -16,17 +16,17 @@ func categoryMain(arguments *arguments.Arguments) {
 		os.Exit(1)
 	}
 	switch strings.ToUpper(arguments.Next().Get(0)) {
-	case ANCHOR:
+	case "-A", ANCHOR:
 		fmt.Println(category.Anchor)
-	case EMOJI:
+	case "-E", EMOJI:
 		category.Emoji.Sort().Each(func(_ int, i interface{}) {
 			fmt.Println(i.(string))
 		})
-	case HREF:
+	case "-H", HREF:
 		fmt.Println(category.Href)
-	case NUMBER:
+	case "-N", NUMBER:
 		fmt.Println(category.Number)
-	case SUBCATEGORIES:
+	case "-S", SUBCATEGORIES:
 		category.Subcategories.Sort().Each(func(_ int, i interface{}) {
 			fmt.Println(i.(string))
 		})
