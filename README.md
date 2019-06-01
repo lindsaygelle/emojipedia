@@ -121,8 +121,14 @@ Anchor fetches the specific unique reference for the category from unicode.org.
 
 Emoji lists the emoji that belong the accessed category. Prints each emoji out in a sequence in a sorted order. Does not print the unicode character. 
 
-#### URL to the category (with anchor)
+#### URL to the Category (with anchor)
 
-```$ emojipedia [-cc|category] <category> [-h | href]```
+```$ emojipedia [-cc|category] <category> [-h|href]```
 
 Generates the direct URL to the category on the unicode.org page.
+
+#### Numeric order that the Category was parsed
+
+```$ emojipedia [-cc|category] <category> [-n|number]```
+
+Number returns the integer that the Category holds.
