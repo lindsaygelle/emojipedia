@@ -132,3 +132,9 @@ Generates the direct URL to the category on the unicode.org page.
 ```$ emojipedia [-cc|category] <category> [-n|number]```
 
 Number returns the integer that the Category holds.
+
+#### Subcategories that belong to the Category
+
+```$ emojipedia [-cc|category] <category> [-s|subcategories]```
+
+Iterates over the subcategories that belong the category and lists them in their alphabetic order.
