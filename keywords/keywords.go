@@ -39,15 +39,12 @@ func Make(document *goquery.Document) {
 	Write(keywords)
 }
 
-// Write stores and Emoji pointer to the dependencies folder.
+// Write stores and Keywords pointer to the dependencies folder.
 func Write(keywords *Keywords) {
 	os.MkdirAll(directory.Keywords, 0644)
-
 	keywords.Each(func(key string, keywords *slice.Slice) {
 		content, _ := json.Marshal(keywords)
-
 		filepath := filepath.Join(directory.Keywords, fmt.Sprintf("%s.json", key))
-
 		ioutil.WriteFile(filepath, content, 0644)
 	})
 }
