@@ -1,15 +1,10 @@
 package keywords
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gellel/emojipedia/directory"
+	"github.com/gellel/emojipedia/keyword"
 	"github.com/gellel/emojipedia/lexicon"
 	"github.com/gellel/emojipedia/slice"
 	"github.com/gellel/emojipedia/text"
@@ -36,16 +31,8 @@ func Make(document *goquery.Document) {
 			keywords.Add(key, name)
 		}
 	})
-	Write(keywords)
-}
-
-// Write stores and Keywords pointer to the dependencies folder.
-func Write(keywords *Keywords) {
-	os.MkdirAll(directory.Keywords, 0644)
 	keywords.Each(func(key string, keywords *slice.Slice) {
-		content, _ := json.Marshal(keywords)
-		filepath := filepath.Join(directory.Keywords, fmt.Sprintf("%s.json", key))
-		ioutil.WriteFile(filepath, content, 0644)
+		keyword.Write(key, keywords)
 	})
 }
 
