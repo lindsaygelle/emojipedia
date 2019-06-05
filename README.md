@@ -138,3 +138,7 @@ Number returns the integer that the Category holds.
 ```$ emojipedia [-cc|category] <category> [-s|subcategories]```
 
 Iterates over the subcategories that belong the category and lists them in their alphabetic order.
+
+#### Table the entire Category
+
+```$ emojipedia [-cc|category] <category> [-t|table]``
