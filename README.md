@@ -141,4 +141,4 @@ Iterates over the subcategories that belong the category and lists them in their
 
 #### Table the entire Category
 
-```$ emojipedia [-cc|category] <category> [-t|table]``
+```$ emojipedia [-cc|category] <category> [-t|table]```
