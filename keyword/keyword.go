@@ -11,6 +11,26 @@ import (
 	"github.com/gellel/emojipedia/slice"
 )
 
+// Open attempts to open a Keyword slice from the emojipedia/keywords folder.
+func Open(name string) (*slice.Slice, error) {
+	filepath := filepath.Join(directory.Keywords, fmt.Sprintf("%s.json", name))
+	reader, err := os.Open(filepath)
+	if err != nil {
+		return nil, err
+	}
+	content, err := ioutil.ReadAll(reader)
+	defer reader.Close()
+	if err != nil {
+		return nil, err
+	}
+	slice := &slice.Slice{}
+	err = json.Unmarshal(content, slice)
+	if err != nil {
+		return nil, err
+	}
+	return slice, nil
+}
+
 func Parse(content *[]byte) (*slice.Slice, error) {
 	keywords := &slice.Slice{}
 	err := json.Unmarshal(*content, keywords)

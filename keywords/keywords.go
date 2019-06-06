@@ -1,9 +1,11 @@
 package keywords
 
 import (
+	"io/ioutil"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gellel/emojipedia/directory"
 	"github.com/gellel/emojipedia/keyword"
 	"github.com/gellel/emojipedia/lexicon"
 	"github.com/gellel/emojipedia/slice"
@@ -13,6 +15,15 @@ import (
 // New instantiates a new empty Keywords pointer.
 func New() *Keywords {
 	return &Keywords{&lexicon.Lexicon{}}
+}
+
+// Get attempts to open all Keywords data from the emojipedia/keywords folder, but panics if an error occurs.
+func Get() *Keywords {
+	keywords, err := Open()
+	if err != nil {
+		panic(err)
+	}
+	return keywords
 }
 
 // Make builds Keywords dependencies from HTML scraped from unicode.org.
@@ -34,6 +45,24 @@ func Make(document *goquery.Document) {
 	keywords.Each(func(key string, keywords *slice.Slice) {
 		keyword.Write(key, keywords)
 	})
+}
+
+// Open attempts to open all Category data from the emojipedia/subcategories folder.
+func Open() (*Keywords, error) {
+	files, err := ioutil.ReadDir(directory.Keywords)
+	if err != nil {
+		return nil, err
+	}
+	keywords := New()
+	for _, file := range files {
+		name := strings.TrimSuffix(file.Name(), ".json")
+		slice, err := keyword.Open(name)
+		if err != nil {
+			return nil, err
+		}
+		keywords.Assign(name, slice)
+	}
+	return keywords, nil
 }
 
 type keywords interface {
@@ -62,6 +91,11 @@ func (pointer *Keywords) Add(key string, names ...string) *Keywords {
 	for _, name := range names {
 		s.Append(name)
 	}
+	return pointer
+}
+
+func (pointer *Keywords) Assign(key string, slice *slice.Slice) *Keywords {
+	pointer.lexicon.Add(key, slice)
 	return pointer
 }
 
