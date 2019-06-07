@@ -23,10 +23,33 @@ func subcategoryMain(arguments *arguments.Arguments) {
 			})
 		case "-H", HREF:
 			fmt.Println(s.Href)
-		case "-P", POSITION:
-			fmt.Println(s.Position)
 		case "-N", NUMBER:
 			fmt.Println(s.Number)
+		case "-P", POSITION:
+			fmt.Println(s.Position)
+		case T, TABLE:
+			var (
+				anchor   = s.Anchor
+				category = s.Category
+				emoji    = fmt.Sprintf("%v", s.Emoji.Len())
+				href     = s.Href
+				name     = s.Name
+				number   = fmt.Sprintf("%v", s.Number)
+				position = fmt.Sprintf("%v", s.Position)
+				template = []string{
+					anchor,
+					category,
+					emoji,
+					href,
+					name,
+					number,
+					position}
+			)
+			fmt.Fprintln(writer, "anchor\t|category\t|emoji\t|href\t|name\t|number\t|position")
+			fmt.Fprintln(writer, strings.Join(template, "\t|"))
+			writer.Flush()
 		}
+	default:
+		fmt.Println(fmt.Sprintf(errorChoiceNotFound, arguments.Get(0), "-ss", strings.ToLower(SUBCATEGORY)))
 	}
 }
