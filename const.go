@@ -72,3 +72,7 @@ const (
 	successBuildPackage  string = "success! program has built package \"%s\""
 	successRemovePackage string = "success! program has removed \"%s\"!"
 )
+
+const (
+	errorChoiceNotFound string = "Uh-oh. Cannot find content \"%s\" in choice \"$ emojipedia [%s|%s] <choice>\". Please check input and try again."
+)

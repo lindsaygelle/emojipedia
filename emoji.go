@@ -56,7 +56,7 @@ func emojiMain(arguments *arguments.Arguments) {
 			fmt.Println(e.Number)
 		case "-S", SUBCATEGORY:
 			fmt.Println(e.Subcategory)
-		case "-T", "TABLE":
+		case T, TABLE:
 			var (
 				character   = text.Emojize(e.Unicode)
 				category    = e.Category
@@ -83,6 +83,6 @@ func emojiMain(arguments *arguments.Arguments) {
 			fmt.Println(e.Unicode)
 		}
 	default:
-		fmt.Println(fmt.Sprintf("emoji \"%s\" not found. please try again", arguments.Get(0)))
+		fmt.Println(fmt.Sprintf(errorChoiceNotFound, arguments.Get(0), "-ee", strings.ToLower(EMOJI)))
 	}
 }

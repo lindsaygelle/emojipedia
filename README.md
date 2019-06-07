@@ -13,7 +13,7 @@ Installing the package is as easy as running Go's get command.
 Here's an example of listing out the categories using the program. 
 
 ```
-$ clear && emojipedia [-c|categories] [-l|list]
+$ clear && emojipedia [-c|categories] [-l|list] [options]
 
 Name                    |Number |Emoji  |Subcategories
 activities              |6      |79     |5
@@ -30,7 +30,7 @@ travel-and-places       |5      |210    |11
 Or perhaps you'd like the emoji.
 
 ```
-$ clear && emojipedia [-e|emojipedia] [-l|list]
+$ clear && emojipedia [-e|emojipedia] [-l|list] [options]
 
 Name                                            |Number |Category               |Subcategory            |Keywords
 1st-place-medal                                 |947    |activities             |award-medal            |4
@@ -51,7 +51,7 @@ airplane-departure                              |832    |travel-and-places      
 And of course, the emoji in detail.
 
 ```
-clear && emojipedia [-ee|emoji] boar [-t|table]
+clear && emojipedia [-ee|emoji] boar [-t|table] [options]
 ...
 🐗     |animals-and-nature     |U+1F417|http://....     |boar pig       |boar   |494    |animal-mammal
 
