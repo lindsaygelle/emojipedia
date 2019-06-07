@@ -29,6 +29,8 @@ func categoryMain(arguments *arguments.Arguments) {
 			c.Subcategories.Sort().Each(func(_ int, i interface{}) {
 				fmt.Println(i.(string))
 			})
+		case T, TABLE:
+
 		}
 	default:
 		fmt.Println(fmt.Sprintf("%s \"%s\" not found", CATEGORY, arguments.Get(0)))

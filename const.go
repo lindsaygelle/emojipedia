@@ -53,6 +53,11 @@ const (
 )
 
 const (
+	T     string = "-T"
+	TABLE string = "TABLE"
+)
+
+const (
 	errorCannotFind    string = "cannot find dependency \"%s\". content either missing or not built"
 	errorCannotOpen    string = "cannot open \"%s\"; encountered unexpected error \"%s\""
 	errorRemovePackage string = "cannot remove \"%s\"; encountered error \"%s\""

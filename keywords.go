@@ -15,7 +15,7 @@ func keywordsGet(arguments *arguments.Arguments) {
 	fmt.Fprintln(writer, "N\t|Name\t|Emoji")
 	arguments.Each(func(i int, argument string) {
 		if slice, ok := keywords.Get(argument); ok {
-			fmt.Fprintln(writer, fmt.Sprintf("%v\t|%v\t|%vi", i, argument, slice.Join(" ")))
+			fmt.Fprintln(writer, fmt.Sprintf("%v\t|%v\t|%v", i, argument, slice.Join(" ")))
 		}
 	})
 	writer.Flush()
@@ -49,6 +49,8 @@ func keywordsMain(arguments *arguments.Arguments) {
 	switch strings.ToUpper(arguments.Get(0)) {
 	case B, BUILD:
 		build(KEYWORDS, keywords.Make)
+	case G, GET:
+		keywordsGet(arguments.Next())
 	case K, KEYS:
 		keywordsKeys(arguments.Next())
 	case L, LIST:
