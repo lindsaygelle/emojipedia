@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gellel/emojipedia/slice"
+
 	"github.com/gellel/emojipedia/arguments"
 	"github.com/gellel/emojipedia/emojipedia"
 	"github.com/gellel/emojipedia/text"
@@ -74,5 +76,17 @@ func emojipediaMain(arguments *arguments.Arguments) {
 		emojipediaList(arguments.Next())
 	case R, REMOVE:
 		remove(EMOJIPEDIA, emojipedia.Remove)
+	default:
+		var (
+			t = "\t\t%s,%s\t%s"
+			b = fmt.Sprintf(t, B, BUILD, "build the emojipedia")
+			g = fmt.Sprintf(t, G, GET, "get an emoji or emoji set from the encyclopedia")
+			k = fmt.Sprintf(t, K, KEYS, "print out the available keys")
+			l = fmt.Sprintf(t, L, LIST, "iterate over the stored emoji sets")
+		)
+		slice.New(b, g, k, l).Each(func(_ int, i interface{}) {
+			fmt.Fprintln(writer, i.(string))
+		})
+		writer.Flush()
 	}
 }
