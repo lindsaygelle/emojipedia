@@ -12,6 +12,10 @@ var (
 )
 
 var (
+	starting = fmt.Sprintf(param, "short", "verbose", "[-b|build]")
+)
+
+var (
 	copt = fmt.Sprintf(param, strings.ToLower(C), strings.ToLower(CATEGORIES), categoriesDescription)
 	kopt = fmt.Sprintf(param, strings.ToLower(K), strings.ToLower(KEYWORDS), keywordsDescription)
 	eopt = fmt.Sprintf(param, strings.ToLower(E), strings.ToLower(EMOJIPEDIA), emojipediaDescription)
