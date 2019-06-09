@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	"strings"
 	"text/tabwriter"
 )
 
@@ -10,7 +12,14 @@ var (
 )
 
 var (
-	categoriesCommand = []string{C, CATEGORIES}
-	categoryCommand   = []string{CC, CATEGORY}
-	keywordsCommand   = []string{K, KEYWORDS}
+	copt = fmt.Sprintf(param, strings.ToLower(C), strings.ToLower(CATEGORIES), categoriesDescription)
+	kopt = fmt.Sprintf(param, strings.ToLower(K), strings.ToLower(KEYWORDS), keywordsDescription)
+	eopt = fmt.Sprintf(param, strings.ToLower(E), strings.ToLower(EMOJIPEDIA), emojipediaDescription)
+	sopt = fmt.Sprintf(param, strings.ToLower(S), strings.ToLower(SUBCATEGORIES), subcategoriesDescription)
+)
+
+var (
+	ccopt = fmt.Sprintf(param, strings.ToLower(CC), strings.ToLower(CATEGORY), categoryDescription)
+	eeopt = fmt.Sprintf(param, strings.ToLower(EE), strings.ToLower(EMOJI), emojiDescription)
+	ssopt = fmt.Sprintf(param, strings.ToLower(SS), strings.ToLower(SUBCATEGORY), subcategoryDescription)
 )

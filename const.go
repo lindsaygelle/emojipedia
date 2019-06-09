@@ -93,6 +93,38 @@ const (
 )
 
 const (
+	param string = "  [%s,%s]\t%s"
+)
+
+const (
+	categoriesDescription string = "browse categorical insights"
+)
+
+const (
+	categoryDescription string = "access a specific category"
+)
+
+const (
+	emojiDescription string = "access a specific unicode emoji character"
+)
+
+const (
+	emojipediaDescription string = "explore the emoji catalogue"
+)
+
+const (
+	keywordsDescription string = "see emojis classified by keywords"
+)
+
+const (
+	subcategoriesDescription string = "browse subcategorical insights"
+)
+
+const (
+	subcategoryDescription string = "access a specific subcategory"
+)
+
+const (
 	errorCannotFind    string = "cannot find dependency \"%s\". content either missing or not built"
 	errorCannotOpen    string = "cannot open \"%s\"; encountered unexpected error \"%s\""
 	errorRemovePackage string = "cannot remove \"%s\"; encountered error \"%s\""

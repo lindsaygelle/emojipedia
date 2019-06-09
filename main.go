@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
 	"github.com/gellel/emojipedia/arguments"
+	"github.com/gellel/emojipedia/slice"
 )
 
 func main() {
@@ -27,6 +29,19 @@ func main() {
 	case U, UNICODE:
 		unicodeorgMain(arguments.Next())
 	default:
-
+		fmt.Fprintln(writer, "usage: emojipedia [-abbreviation|verbose] <command> [args [...<args>]]")
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "Small program that scrapes unicode.org for emoji content. Parses out HTML into categorically ordered data subsets.")
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "browsing programs collection of contents")
+		slice.New(copt, kopt, eopt, sopt).Each(func(_ int, i interface{}) {
+			fmt.Fprintln(writer, i.(string))
+		})
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "browsing specific content")
+		slice.New(ccopt, eeopt, ssopt).Each(func(_ int, i interface{}) {
+			fmt.Fprintln(writer, i.(string))
+		})
+		writer.Flush()
 	}
 }
