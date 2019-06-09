@@ -13,19 +13,19 @@ func categoryMain(arguments *arguments.Arguments) {
 	switch err == nil {
 	case true:
 		switch strings.ToUpper(arguments.Next().Get(0)) {
-		case "-A", ANCHOR:
+		case A, ANCHOR:
 			fmt.Println(c.Anchor)
-		case "-E", EMOJI:
+		case E, EMOJI:
 			c.Emoji.Sort().Each(func(_ int, i interface{}) {
 				fmt.Println(i.(string))
 			})
-		case "-H", HREF:
+		case H, HREF:
 			fmt.Println(c.Href)
-		case "-P", POSITION:
+		case P, POSITION:
 			fmt.Println(c.Position)
-		case "-N", NUMBER:
+		case N, NUMBER:
 			fmt.Println(c.Number)
-		case "-S", SUBCATEGORIES:
+		case S, SUBCATEGORIES:
 			c.Subcategories.Sort().Each(func(_ int, i interface{}) {
 				fmt.Println(i.(string))
 			})

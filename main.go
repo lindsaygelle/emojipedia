@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
@@ -11,23 +10,23 @@ import (
 func main() {
 	arguments := arguments.NewArguments(os.Args[1:])
 	switch strings.ToUpper(arguments.Get(0)) {
-	case "-C", CATEGORIES:
+	case C, CATEGORIES:
 		categoriesMain(arguments.Next())
-	case "-CC", CATEGORY:
+	case CC, CATEGORY:
 		categoryMain(arguments.Next())
-	case "-EE", EMOJI:
+	case EE, EMOJI:
 		emojiMain(arguments.Next())
-	case "-E", EMOJIPEDIA:
+	case E, EMOJIPEDIA:
 		emojipediaMain(arguments.Next())
-	case "-K", KEYWORDS:
+	case K, KEYWORDS:
 		keywordsMain(arguments.Next())
-	case "-S", SUBCATEGORIES:
+	case S, SUBCATEGORIES:
 		subcategoriesMain(arguments.Next())
-	case "-SS", SUBCATEGORY:
+	case SS, SUBCATEGORY:
 		subcategoryMain(arguments.Next())
-	case "-U", UNICODE:
+	case U, UNICODE:
 		unicodeorgMain(arguments.Next())
 	default:
-		fmt.Println("usage: emojipedia <command> [<args>]")
+
 	}
 }

@@ -19,15 +19,15 @@ func emojiMain(arguments *arguments.Arguments) {
 	switch err == nil {
 	case true:
 		switch strings.ToUpper(arguments.Next().Get(0)) {
-		case "-A", ANCHOR:
+		case A, ANCHOR:
 			fmt.Println(e.Anchor)
-		case "-C", CATEGORY:
+		case C, CATEGORY:
 			fmt.Println(e.Category)
-		case "-CC", CODES:
+		case CC, CODES:
 			e.Codes.Each(func(_ int, i interface{}) {
 				fmt.Println(i.(string))
 			})
-		case "-D", DESCRIPTION:
+		case D, DESCRIPTION:
 			if len(e.Description) == 0 {
 				var (
 					resp, _     = http.Get("https://emojipedia.org/" + e.Name + "/")
@@ -42,19 +42,19 @@ func emojiMain(arguments *arguments.Arguments) {
 				emoji.Write(e)
 			}
 			fmt.Println(e.Description)
-		case "-E", EMOJI:
+		case E, EMOJI:
 			fmt.Println(text.Emojize(e.Unicode))
-		case "-H", HREF:
+		case H, HREF:
 			fmt.Println(e.Href)
-		case "-I", IMAGE:
+		case I, IMAGE:
 			fmt.Println(e.Image)
-		case "-K", KEYWORDS:
+		case K, KEYWORDS:
 			e.Keywords.Sort().Each(func(_ int, i interface{}) {
 				fmt.Println(i.(string))
 			})
-		case "-N", NUMBER:
+		case N, NUMBER:
 			fmt.Println(e.Number)
-		case "-S", SUBCATEGORY:
+		case S, SUBCATEGORY:
 			fmt.Println(e.Subcategory)
 		case T, TABLE:
 			var (

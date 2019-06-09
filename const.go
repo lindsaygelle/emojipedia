@@ -18,8 +18,26 @@ const (
 )
 
 const (
+	A string = "-A"
+)
+
+const (
 	B     string = "-B"
 	BUILD string = "BUILD"
+)
+
+const (
+	C  string = "-C"
+	CC string = C + "C"
+)
+
+const (
+	D string = "-D"
+)
+
+const (
+	E  string = "-E"
+	EE string = E + "E"
 )
 
 const (
@@ -33,6 +51,10 @@ const (
 )
 
 const (
+	I string = "-I"
+)
+
+const (
 	K    string = "-K"
 	KEYS string = "KEYS"
 )
@@ -40,6 +62,10 @@ const (
 const (
 	L    string = "-L"
 	LIST string = "LIST"
+)
+
+const (
+	N string = "-N"
 )
 
 const (
@@ -53,8 +79,17 @@ const (
 )
 
 const (
+	S  string = "-S"
+	SS string = S + "S"
+)
+
+const (
 	T     string = "-T"
 	TABLE string = "TABLE"
+)
+
+const (
+	U string = "-U"
 )
 
 const (

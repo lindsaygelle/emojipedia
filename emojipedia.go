@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gellel/emojipedia/slice"
-
 	"github.com/gellel/emojipedia/arguments"
 	"github.com/gellel/emojipedia/emojipedia"
+	"github.com/gellel/emojipedia/slice"
 	"github.com/gellel/emojipedia/text"
 )
 
