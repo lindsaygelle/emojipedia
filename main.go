@@ -34,7 +34,10 @@ func main() {
 		fmt.Fprintln(writer, "Small program that scrapes unicode.org for emoji content. Parses out HTML into categorically ordered data subsets.")
 		fmt.Fprintln(writer)
 		fmt.Fprintln(writer, "building a new subprogram/getting started")
-		fmt.Fprintln(writer, starting)
+		fmt.Fprintln(writer, building)
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "removing an installed package")
+		fmt.Fprintln(writer, removing)
 		fmt.Fprintln(writer)
 		fmt.Fprintln(writer, "browsing programs collection of contents")
 		slice.New(copt, kopt, eopt, sopt).Each(func(_ int, i interface{}) {

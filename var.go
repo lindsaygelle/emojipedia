@@ -12,7 +12,8 @@ var (
 )
 
 var (
-	starting = fmt.Sprintf(param, "short", "verbose", "[-b|build]")
+	building = fmt.Sprintf(param, "short", "verbose", "[-b|build]")
+	removing = fmt.Sprintf(param, "short", "verbose", "[-r|remove]")
 )
 
 var (
