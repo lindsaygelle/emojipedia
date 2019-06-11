@@ -15,18 +15,20 @@ func categoriesGet(arguments *arguments.Arguments) {
 		categories = categories.Get()
 	)
 	fmt.Fprintln(writer, "Name\t|Number\t|Subcategories")
-	arguments.Each(func(_ int, argument string) {
-		if category, ok := categories.Get(argument); ok {
-			var (
-				name          = category.Name
-				number        = category.Number
-				subcategories = category.Subcategories.Sort().Join(" ")
-				output        = fmt.Sprintf("%v\t|%v\t|%v", name, number, subcategories)
-			)
-			fmt.Fprintln(writer, output)
-		}
-	})
-	writer.Flush()
+	if arguments.Get(0) != "" {
+		arguments.Each(func(_ int, argument string) {
+			if category, ok := categories.Get(argument); ok {
+				var (
+					name          = category.Name
+					number        = category.Number
+					subcategories = category.Subcategories.Sort().Join(" ")
+					output        = fmt.Sprintf("%v\t|%v\t|%v", name, number, subcategories)
+				)
+				fmt.Fprintln(writer, output)
+			}
+		})
+		writer.Flush()
+	}
 }
 
 func categoriesKeys(arguments *arguments.Arguments) {
@@ -89,12 +91,24 @@ func categoriesMain(arguments *arguments.Arguments) {
 				About:   "iterate and show the available categories information",
 				Short:   L,
 				Verbose: LIST}
+			r = stdin.Arg{
+				About:   "remove the categories (all)",
+				Short:   R,
+				Verbose: REMOVE}
 		)
 		fmt.Fprintln(writer, "usage: emojipedia categories [<option>] [--flags]")
 		fmt.Fprintln(writer)
-		slice.New(b, g, k, l).Each(func(_ int, i interface{}) {
+		fmt.Fprintln(writer, "installing categories")
+		fmt.Fprintln(writer, b)
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "removing categories")
+		fmt.Fprintln(writer, r)
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "options that support flags")
+		slice.New(g, k, l).Each(func(_ int, i interface{}) {
 			fmt.Fprintln(writer, i.(stdin.Arg))
 		})
 		fmt.Fprintln(writer)
+		writer.Flush()
 	}
 }

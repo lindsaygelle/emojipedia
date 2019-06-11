@@ -2,6 +2,7 @@ package stdin
 
 import (
 	"fmt"
+	"strings"
 )
 
 type Arg struct {
@@ -11,5 +12,5 @@ type Arg struct {
 }
 
 func (arg Arg) String() string {
-	return fmt.Sprintf("  %s %s\t%s", arg.Short, arg.Verbose, arg.About)
+	return fmt.Sprintf("%s\t%s", strings.ToLower(fmt.Sprintf("  [%s %s]", arg.Short, arg.Verbose)), arg.About)
 }

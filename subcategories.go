@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"github.com/gellel/emojipedia/arguments"
+	"github.com/gellel/emojipedia/slice"
+	"github.com/gellel/emojipedia/stdin"
 	"github.com/gellel/emojipedia/subcategories"
 )
 
@@ -69,5 +71,42 @@ func subcategoriesMain(arguments *arguments.Arguments) {
 		subcategoriesList(arguments.Next())
 	case R, REMOVE:
 		remove(SUBCATEGORIES, subcategories.Remove)
+	default:
+		var (
+			b = stdin.Arg{
+				About:   "create the subcategories",
+				Short:   B,
+				Verbose: BUILD}
+			g = stdin.Arg{
+				About:   "get one or more subcategories",
+				Short:   G,
+				Verbose: GET}
+			k = stdin.Arg{
+				About:   "show available subcategory choices",
+				Short:   K,
+				Verbose: KEYS}
+			l = stdin.Arg{
+				About:   "iterate and show the available subcategories information",
+				Short:   L,
+				Verbose: LIST}
+			r = stdin.Arg{
+				About:   "remove the subcategories (all)",
+				Short:   R,
+				Verbose: REMOVE}
+		)
+		fmt.Fprintln(writer, "usage: emojipedia subcategories [<option>] [--flags]")
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "installing subcategories")
+		fmt.Fprintln(writer, b)
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "removing subcategories")
+		fmt.Fprintln(writer, r)
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "options that support flags")
+		slice.New(g, k, l).Each(func(_ int, i interface{}) {
+			fmt.Fprintln(writer, i.(stdin.Arg))
+		})
+		fmt.Fprintln(writer)
+		writer.Flush()
 	}
 }

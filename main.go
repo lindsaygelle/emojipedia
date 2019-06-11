@@ -48,6 +48,7 @@ func main() {
 		slice.New(ccopt, eeopt, ssopt).Each(func(_ int, i interface{}) {
 			fmt.Fprintln(writer, i.(string))
 		})
+		fmt.Fprintln(writer)
 		writer.Flush()
 	}
 }
