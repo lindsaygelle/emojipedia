@@ -12,8 +12,8 @@ var (
 )
 
 var (
-	building = fmt.Sprintf(param, "short", "verbose", "[-b|build]")
-	removing = fmt.Sprintf(param, "short", "verbose", "[-r|remove]")
+	building = fmt.Sprintf(param, "short", "verbose", fmt.Sprintf(param, B, BUILD, ""))
+	removing = fmt.Sprintf(param, "short", "verbose", fmt.Sprintf(param, R, REMOVE, ""))
 )
 
 var (
@@ -28,3 +28,5 @@ var (
 	eeopt = fmt.Sprintf(param, strings.ToLower(EE), strings.ToLower(EMOJI), emojiDescription)
 	ssopt = fmt.Sprintf(param, strings.ToLower(SS), strings.ToLower(SUBCATEGORY), subcategoryDescription)
 )
+
+var ()

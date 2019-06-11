@@ -6,6 +6,8 @@ import (
 
 	"github.com/gellel/emojipedia/arguments"
 	"github.com/gellel/emojipedia/categories"
+	"github.com/gellel/emojipedia/slice"
+	"github.com/gellel/emojipedia/stdin"
 )
 
 func categoriesGet(arguments *arguments.Arguments) {
@@ -69,5 +71,30 @@ func categoriesMain(arguments *arguments.Arguments) {
 		categoriesList(arguments.Next())
 	case R, REMOVE:
 		remove(CATEGORIES, categories.Remove)
+	default:
+		var (
+			b = stdin.Arg{
+				About:   "create the categories",
+				Short:   B,
+				Verbose: BUILD}
+			g = stdin.Arg{
+				About:   "get one or more categories",
+				Short:   G,
+				Verbose: GET}
+			k = stdin.Arg{
+				About:   "show available category choices",
+				Short:   K,
+				Verbose: KEYS}
+			l = stdin.Arg{
+				About:   "iterate and show the available categories information",
+				Short:   L,
+				Verbose: LIST}
+		)
+		fmt.Fprintln(writer, "usage: emojipedia categories [<option>] [--flags]")
+		fmt.Fprintln(writer)
+		slice.New(b, g, k, l).Each(func(_ int, i interface{}) {
+			fmt.Fprintln(writer, i.(stdin.Arg))
+		})
+		fmt.Fprintln(writer)
 	}
 }

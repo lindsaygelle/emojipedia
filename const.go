@@ -93,7 +93,7 @@ const (
 )
 
 const (
-	param string = "  [%s,%s]\t%s"
+	param string = "  [%s %s]\t%s"
 )
 
 const (
