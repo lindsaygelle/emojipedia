@@ -96,7 +96,7 @@ func categoriesMain(arguments *arguments.Arguments) {
 				Short:   R,
 				Verbose: REMOVE}
 		)
-		fmt.Fprintln(writer, "usage: emojipedia categories [<option>] [--flags]")
+		fmt.Fprintln(writer, "usage: emojipedia [-c categories] [<option>] [--flags]")
 		fmt.Fprintln(writer)
 		fmt.Fprintln(writer, "installing categories")
 		fmt.Fprintln(writer, b)

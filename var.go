@@ -28,5 +28,3 @@ var (
 	eeopt = fmt.Sprintf(param, strings.ToLower(EE), strings.ToLower(EMOJI), emojiDescription)
 	ssopt = fmt.Sprintf(param, strings.ToLower(SS), strings.ToLower(SUBCATEGORY), subcategoryDescription)
 )
-
-var ()

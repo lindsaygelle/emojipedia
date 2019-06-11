@@ -7,6 +7,7 @@ import (
 	"github.com/gellel/emojipedia/arguments"
 	"github.com/gellel/emojipedia/emojipedia"
 	"github.com/gellel/emojipedia/slice"
+	"github.com/gellel/emojipedia/stdin"
 	"github.com/gellel/emojipedia/text"
 )
 
@@ -77,15 +78,40 @@ func emojipediaMain(arguments *arguments.Arguments) {
 		remove(EMOJIPEDIA, emojipedia.Remove)
 	default:
 		var (
-			t = "\t\t%s,%s\t%s"
-			b = fmt.Sprintf(t, B, BUILD, "build the emojipedia")
-			g = fmt.Sprintf(t, G, GET, "get an emoji or emoji set from the encyclopedia")
-			k = fmt.Sprintf(t, K, KEYS, "print out the available keys")
-			l = fmt.Sprintf(t, L, LIST, "iterate over the stored emoji sets")
+			b = stdin.Arg{
+				About:   "create the emojipedia",
+				Short:   B,
+				Verbose: BUILD}
+			g = stdin.Arg{
+				About:   "get one or more emoji",
+				Short:   G,
+				Verbose: GET}
+			k = stdin.Arg{
+				About:   "show available emoji choices",
+				Short:   K,
+				Verbose: KEYS}
+			l = stdin.Arg{
+				About:   "iterate and show the available emoji information",
+				Short:   L,
+				Verbose: LIST}
+			r = stdin.Arg{
+				About:   "remove the emojipedia (all)",
+				Short:   R,
+				Verbose: REMOVE}
 		)
-		slice.New(b, g, k, l).Each(func(_ int, i interface{}) {
-			fmt.Fprintln(writer, i.(string))
+		fmt.Fprintln(writer, "usage: emojipedia [-e emojipedia] [<option>] [--flags]")
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "installing emojipedia")
+		fmt.Fprintln(writer, b)
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "removing emojipedia")
+		fmt.Fprintln(writer, r)
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "options that support flags")
+		slice.New(g, k, l).Each(func(_ int, i interface{}) {
+			fmt.Fprintln(writer, i.(stdin.Arg))
 		})
+		fmt.Fprintln(writer)
 		writer.Flush()
 	}
 }

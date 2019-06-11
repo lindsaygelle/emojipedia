@@ -94,7 +94,7 @@ func subcategoriesMain(arguments *arguments.Arguments) {
 				Short:   R,
 				Verbose: REMOVE}
 		)
-		fmt.Fprintln(writer, "usage: emojipedia subcategories [<option>] [--flags]")
+		fmt.Fprintln(writer, "usage: emojipedia [-s subcategories] [<option>] [--flags]")
 		fmt.Fprintln(writer)
 		fmt.Fprintln(writer, "installing subcategories")
 		fmt.Fprintln(writer, b)
