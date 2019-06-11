@@ -6,6 +6,8 @@ import (
 
 	"github.com/gellel/emojipedia/arguments"
 	"github.com/gellel/emojipedia/keywords"
+	"github.com/gellel/emojipedia/slice"
+	"github.com/gellel/emojipedia/stdin"
 )
 
 func keywordsGet(arguments *arguments.Arguments) {
@@ -55,5 +57,42 @@ func keywordsMain(arguments *arguments.Arguments) {
 		keywordsKeys(arguments.Next())
 	case L, LIST:
 		keywordsList(arguments.Next())
+	default:
+		var (
+			b = stdin.Arg{
+				About:   "create the keywords",
+				Short:   B,
+				Verbose: BUILD}
+			g = stdin.Arg{
+				About:   "get one or more keywords",
+				Short:   G,
+				Verbose: GET}
+			k = stdin.Arg{
+				About:   "show available keyword choices",
+				Short:   K,
+				Verbose: KEYS}
+			l = stdin.Arg{
+				About:   "iterate and show the available keywords information",
+				Short:   L,
+				Verbose: LIST}
+			r = stdin.Arg{
+				About:   "remove the keywords (all)",
+				Short:   R,
+				Verbose: REMOVE}
+		)
+		fmt.Fprintln(writer, "usage: emojipedia [-k keywords] [<option>] [--flags]")
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "installing keywords")
+		fmt.Fprintln(writer, b)
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "removing keywords")
+		fmt.Fprintln(writer, r)
+		fmt.Fprintln(writer)
+		fmt.Fprintln(writer, "options that support flags")
+		slice.New(g, k, l).Each(func(_ int, i interface{}) {
+			fmt.Fprintln(writer, i.(stdin.Arg))
+		})
+		fmt.Fprintln(writer)
+		writer.Flush()
 	}
 }
