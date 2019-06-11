@@ -2,18 +2,43 @@
 
 A simple, small program that scrubs the unicode.org site for emoji data. Can be used to write out specific fragments of the page to be consumed from the command line or something else. Things like emoji categories, emoji subcategories and emoji are all segmented into seperated folders that can be accessed from their respective command line routines. The core package required for the sub-packages to be build is the main HTML content that is cached from unicode.org. This file is particularly big (namely due to several base64 SVG's existing in the source). After the desired packages are built for the program, this can be removed by running the remove command. Keep in mind that if the unicode.org HTML package is gone and some of the other hooks aren't yet build, the other non-built packages won't work and the content will need to be fetched again.
 
-## Get
+## Install
 
-Installing the package is as easy as running Go's get command.
+Grabbing the program is as easy as running Go's `get` command. After everythings collected, you'll probably want to run the `go build` command to create a binary. After that, you're almost good to go.
 
-`$ go get github.com/gellel/emojipedia`
+```go get github.com/gellel/emojipedia && go build```
 
-## Example
+## Building
 
-Here's an example of listing out the categories using the program. 
+Assuming you've created the binary, you'll next want to run the unicode `build` command. This option attempts to request and store the current unicode.org chart to the programs local folder. As mentioned above, this site is pretty big, so you might want to queue up something else to do while everything downloads.
+
+```emojipedia [-u unicode] [-b build]```
+
+As of writing this documentation, the program assumes that the source content is still hosted under the URL https://unicode.org/emoji/charts/emoji-list.html. Should this page be moved, removed or auth protected, chances are the program will not work. If this is the case, please raise a issue. Otherwise, the program should just download and store the file (eventually).
+
+## Packages
+
+The emojipedia program separates the contents of the unicode.org HTML file in several different subsets. Given the amount of content that is contained at each level, the emojipedia program does not automatically create each and every one for you on install. To create a new package, run the `build` command for the content desired. Currently, there are four main package directories that can be built out of HTML file. These are `categories`, `emojipedia`, `keywords` and `subcategories`. Each of these can be built individually and are not interdepenant, but all require the unicode.org HTML file to exists before they can be created.
+
+```emojipedia [<package-name>] [-b build]```
+
+After you have created the desired number of packages, you can removed the unicode.org HTML file.
+
+```emojipedia [-u unicode] [-r remove]```
+
+
+## Usage (collections)
+
+The program will show you a set of available commands if no input is given at runtime. However, here are some basic commands to help get you started.
+
+Each of the main packages can be browsed using a common set of commands. These are `get`, `keys`, `list`, and `number`. 
+
+```emojipedia [<[-c categories],[-k keywords],[-e emojipedia],[-s subcategories]>] [<[-g get],[-k keys],[-l list],[-n number]>]```
+
+Here's an example of using the list command on the categories package.
 
 ```
-$ clear && emojipedia [-c|categories] [-l|list] [options]
+emojipedia [-c categories] [-l list] [<options>]
 
 Name                    |Number |Emoji  |Subcategories
 activities              |6      |79     |5
@@ -27,10 +52,11 @@ smileys-and-emotion     |0      |149    |15
 symbols                 |8      |217    |11
 travel-and-places       |5      |210    |11
 ```
-Or perhaps you'd like the emoji.
+
+And another; in this example we're listing out the emoji, but using the same command.
 
 ```
-$ clear && emojipedia [-e|emojipedia] [-l|list] [options]
+emojipedia [-e emojipedia] [-l list] [<options>]
 
 Name                                            |Number |Category               |Subcategory            |Keywords
 1st-place-medal                                 |947    |activities             |award-medal            |4
@@ -48,187 +74,12 @@ airplane-departure                              |832    |travel-and-places      
 ... 
 ```
 
-And of course, the emoji in detail.
+Using the `get` command lets you specify the specific package contents you'd like to list. It takes _n_ positional arguments after the keyword `g` or `get`. Each argument refers to the name of a corresponding file.
 
 ```
-clear && emojipedia [-ee|emoji] boar [-t|table] [options]
+emojipedia [-c categories] [-g get] flags symbols
 ...
-🐗     |animals-and-nature     |U+1F417|http://....     |boar pig       |boar   |494    |animal-mammal
-
 ```
 
-## Building
+## Usage (specifics)
 
-Before you can run any of the command line hooks, the program must first parse and store the HTML content from unicode.org. This can take awhile due to the size of the HTML document. Best to grab a snack and let it do its thing. Program still can access https://unicode.org/emoji/charts/emoji-list.html. If it breaks, chances are there's been a change to the URL or HTML.
-
-`$ emojipedia unicode [-b | build]`
-
-The program should output a status message if it succeeds fetches and downloads the page. The unicode HTML document can be found within the .emojipedia folder within your bundle inside the program GoPath. 
-
-## Full install
-
-This command will _"quick"_ install all of the separate packages. Futher update will compress this into a single command.
-
-`$ emojipedia unicode -b && emojipedia categories -b && emojipedia emojipedia -b && emojipedia subcategories -b && emojipedia unicode -r`
-
-## Common commands
-The program supports several ways of accessing the content scraped from the unicode.org site. There are a number of common commands that are shared amongst the top-level programs, these are the `categories`, `emojipedia`, `keywords`, and `subcategories` programs.
- 
-##### Building packages
-
-```$ emojipedia [short | verbose] [-b | build]```
-
-Builds a specific bundle. Requires the unicode HTML to be on disc. Program cannot run the bundle routines without the package being generated. Run this command beforehand so that the appropriate hooks can be explored. If missing, the program will raise a missing file status and exit.
-
-##### Getting specific element from package
-
-```$ emojipedia [short | verbose] [-g | get]```
-
-Fetches a specific element from the accessed bundle (if it exists). Prints out the top-level detail for the accessed element. Is more verbose than the list command, but less-so than accessing the element directly.
-
-##### Fetching keys from package
-
-```$ emojipedia [short | verbose] [-k | keys]```
-
-Lists out the available options that can be picked from. Is a fast way for looking up a collection of elements for an accessed package. The keys are sorted alphabetically for convienence. 
-
-##### Listing elements from a package
-
-```$ emojipedia [short | verbose] [-l | list]```
-
-Lists all the elements and prints out top-level detail. Less verbose than `-g | get`.
-
-##### Removing a package
-
-```$ emojipedia [short | verbose]  [-r | remove]```
-
-Removes all of the bundle for the selected program. Does not delete the unicode HTML file.
-
-## Specific commands
-
-### Category commands
-
-Category refers to the specific parent grouping of all emoji. Each category can be accessed using the `-cc` or `category` command.
-
-##### Getting the Category's anchor reference
-
-```$ emojipedia [-cc|category] <category> [-a|anchor]```
-
-Anchor fetches the specific unique reference for the category from unicode.org.
-
-##### Listing the Category's emoji
-
-```$ emojipedia [-cc|category] <category> [-e|emoji]```
-
-Emoji lists the emoji that belong the accessed category. Prints each emoji out in a sequence in a sorted order. Does not print the unicode character. 
-
-##### URL to the Category (with anchor)
-
-```$ emojipedia [-cc|category] <category> [-h|href]```
-
-Generates the direct URL to the category on the unicode.org page.
-
-##### Numeric order that the Category was parsed
-
-```$ emojipedia [-cc|category] <category> [-n|number]```
-
-Number returns the integer that the Category holds.
-
-##### Subcategories that belong to the Category
-
-```$ emojipedia [-cc|category] <category> [-s|subcategories]```
-
-Iterates over the subcategories that belong the category and lists them in their alphabetic order.
-
-##### Table the entire Category
-
-```$ emojipedia [-cc|category] <category> [-t|table]```
-
-
-### Emoji commands
-
-Emoji refers to the unique emoji. Each emoji can be accessed using the `-ee` or `emoji` command.
-
-##### Getting the Emoji's anchor reference
-
-```$ emojipedia [-ee|emoji] <emoji> [-a|anchor]```
-
-##### Category that the emoji belongs to
-
-```$ emojipedia [-ee|emoji] <emoji> [-c|category]```
-
-##### Abbreviate unicode sequenences that create the emoji
-
-```$ emojipedia [-ee|emoji] <emoji> [-cc|codes]```
-
-##### Getting the description from emojipedia.org
-
-```$ emojipedia [-ee|emoji] <emoji> [-d|description]```
-
-##### Getting the Emoji character
-
-```$ emojipedia [-ee|emoji] <emoji> [-e|emoji]```
-
-##### URL to the Emoji (with anchor)
-
-```$ emojipedia [-ee|emoji] <emoji> [-h|href]```
-
-##### SVG base64 image
-
-```$ emojipedia [-ee|emoji] <emoji> [-i|image]```
-
-##### Numeric order that the Emoji was parsed
-
-```$ emojipedia [-ee|emoji] <emoji> [-n|number]```
-
-##### Subcategory the emoji belongs to
-
-```
-$ emojipedia [-ee|emoji] <emoji> [-s|subcategory]
-
-$ emojipedia -e cat -s
-animal-mammal
-```
-
-##### Table the entire Emoji
-
-```$ emojipedia [-ee|emoji] <emoji> [-t|table]```
-
-
-### Subcategory commands
-
-Subcategory refers to the specific sub-grouping of all emoji, with each subcategory belonging to one subcategory super-set. Each subcategory can be accessed using the `-ss` or `subcategory` command.
-
-##### Getting the Subcategory's anchor reference
-
-```$ emojipedia [-ss|subcategory] <subcategory> [-a|anchor]```
-
-Anchor fetches the specific unique reference for the subcategory from unicode.org.
-
-##### Listing the Subcategory's emoji
-
-```$ emojipedia [-ss|subcategory] <subcategory> [-e|emoji]```
-
-Emoji lists the emoji that belong the accessed subcategory. Prints each emoji out in a sequence in a sorted order. Does not print the unicode character. 
-
-##### URL to the Subcategory (with anchor)
-
-```$ emojipedia [-ss|subcategory] <subcategory> [-h|href]```
-
-Generates the direct URL to the subcategory on the unicode.org page.
-
-##### Numeric order that the Subcategory was parsed
-
-```$ emojipedia [-ss|subcategory] <subcategory> [-n|number]```
-
-Number returns the integer that the Subcategory holds.
-
-##### Category that the subcategory belongs to
-
-```$ emojipedia [-ss|subcategory] <subcategory> [-c|category]```
-
-Category returns the name of the category the subcategory is under.
-
-##### Table the entire Subcategory
-
-```$ emojipedia [-ss|subcategory] <subcategory> [-t|table]```
