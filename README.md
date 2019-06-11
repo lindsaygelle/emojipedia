@@ -142,7 +142,8 @@ Emoji refers to the unique emoji. Each emoji can be accessed using the `-ee` or 
 
 ##### Subcategory the emoji belongs to
 
-```$ emojipedia [-ee|emoji] <emoji> [-s|subcategory]
+```
+$ emojipedia [-ee|emoji] <emoji> [-s|subcategory]
 
 $ emojipedia -e cat -s
 animal-mammal
