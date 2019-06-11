@@ -132,6 +132,10 @@ Emoji refers to the unique emoji. Each emoji can be accessed using the `-ee` or 
 
 ```$ emojipedia [-ee|emoji] <emoji> [-h|href]```
 
+#### SVG base64 image
+
+```$ emojipedia [-ee|emoji] <emoji> [-i|image]```
+
 #### Numeric order that the Emoji was parsed
 
 ```$ emojipedia [-ee|emoji] <emoji> [-n|number]```
