@@ -33,7 +33,7 @@ The program will show you a set of available commands if no input is given at ru
 
 Each of the main packages can be browsed using a common set of commands. These are `get`, `keys`, `list`, and `number`. 
 
-```emojipedia [<[-c],[-k],[-e],[-s]>] [<[-g get],[-k keys],[-l list],[-n number]>]```
+```emojipedia [<package>] [<[-g get],[-k keys],[-l list],[-n number]>]```
 
 Here's an example of using the list command on the categories package.
 
@@ -84,7 +84,7 @@ emojipedia [-c categories] [-g get] flags symbols
 
 ## Usage (specifics)
 
-For most of the main packages, there also exists a detail level that enables browsing a particular package element in more detail. These detail routines require the main package to exists. This means that if you have built the `categories` package, you also have access to the `category` program. For each of these detail specific programs, there are a few common commands that exist. These generally include `anchor`, `category`, `emoji`, `href`, `number`, `position`, `subcategory` and `table`. Some programs, like the `emoji` routine have more options than are listed here. For more run the emoji command.
+For most of the main packages, there also exists a detail level that enables browsing a particular package element in more detail. These detail routines require the main parent package to exists. This means that if you have built the `categories` package, you also have access to the `category` program. For each of these detail specific programs, there are a few common commands that exist across the board. These generally include the `anchor`, `category`, `emoji`, `href`, `number`, `position`, `subcategory` and `table` commands. Some programs, like the `emoji` routine have more options than are listed here. For more run the emoji command.
 
 Here's an example or running the shared `table` command for the emoji detail routine.
 
@@ -92,6 +92,5 @@ Here's an example or running the shared `table` command for the emoji detail rou
 emojipedia [-ee emoji] boar [-t table] [<options>]
 ...
 🐗     |animals-and-nature     |U+1F417|http://....     |boar pig       |boar   |494    |animal-mammal
-
 ```
 
