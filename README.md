@@ -108,43 +108,47 @@ Removes all of the bundle for the selected program. Does not delete the unicode 
 
 Emoji refers to the unique emoji. Each emoji can be accessed using the `-ee` or `emoji` command.
 
-#### Getting the Emoji's anchor reference
+##### Getting the Emoji's anchor reference
 
 ```$ emojipedia [-ee|emoji] <emoji> [-a|anchor]```
 
-#### Category that the emoji belongs to
+##### Category that the emoji belongs to
 
 ```$ emojipedia [-ee|emoji] <emoji> [-c|category]```
 
-#### Abbreviate unicode sequenences that create the emoji
+##### Abbreviate unicode sequenences that create the emoji
 
 ```$ emojipedia [-ee|emoji] <emoji> [-cc|codes]```
 
-#### Getting the description from emojipedia.org
+##### Getting the description from emojipedia.org
 
 ```$ emojipedia [-ee|emoji] <emoji> [-d|description]```
 
-#### Getting the Emoji character
+##### Getting the Emoji character
 
 ```$ emojipedia [-ee|emoji] <emoji> [-e|emoji]```
 
-#### URL to the Emoji (with anchor)
+##### URL to the Emoji (with anchor)
 
 ```$ emojipedia [-ee|emoji] <emoji> [-h|href]```
 
-#### SVG base64 image
+##### SVG base64 image
 
 ```$ emojipedia [-ee|emoji] <emoji> [-i|image]```
 
-#### Numeric order that the Emoji was parsed
+##### Numeric order that the Emoji was parsed
 
 ```$ emojipedia [-ee|emoji] <emoji> [-n|number]```
 
-#### Subcategory the emoji belongs to
+##### Subcategory the emoji belongs to
 
-```$ emojipedia [-ee|emoji] <emoji> [-s|subcategory]```
+```$ emojipedia [-ee|emoji] <emoji> [-s|subcategory]
 
-#### Table the entire Emoji
+$ emojipedia -e cat -s
+animal-mammal
+```
+
+##### Table the entire Emoji
 
 ```$ emojipedia [-ee|emoji] <emoji> [-t|table]```
 
@@ -152,77 +156,75 @@ Emoji refers to the unique emoji. Each emoji can be accessed using the `-ee` or 
 
 Category refers to the specific parent grouping of all emoji. Each category can be accessed using the `-cc` or `category` command.
 
-#### Getting the Category's anchor reference
+##### Getting the Category's anchor reference
 
 ```$ emojipedia [-cc|category] <category> [-a|anchor]```
 
 Anchor fetches the specific unique reference for the category from unicode.org.
 
-#### Listing the Category's emoji
+##### Listing the Category's emoji
 
 ```$ emojipedia [-cc|category] <category> [-e|emoji]```
 
 Emoji lists the emoji that belong the accessed category. Prints each emoji out in a sequence in a sorted order. Does not print the unicode character. 
 
-#### URL to the Category (with anchor)
+##### URL to the Category (with anchor)
 
 ```$ emojipedia [-cc|category] <category> [-h|href]```
 
 Generates the direct URL to the category on the unicode.org page.
 
-#### Numeric order that the Category was parsed
+##### Numeric order that the Category was parsed
 
 ```$ emojipedia [-cc|category] <category> [-n|number]```
 
 Number returns the integer that the Category holds.
 
-#### Subcategories that belong to the Category
+##### Subcategories that belong to the Category
 
 ```$ emojipedia [-cc|category] <category> [-s|subcategories]```
 
 Iterates over the subcategories that belong the category and lists them in their alphabetic order.
 
-#### Table the entire Category
+##### Table the entire Category
 
 ```$ emojipedia [-cc|category] <category> [-t|table]```
-
-
 
 
 ## Subcategory commands
 
 Subcategory refers to the specific sub-grouping of all emoji, with each subcategory belonging to one subcategory super-set. Each subcategory can be accessed using the `-ss` or `subcategory` command.
 
-#### Getting the Subcategory's anchor reference
+##### Getting the Subcategory's anchor reference
 
 ```$ emojipedia [-ss|subcategory] <subcategory> [-a|anchor]```
 
 Anchor fetches the specific unique reference for the subcategory from unicode.org.
 
-#### Listing the Subcategory's emoji
+##### Listing the Subcategory's emoji
 
 ```$ emojipedia [-ss|subcategory] <subcategory> [-e|emoji]```
 
 Emoji lists the emoji that belong the accessed subcategory. Prints each emoji out in a sequence in a sorted order. Does not print the unicode character. 
 
-#### URL to the Subcategory (with anchor)
+##### URL to the Subcategory (with anchor)
 
 ```$ emojipedia [-ss|subcategory] <subcategory> [-h|href]```
 
 Generates the direct URL to the subcategory on the unicode.org page.
 
-#### Numeric order that the Subcategory was parsed
+##### Numeric order that the Subcategory was parsed
 
 ```$ emojipedia [-ss|subcategory] <subcategory> [-n|number]```
 
 Number returns the integer that the Subcategory holds.
 
-#### Category that the subcategory belongs to
+##### Category that the subcategory belongs to
 
 ```$ emojipedia [-ss|subcategory] <subcategory> [-c|category]```
 
 Category returns the name of the category the subcategory is under.
 
-#### Table the entire Subcategory
+##### Table the entire Subcategory
 
 ```$ emojipedia [-ss|subcategory] <subcategory> [-t|table]```
