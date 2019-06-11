@@ -104,6 +104,45 @@ Lists all the elements and prints out top-level detail. Less verbose than `-g | 
 
 Removes all of the bundle for the selected program. Does not delete the unicode HTML file.
 
+## Emoji commands
+
+Emoji refers to the unique emoji. Each emoji can be accessed using the `-ee` or `emoji` command.
+
+#### Getting the Emoji's anchor reference
+
+```$ emojipedia [-ee|emoji] <emoji> [-a|anchor]```
+
+#### Category that the emoji belongs to
+
+```$ emojipedia [-ee|emoji] <emoji> [-c|category]```
+
+#### Abbreviate unicode sequenences that create the emoji
+
+```$ emojipedia [-ee|emoji] <emoji> [-cc|codes]```
+
+#### Getting the description from emojipedia.org
+
+```$ emojipedia [-ee|emoji] <emoji> [-d|description]```
+
+#### Getting the Emoji character
+
+```$ emojipedia [-ee|emoji] <emoji> [-e|emoji]```
+
+#### URL to the Emoji (with anchor)
+
+```$ emojipedia [-ee|emoji] <emoji> [-h|href]```
+
+#### Numeric order that the Emoji was parsed
+
+```$ emojipedia [-ee|emoji] <emoji> [-n|number]```
+
+#### Subcategory the emoji belongs to
+
+```$ emojipedia [-ee|emoji] <emoji> [-s|subcategory]```
+
+#### Table the entire Emoji
+
+```$ emojipedia [-ee|emoji] <emoji> [-t|table]```
 
 ## Category commands
 
@@ -142,6 +181,8 @@ Iterates over the subcategories that belong the category and lists them in their
 #### Table the entire Category
 
 ```$ emojipedia [-cc|category] <category> [-t|table]```
+
+
 
 
 ## Subcategory commands
