@@ -59,6 +59,15 @@ func subcategoriesList(arguments *arguments.Arguments) {
 	writer.Flush()
 }
 
+func subcategoriesNumber(arguments *arguments.Arguments) {
+	var (
+		subcategories = subcategories.Get()
+	)
+	fmt.Fprintln(writer, "Subcategories\t|Number")
+	fmt.Fprintln(writer, fmt.Sprintf("\t|%v", subcategories.Len()))
+	writer.Flush()
+}
+
 func subcategoriesMain(arguments *arguments.Arguments) {
 	switch strings.ToUpper(arguments.Get(0)) {
 	case B, BUILD:
@@ -69,6 +78,8 @@ func subcategoriesMain(arguments *arguments.Arguments) {
 		subcategoriesKeys(arguments.Next())
 	case L, LIST:
 		subcategoriesList(arguments.Next())
+	case N, NUMBER:
+		subcategoriesNumber(arguments.Next())
 	case R, REMOVE:
 		remove(SUBCATEGORIES, subcategories.Remove)
 	default:
@@ -89,6 +100,10 @@ func subcategoriesMain(arguments *arguments.Arguments) {
 				About:   "iterate and show the available subcategories information",
 				Short:   L,
 				Verbose: LIST}
+			n = stdin.Arg{
+				About:   "number of subcategories",
+				Short:   N,
+				Verbose: NUMBER}
 			r = stdin.Arg{
 				About:   "remove the subcategories (all)",
 				Short:   R,
@@ -103,7 +118,7 @@ func subcategoriesMain(arguments *arguments.Arguments) {
 		fmt.Fprintln(writer, r)
 		fmt.Fprintln(writer)
 		fmt.Fprintln(writer, "options that support flags")
-		slice.New(g, k, l).Each(func(_ int, i interface{}) {
+		slice.New(g, k, l, n).Each(func(_ int, i interface{}) {
 			fmt.Fprintln(writer, i.(stdin.Arg))
 		})
 		fmt.Fprintln(writer)

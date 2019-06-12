@@ -79,7 +79,9 @@ Using the `get` command lets you specify the specific package contents you'd lik
 ```
 emojipedia [-c categories] [-g get] flags symbols
 ...
-
+Name    |Number |Subcategories
+flags   |9      |country-flag flag subdivision-flag
+symbols |8      |alphanum arrow av-symbol gender geometric keycap other-symbol religion transport-sign warning zodiac
 ```
 
 ## Usage (specifics)

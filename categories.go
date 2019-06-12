@@ -61,6 +61,15 @@ func categoriesList(arguments *arguments.Arguments) {
 	writer.Flush()
 }
 
+func categoriesNumber(arguments *arguments.Arguments) {
+	var (
+		categories = categories.Get()
+	)
+	fmt.Fprintln(writer, "Categories\t|Number")
+	fmt.Fprintln(writer, fmt.Sprintf("\t|%v", categories.Len()))
+	writer.Flush()
+}
+
 func categoriesMain(arguments *arguments.Arguments) {
 	switch strings.ToUpper(arguments.Get(0)) {
 	case B, BUILD:
@@ -71,6 +80,8 @@ func categoriesMain(arguments *arguments.Arguments) {
 		categoriesKeys(arguments.Next())
 	case L, LIST:
 		categoriesList(arguments.Next())
+	case N, NUMBER:
+		categoriesNumber(arguments.Next())
 	case R, REMOVE:
 		remove(CATEGORIES, categories.Remove)
 	default:
@@ -91,6 +102,10 @@ func categoriesMain(arguments *arguments.Arguments) {
 				About:   "iterate and show the available categories information",
 				Short:   L,
 				Verbose: LIST}
+			n = stdin.Arg{
+				About:   "number of categories in package",
+				Short:   N,
+				Verbose: NUMBER}
 			r = stdin.Arg{
 				About:   "remove the categories (all)",
 				Short:   R,
@@ -105,7 +120,7 @@ func categoriesMain(arguments *arguments.Arguments) {
 		fmt.Fprintln(writer, r)
 		fmt.Fprintln(writer)
 		fmt.Fprintln(writer, "options that support flags")
-		slice.New(g, k, l).Each(func(_ int, i interface{}) {
+		slice.New(g, k, l, n).Each(func(_ int, i interface{}) {
 			fmt.Fprintln(writer, i.(stdin.Arg))
 		})
 		fmt.Fprintln(writer)

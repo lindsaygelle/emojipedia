@@ -64,6 +64,15 @@ func emojipediaList(arguments *arguments.Arguments) {
 	writer.Flush()
 }
 
+func emojipediaNumber(arguments *arguments.Arguments) {
+	var (
+		emojipedia = emojipedia.Get()
+	)
+	fmt.Fprintln(writer, "Emojipedia\t|Number")
+	fmt.Fprintln(writer, fmt.Sprintf("\t|%v", emojipedia.Len()))
+	writer.Flush()
+}
+
 func emojipediaMain(arguments *arguments.Arguments) {
 	switch strings.ToUpper(arguments.Get(0)) {
 	case B, BUILD:
@@ -74,6 +83,8 @@ func emojipediaMain(arguments *arguments.Arguments) {
 		emojipediaKeys(arguments.Next())
 	case L, LIST:
 		emojipediaList(arguments.Next())
+	case N, NUMBER:
+		emojipediaNumber(arguments.Next())
 	case R, REMOVE:
 		remove(EMOJIPEDIA, emojipedia.Remove)
 	default:
@@ -94,6 +105,10 @@ func emojipediaMain(arguments *arguments.Arguments) {
 				About:   "iterate and show the available emoji information",
 				Short:   L,
 				Verbose: LIST}
+			n = stdin.Arg{
+				About:   "number of emoji",
+				Short:   N,
+				Verbose: NUMBER}
 			r = stdin.Arg{
 				About:   "remove the emojipedia (all)",
 				Short:   R,
@@ -108,7 +123,7 @@ func emojipediaMain(arguments *arguments.Arguments) {
 		fmt.Fprintln(writer, r)
 		fmt.Fprintln(writer)
 		fmt.Fprintln(writer, "options that support flags")
-		slice.New(g, k, l).Each(func(_ int, i interface{}) {
+		slice.New(g, k, l, n).Each(func(_ int, i interface{}) {
 			fmt.Fprintln(writer, i.(stdin.Arg))
 		})
 		fmt.Fprintln(writer)

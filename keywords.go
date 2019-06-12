@@ -47,6 +47,15 @@ func keywordsList(arguments *arguments.Arguments) {
 	writer.Flush()
 }
 
+func keywordsNumber(arguments *arguments.Arguments) {
+	var (
+		keywords = keywords.Get()
+	)
+	fmt.Fprintln(writer, "Keywords\t|Number")
+	fmt.Fprintln(writer, fmt.Sprintf("\t|%v", keywords.Len()))
+	writer.Flush()
+}
+
 func keywordsMain(arguments *arguments.Arguments) {
 	switch strings.ToUpper(arguments.Get(0)) {
 	case B, BUILD:
@@ -57,6 +66,8 @@ func keywordsMain(arguments *arguments.Arguments) {
 		keywordsKeys(arguments.Next())
 	case L, LIST:
 		keywordsList(arguments.Next())
+	case N, NUMBER:
+		keywordsNumber(arguments.Next())
 	default:
 		var (
 			b = stdin.Arg{
@@ -75,6 +86,10 @@ func keywordsMain(arguments *arguments.Arguments) {
 				About:   "iterate and show the available keywords information",
 				Short:   L,
 				Verbose: LIST}
+			n = stdin.Arg{
+				About:   "number of keywords",
+				Short:   K,
+				Verbose: KEYS}
 			r = stdin.Arg{
 				About:   "remove the keywords (all)",
 				Short:   R,
@@ -89,7 +104,7 @@ func keywordsMain(arguments *arguments.Arguments) {
 		fmt.Fprintln(writer, r)
 		fmt.Fprintln(writer)
 		fmt.Fprintln(writer, "options that support flags")
-		slice.New(g, k, l).Each(func(_ int, i interface{}) {
+		slice.New(g, k, l, n).Each(func(_ int, i interface{}) {
 			fmt.Fprintln(writer, i.(stdin.Arg))
 		})
 		fmt.Fprintln(writer)
