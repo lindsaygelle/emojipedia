@@ -89,7 +89,7 @@ func Remove(name string) error {
 
 // Write stores and Category pointer to the dependencies folder.
 func Write(category *Category) error {
-	err := os.MkdirAll(directory.Category, 0644)
+	err := os.MkdirAll(directory.Category,  os.ModePerm)
 	if err != nil {
 		return err
 	}
@@ -98,7 +98,7 @@ func Write(category *Category) error {
 		return err
 	}
 	filepath := filepath.Join(directory.Category, fmt.Sprintf("%s.json", category.Name))
-	return ioutil.WriteFile(filepath, content, 0644)
+	return ioutil.WriteFile(filepath, content,  os.ModePerm)
 }
 
 type category interface {

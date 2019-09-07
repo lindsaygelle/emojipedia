@@ -55,7 +55,7 @@ func Open() (*goquery.Document, error) {
 
 // Write stores and unicode-org HTTP response to the dependencies folder.
 func Write(resp *http.Response) error {
-	err := os.MkdirAll(storagepath, 0644)
+	err := os.MkdirAll(storagepath,  os.ModePerm)
 	if err != nil {
 		return err
 	}
@@ -64,7 +64,7 @@ func Write(resp *http.Response) error {
 		return err
 	}
 	filepath := filepath.Join(storagepath, "unicode.html")
-	return ioutil.WriteFile(filepath, dump, 0644)
+	return ioutil.WriteFile(filepath, dump,  os.ModePerm)
 }
 
 // Remove deletes the unicode-org data stored in the dependencies folder.

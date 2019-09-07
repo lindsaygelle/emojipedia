@@ -61,7 +61,7 @@ func Remove(name string) error {
 
 // Write stores and Keyword entry to the dependencies folder.
 func Write(key string, keywords *slice.Slice) error {
-	err := os.MkdirAll(directory.Keywords, 0644)
+	err := os.MkdirAll(directory.Keywords,  os.ModePerm)
 	if err != nil {
 		return err
 	}
@@ -70,5 +70,5 @@ func Write(key string, keywords *slice.Slice) error {
 		return err
 	}
 	filepath := filepath.Join(directory.Keywords, fmt.Sprintf("%s.json", key))
-	return ioutil.WriteFile(filepath, content, 0644)
+	return ioutil.WriteFile(filepath, content,  os.ModePerm)
 }

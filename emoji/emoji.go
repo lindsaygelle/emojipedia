@@ -96,7 +96,7 @@ func Remove(name string) error {
 
 // Write stores and Emoji pointer to the dependencies folder.
 func Write(emoji *Emoji) error {
-	err := os.MkdirAll(directory.Emoji, 0644)
+	err := os.MkdirAll(directory.Emoji,  os.ModePerm)
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func Write(emoji *Emoji) error {
 		return err
 	}
 	filepath := filepath.Join(directory.Emoji, fmt.Sprintf("%s.json", emoji.Name))
-	return ioutil.WriteFile(filepath, content, 0644)
+	return ioutil.WriteFile(filepath, content,  os.ModePerm)
 }
 
 type emoji interface {

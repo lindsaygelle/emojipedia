@@ -89,7 +89,7 @@ func Remove(name string) error {
 
 // Write stores and Subcategory pointer to the dependencies folder.
 func Write(subcategory *Subcategory) error {
-	err := os.MkdirAll(directory.Subcategory, 0644)
+	err := os.MkdirAll(directory.Subcategory,  os.ModePerm)
 	if err != nil {
 		return err
 	}
@@ -98,7 +98,7 @@ func Write(subcategory *Subcategory) error {
 		return err
 	}
 	filepath := filepath.Join(directory.Subcategory, fmt.Sprintf("%s.json", subcategory.Name))
-	return ioutil.WriteFile(filepath, content, 0644)
+	return ioutil.WriteFile(filepath, content,  os.ModePerm)
 }
 
 type subcategory interface {
